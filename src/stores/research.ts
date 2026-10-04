@@ -62,6 +62,10 @@ export const useResearchStore = defineStore('research', () => {
   }
 
   function cancel() { controller?.abort() }
+  function addReport(report: Report) {
+    reports.value.unshift(report)
+    persist()
+  }
   function toggleBookmark(reportId: string, chapterId: string) {
     const report = reports.value.find(item => item.id === reportId)
     if (!report) return
@@ -70,5 +74,5 @@ export const useResearchStore = defineStore('research', () => {
     persist()
   }
 
-  return { reports, running, step, activeQuestion, error, storageWarning, bookmarkCount, generate, cancel, toggleBookmark }
+  return { reports, running, step, activeQuestion, error, storageWarning, bookmarkCount, generate, cancel, toggleBookmark, addReport }
 })

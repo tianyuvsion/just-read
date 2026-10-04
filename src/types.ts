@@ -5,6 +5,7 @@ export interface Chapter {
 }
 
 export interface Report {
+  source?: 'import'
   id: string
   title: string
   question: string

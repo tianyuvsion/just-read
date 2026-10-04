@@ -1,3 +1,25 @@
+.document-upload {
+  margin: 0 20px 18px;
+  padding: 16px;
+  border: 1px dashed #91caff;
+  border-radius: 8px;
+  background: #fafcff;
+}
+.upload-label, .upload-progress { display: flex; align-items: center; gap: 8px; }
+.upload-label { margin-bottom: 10px; font-weight: 500; }
+.document-upload input { display: block; width: 100%; min-width: 0; font: inherit; }
+.document-upload input::file-selector-button {
+  border: 1px solid #d9d9d9; border-radius: 5px; background: white;
+  padding: 7px 12px; margin-right: 10px; color: #1677ff; cursor: pointer;
+}
+.document-upload p, .export-control p { font-size: 12px; line-height: 1.7; color: #667085; margin-top: 8px; overflow-wrap: anywhere; }
+.document-upload .upload-error, .export-control .upload-error { color: #c62828; }
+.export-control { max-width: 100%; }
+.export-actions { display: flex; align-items: center; gap: 8px; }
+.export-actions select { min-width: 0; padding: 8px; border: 1px solid #d9d9d9; border-radius: 5px; background: white; font: inherit; color: #1f2329; }
+.reader-toolbar { flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+.report-chapter > p { white-space: pre-wrap; }
+
 :root {
   font-family: 'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif;
   color: #1f2329;

@@ -3,6 +3,7 @@ import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowRight, ArrowUpRight, Bookmark, Check, FileText, LoaderCircle, Search, Sparkles, X } from 'lucide-vue-next'
 import ReportCard from '../components/ReportCard.vue'
+import DocumentUpload from '../components/DocumentUpload.vue'
 import { useResearchStore } from '../stores/research'
 import { generationSteps } from '../services/research'
 
@@ -48,6 +49,7 @@ async function generate() {
           <textarea id="research-question" ref="textarea" v-model="question" :disabled="store.running" maxlength="1000" placeholder="例如：深入分析 AI Agent 的技术路线、应用场景和未来发展趋势…" @keydown.ctrl.enter.prevent="generate" @keydown.meta.enter.prevent="generate"></textarea>
           <div class="composer-toolbar"><span class="input-count">{{ question.length }}/1000</span><button type="submit" class="primary-button" :disabled="!question.trim() || store.running"><LoaderCircle v-if="store.running" class="spin" :size="16" /><template v-else>开始调研 <ArrowRight :size="17" /></template><template v-if="store.running">生成中</template></button></div>
         </form>
+        <DocumentUpload :disabled="store.running" />
         <div class="composer-note"><span class="status-dot"></span>本地模拟生成 · 不调用模型或联网检索<span>Ctrl / ⌘ + Enter</span></div>
       </section>
       <div class="prompt-row"><span>试试这些</span><button v-for="prompt in prompts" :key="prompt" :disabled="store.running" @click="usePrompt(prompt)">{{ prompt }}<ArrowUpRight :size="12" /></button></div>

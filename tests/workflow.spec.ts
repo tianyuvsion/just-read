@@ -18,7 +18,8 @@ test('生成、检索、收藏、持久化与导出报告', async ({ page }) => 
   await page.getByRole('button', { name: '数据', exact: true }).click()
   await expect(page.getByRole('table')).toBeVisible()
   const downloadPromise = page.waitForEvent('download')
-  await page.getByRole('button', { name: '导出 HTML' }).click()
+  await page.getByLabel('导出格式').selectOption('html')
+  await page.getByRole('button', { name: '导出', exact: true }).click()
   const download = await downloadPromise
   expect(download.suggestedFilename()).toBe('企业知识库的技术选型.html')
   await page.getByRole('link', { name: '返回报告', exact: true }).click()
