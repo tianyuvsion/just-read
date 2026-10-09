@@ -6,6 +6,7 @@ import mammoth from 'mammoth'
 
 test('导入 Markdown、持久化、搜索和多格式导出完整正文', async ({ page }) => {
   await page.goto('/')
+  await expect(page.getByLabel('上传文档', { exact: true })).toBeEnabled()
   await page.getByLabel('上传文档', { exact: true }).setInputFiles({
     name: '中文文档.md', mimeType: 'text/markdown',
     buffer: Buffer.from('# 总标题\n\n## 项目背景\n\n这是中文正文。<script>alert(1)</script>\n\n## 结论\n\n这段内容也需要导出。'),
@@ -56,6 +57,7 @@ test('导入 Word 和 PDF 的实际正文', async ({ page }) => {
     { name: '测试.pdf', mimeType: 'application/pdf', buffer: Buffer.from(pdf.output('arraybuffer')), expected: 'Second page text' },
   ]) {
     await page.goto('/')
+  await expect(page.getByLabel('上传文档', { exact: true })).toBeEnabled()
     await page.getByLabel('上传文档', { exact: true }).setInputFiles(file)
     await expect(page.locator('.report-chapter')).toContainText(file.expected, { timeout: 15000 })
   }
@@ -63,6 +65,7 @@ test('导入 Word 和 PDF 的实际正文', async ({ page }) => {
 
 test('无效、空白、损坏和超限文件可重试且不创建报告', async ({ page }) => {
   await page.goto('/')
+  await expect(page.getByLabel('上传文档', { exact: true })).toBeEnabled()
   const input = page.getByLabel('上传文档', { exact: true })
   for (const file of [
     { name: '旧版.doc', buffer: Buffer.from('old'), expected: '另存为 .docx' },
@@ -81,7 +84,7 @@ test('无效、空白、损坏和超限文件可重试且不创建报告', async
   const pdf = new jsPDF()
   await input.setInputFiles({ name: '无文字.pdf', mimeType: 'application/pdf', buffer: Buffer.from(pdf.output('arraybuffer')) })
   await expect(page.getByRole('alert')).toContainText('OCR', { timeout: 15000 })
-  await expect(page.locator('.report-card')).toHaveCount(3)
+  await expect(page.locator('.report-card')).toHaveCount(0)
   await input.setInputFiles({ name: '重试.md', mimeType: 'text/markdown', buffer: Buffer.from('重试成功') })
   await expect(page.getByRole('heading', { name: '重试', exact: true })).toBeVisible()
 })

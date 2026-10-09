@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ArrowRight, ArrowUpRight, Bookmark, Check, FileText, LoaderCircle, Search, Sparkles, X } from 'lucide-vue-next'
 import ReportCard from '../components/ReportCard.vue'
 import DocumentUpload from '../components/DocumentUpload.vue'
+import SourceLibrary from '../components/SourceLibrary.vue'
+import TaskHistory from '../components/TaskHistory.vue'
 import { useResearchStore } from '../stores/research'
 import { generationSteps } from '../services/research'
 
 const store = useResearchStore()
 const route = useRoute()
-const router = useRouter()
 const question = ref('')
 const search = ref('')
 const category = ref('全部')
 const textarea = ref<HTMLTextAreaElement>()
+const sourceIds = ref<string[]>([])
+const reader = ref('')
+const scope = ref('')
+const depth = ref<'brief'|'deep'>('deep')
+const enable3d = ref(false)
 const isHome = computed(() => route.path === '/')
 const isBookmarks = computed(() => route.path === '/bookmarks')
 const prompts = ['AI Agent 的技术路线与应用前景', 'RAG 与微调，企业应该如何选择？', 'AI 调研报告如何做好可视化？']
@@ -29,8 +35,7 @@ watch(() => route.fullPath, async () => {
 
 function usePrompt(prompt: string) { question.value = prompt; textarea.value?.focus() }
 async function generate() {
-  const id = await store.generate({ question: question.value, depth: 'deep' })
-  if (id) router.push(`/report/${id}`)
+  await store.generate({ question: question.value, depth: depth.value, source_ids: sourceIds.value, reader: reader.value, scope: scope.value, enable_3d: enable3d.value })
 }
 </script>
 
@@ -47,20 +52,22 @@ async function generate() {
         <form @submit.prevent="generate">
           <label class="sr-only" for="research-question">调研问题</label>
           <textarea id="research-question" ref="textarea" v-model="question" :disabled="store.running" maxlength="1000" placeholder="例如：深入分析 AI Agent 的技术路线、应用场景和未来发展趋势…" @keydown.ctrl.enter.prevent="generate" @keydown.meta.enter.prevent="generate"></textarea>
-          <div class="composer-toolbar"><span class="input-count">{{ question.length }}/1000</span><button type="submit" class="primary-button" :disabled="!question.trim() || store.running"><LoaderCircle v-if="store.running" class="spin" :size="16" /><template v-else>开始调研 <ArrowRight :size="17" /></template><template v-if="store.running">生成中</template></button></div>
+          <div class="research-options field-grid"><label>目标读者<input v-model="reader" :disabled="store.running" maxlength="200" placeholder="例如：具有基础知识的产品团队" aria-label="目标读者"/></label><label>范围与重点<input v-model="scope" :disabled="store.running" maxlength="1000" placeholder="例如：技术路线、适用条件、成本" aria-label="研究范围"/></label><label>研究深度<select v-model="depth" :disabled="store.running" aria-label="研究深度"><option value="brief">简明</option><option value="deep">深入</option></select></label><label class="checkbox-field"><input v-model="enable3d" type="checkbox" :disabled="store.running" aria-label="启用概念三维"/> 启用概念三维（非真实尺寸）</label></div>
+          <SourceLibrary v-model="sourceIds" :disabled="store.running||!store.ready" />
+          <div class="composer-toolbar"><span class="input-count">{{ question.length }}/1000</span><button type="submit" class="primary-button" :disabled="!question.trim() || store.running || !store.ready || !store.generationReady"><LoaderCircle v-if="store.running" class="spin" :size="16" /><template v-else>开始调研 <ArrowRight :size="17" /></template><template v-if="store.running">生成中</template></button></div>
         </form>
-        <DocumentUpload :disabled="store.running" />
-        <div class="composer-note"><span class="status-dot"></span>本地模拟生成 · 不调用模型或联网检索<span>Ctrl / ⌘ + Enter</span></div>
+        <DocumentUpload :disabled="store.running || !store.ready" />
+        <div class="composer-note"><span class="status-dot"></span>{{ store.ready && !store.generationReady ? '服务端尚未配置模型 · 可继续导入和阅读文档' : '由服务端生成 · 关闭页面后可恢复任务' }}<span>Ctrl / ⌘ + Enter</span></div>
       </section>
       <div class="prompt-row"><span>试试这些</span><button v-for="prompt in prompts" :key="prompt" :disabled="store.running" @click="usePrompt(prompt)">{{ prompt }}<ArrowUpRight :size="12" /></button></div>
     </template>
 
     <section v-if="store.running" class="generation-panel" aria-live="polite">
-      <div class="generation-heading"><div><LoaderCircle class="spin" :size="17" /><strong>正在构建演示报告</strong></div><button class="text-button" @click="store.cancel"><X :size="14" />取消生成</button></div>
-      <p>{{ store.activeQuestion }}</p>
+      <div class="generation-heading"><div><LoaderCircle class="spin" :size="17" /><strong>正在生成调研报告</strong></div><button class="text-button" :disabled="store.cancelling" @click="store.cancel"><X :size="14" />{{ store.cancelling ? '正在取消…' : '取消生成' }}</button></div>
+      <p>{{ store.activeQuestion }}</p><p>{{ store.message }}</p>
       <div class="generation-steps"><div v-for="(label, index) in generationSteps" :key="label" :class="{ done: index < store.step, current: index === store.step }"><span><Check v-if="index < store.step" :size="13" /><template v-else>{{ index + 1 }}</template></span>{{ label }}</div></div>
     </section>
-    <p v-if="store.error" class="global-warning" role="alert">{{ store.error }}</p>
+    <TaskHistory />
 
     <section class="reports-section">
       <div class="section-heading"><div><div v-if="!isHome" class="eyebrow">YOUR KNOWLEDGE, ORGANIZED</div><h2 :class="{ 'page-title': !isHome }">{{ isBookmarks ? '我的书签' : isHome ? '最近的调研' : '我的报告' }}<span class="section-count">{{ isBookmarks ? store.bookmarkCount : store.reports.length }}</span></h2><p>{{ isBookmarks ? '留住值得回看的段落，让洞察随时可达。' : isHome ? '每一次好奇，都值得留下答案。' : '你提出的问题，和它们逐渐清晰的答案。' }}</p></div><RouterLink v-if="isHome" to="/reports" class="text-link">全部报告 <ArrowRight :size="15" /></RouterLink></div>

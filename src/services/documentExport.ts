@@ -1,5 +1,6 @@
 import type { Report } from '../types'
 import { exportReport as exportHtml } from './export'
+import { reportNotice } from './research'
 
 export type ExportFormat = 'pdf' | 'docx' | 'md' | 'html'
 const escapeMarkdown = (value: string) => value.replace(/([\\`*_{}\[\]()<>#+.!|~-])/g, '\\$1')
@@ -7,13 +8,14 @@ const escapeMarkdown = (value: string) => value.replace(/([\\`*_{}\[\]()<>#+.!|~
 function blocks(report: Report): { text: string; heading?: 1 | 2 }[] {
   return [
     { text: report.title, heading: 1 },
-    { text: report.source === 'import' ? '本地导入文档 · 仅提取文字，原始图片与排版未保留。' : '演示报告 · 固定模板生成，未经检索核验。图表数据为虚构示例。' },
+    { text: reportNotice(report) },
     { text: report.summary }, { text: '目录', heading: 2 }, ...report.chapters.map(c => ({ text: c.title })),
     ...report.chapters.flatMap(c => [
       { text: c.title, heading: 2 as const }, ...c.paragraphs.map(text => ({ text })),
-      ...(c.id === 'comparison' && report.chart.length ? [
-        { text: '示例方案评分（虚构，0–100）' },
-        ...report.chart.map(item => ({ text: `${item.label}：${item.value}` })),
+      ...(c.id === (report.chapters.find(item => item.id === 'comparison')?.id ?? report.chapters[0]?.id) && report.chart.length && report.chartMeta ? [
+        { text: `${report.chartMeta!.title}（${report.chartMeta!.unit}）` },
+        { text: report.chartMeta!.note },
+        ...report.chart.map(item => ({ text: `${item.label}：${item.value} ${report.chartMeta!.unit}` })),
       ] : []),
     ]),
   ]

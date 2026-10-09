@@ -9,6 +9,7 @@ export const router = createRouter({
     { path: '/reports', component: WorkspaceView },
     { path: '/bookmarks', component: WorkspaceView },
     { path: '/report/:id', component: ReportView },
+    { path: '/share/:token', component: ReportView },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
   scrollBehavior: () => ({ top: 0 }),

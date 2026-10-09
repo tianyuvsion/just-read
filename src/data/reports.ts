@@ -2,6 +2,7 @@ import type { Report } from '../types'
 
 export function createDemoReport(question: string, category = '自定义调研', deep = true): Report {
   return {
+    source: 'demo',
     id: crypto.randomUUID(),
     title: question,
     question,
@@ -15,6 +16,7 @@ export function createDemoReport(question: string, category = '自定义调研',
       { label: '方案 B · 模块编排', value: 66 },
       { label: '方案 C · 定制训练', value: 43 },
     ],
+    chartMeta: { title: '示例方案评分', unit: '分', note: '演示数据，未经真实测评，不用于决策。' },
     chapters: [
       {
         id: 'overview', title: '摘要与核心问题',
