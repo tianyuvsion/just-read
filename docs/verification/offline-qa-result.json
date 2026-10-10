@@ -1,0 +1,12 @@
+{
+  "pageErrors": [],
+  "unexpectedRequests": [],
+  "flowCount": 2,
+  "relationCount": 1,
+  "lineCount": 1,
+  "tableCount": 3,
+  "renderer": "webgl-mesh",
+  "sceneStatus": "3 个真实几何网格部件 · 参数化示意；拖动旋转，滚轮缩放，点击或下拉选择部件。",
+  "selected": "sphere\n参数化示意\n参数化示意：位置与尺寸不是已测量物理值。\n证据：[\"S1\"]",
+  "integrity": "报告正文与证据哈希匹配；文件级校验请运行 ZIP 内 verify.py。"
+}

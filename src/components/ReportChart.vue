@@ -1,16 +1,26 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-defineProps<{ data: { label: string; value: number }[] }>()
+import type { Report } from '../types'
+const props = defineProps<{ data: Report['chart']; meta: NonNullable<Report['chartMeta']> }>()
 const mode = ref<'chart' | 'table'>('chart')
 const selected = ref(-1)
-const colors = computed(() => ['#1677ff', '#69b1ff', '#adc6ff'])
+const minimum = computed(() => Math.min(0, ...props.data.map(d => d.value)))
+const maximum = computed(() => Math.max(0, ...props.data.map(d => d.value)))
+const scale = computed(() => Math.max(1, ...props.data.map(d => Math.abs(d.value))))
+const normalizedMinimum = computed(() => minimum.value / scale.value)
+const range = computed(() => maximum.value / scale.value - normalizedMinimum.value || 1)
+const colors = ['#1677ff', '#69b1ff', '#adc6ff']
+function bar(value: number, index: number) {
+  return { position: 'absolute' as const, left: `${(Math.min(0, value / scale.value) - normalizedMinimum.value) / range.value * 100}%`,
+    width: `${Math.abs(value / scale.value) / range.value * 100}%`, background: colors[index % colors.length] }
+}
 </script>
 
 <template>
   <figure class="report-chart">
-    <div class="chart-heading"><div><strong>不同路径的对比视图</strong><p>演示评分 · 虚构数据 · 0–100</p></div><div class="chart-switch" aria-label="图表视图"><button :class="{ active: mode === 'chart' }" :aria-pressed="mode === 'chart'" @click="mode = 'chart'">图表</button><button :class="{ active: mode === 'table' }" :aria-pressed="mode === 'table'" @click="mode = 'table'">数据</button></div></div>
-    <div v-if="mode === 'chart'" class="bar-chart"><button v-for="(item, index) in data" :key="item.label" class="bar-row" :class="{ highlighted: selected === index }" :aria-label="`${item.label}：${item.value} 分，虚构演示评分`" @click="selected = selected === index ? -1 : index"><span>{{ item.label }}</span><span class="bar-track"><span class="bar-fill" :style="{ width: `${Math.max(0, Math.min(100, item.value))}%`, background: colors[index % colors.length] }"></span></span><strong>{{ item.value }}</strong></button><div class="chart-axis"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div><p class="chart-selection" aria-live="polite">{{ selected >= 0 && data[selected] ? `${data[selected]!.label}：示例评分 ${data[selected]!.value} / 100` : '点击条形，查看对应示例评分。' }}</p></div>
-    <table v-else><caption class="sr-only">虚构方案演示评分</caption><thead><tr><th>方案</th><th>示例评分</th></tr></thead><tbody><tr v-for="item in data" :key="item.label"><td>{{ item.label }}</td><td>{{ item.value }} / 100</td></tr></tbody></table>
-    <figcaption>仅用于验证可视化交互，不构成实际方案评估。</figcaption>
+    <div class="chart-heading"><div><strong>{{ meta.title }}</strong><p>{{ meta.note }} · 单位：{{ meta.unit }}</p></div><div class="chart-switch" aria-label="图表视图"><button :class="{ active: mode === 'chart' }" :aria-pressed="mode === 'chart'" @click="mode = 'chart'">图表</button><button :class="{ active: mode === 'table' }" :aria-pressed="mode === 'table'" @click="mode = 'table'">数据</button></div></div>
+    <div v-if="mode === 'chart'" class="bar-chart"><button v-for="(item, index) in data" :key="index" class="bar-row" :class="{ highlighted: selected === index }" :aria-label="`${item.label}：${item.value} ${meta.unit}`" @click="selected = selected === index ? -1 : index"><span>{{ item.label }}</span><span class="bar-track" style="position:relative"><span class="bar-fill" :style="bar(item.value, index)"></span></span><strong>{{ item.value }}</strong></button><div class="chart-axis"><span>{{ minimum }}</span><span>{{ maximum }}</span></div><p class="chart-selection" aria-live="polite">{{ selected >= 0 && data[selected] ? `${data[selected]!.label}：${data[selected]!.value} ${meta.unit}` : '点击条形，查看对应数据。' }}</p></div>
+    <table v-else><caption class="sr-only">{{ meta.title }}</caption><thead><tr><th>项目</th><th>{{ meta.unit }}</th></tr></thead><tbody><tr v-for="(item, index) in data" :key="index"><td>{{ item.label }}</td><td>{{ item.value }}</td></tr></tbody></table>
+    <figcaption>{{ meta.note }}</figcaption>
   </figure>
 </template>
