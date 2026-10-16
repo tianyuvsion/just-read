@@ -22,6 +22,7 @@ from .sources import decode_upload, parse_upload
 from .providers import ModelProvider, PipelineError
 from .publishing import prepare_report
 from .research_tools import calculate
+from .chat import register_chat_routes
 
 COOKIE = "justread_session"
 MAX_BODY_BYTES = 2 * 1024 * 1024
@@ -337,6 +338,8 @@ def create_app(settings: Settings | None = None, pipeline_factory=None) -> FastA
     @app.get("/api/v1/shared/{token}", response_model=Report, response_model_exclude_none=True, tags=["publication"])
     async def shared_report(token: str):
         return store.share(token)
+
+    register_chat_routes(app, settings)
 
     static = Path(settings.static_dir).resolve()
     if (static / "index.html").is_file():

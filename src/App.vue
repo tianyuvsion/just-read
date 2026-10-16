@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowUpRight, Bookmark, BookOpen, FlaskConical, FolderOpen, LayoutDashboard, Plus, Sprout } from 'lucide-vue-next'
+import { ArrowUpRight, Bookmark, BookOpen, FlaskConical, FolderOpen, LayoutDashboard, MessageSquare, Plus, Sprout } from 'lucide-vue-next'
 import { useResearchStore } from './stores/research'
 
 const route = useRoute()
@@ -9,7 +9,13 @@ const store = useResearchStore()
 const router = useRouter()
 void store.initialize()
 watch(() => store.completedReportId, id => { if (id) void router.push(`/report/${id}`) })
-const pageLabel = computed(() => route.path.startsWith('/share/') ? '冻结分享' : route.path.startsWith('/report/') ? '报告阅读' : route.path === '/reports' ? '我的报告' : route.path === '/bookmarks' ? '我的书签' : '调研工作台')
+const pageLabel = computed(() =>
+  route.path.startsWith('/share/') ? '冻结分享' :
+  route.path.startsWith('/report/') ? '报告阅读' :
+  route.path === '/reports' ? '我的报告' :
+  route.path === '/bookmarks' ? '我的书签' :
+  route.path === '/chat' ? 'AI 对话' : '调研工作台'
+)
 </script>
 
 <template>
@@ -21,6 +27,7 @@ const pageLabel = computed(() => route.path.startsWith('/share/') ? '冻结分�
       <div class="nav-label">工作空间</div>
       <nav class="main-nav" aria-label="主导航">
         <RouterLink to="/" :class="{ selected: route.path === '/' }"><LayoutDashboard :size="18" />调研工作台</RouterLink>
+        <RouterLink to="/chat" :class="{ selected: route.path === '/chat' }"><MessageSquare :size="18" />AI 对话</RouterLink>
         <RouterLink to="/reports" :class="{ selected: route.path === '/reports' || route.path.startsWith('/report/') }"><FolderOpen :size="18" />我的报告<span class="nav-count">{{ store.reports.length }}</span></RouterLink>
         <RouterLink to="/bookmarks" :class="{ selected: route.path === '/bookmarks' }"><Bookmark :size="18" />我的书签</RouterLink>
       </nav>

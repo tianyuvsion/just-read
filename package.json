@@ -12,7 +12,8 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:chat": "playwright test --config playwright.chat.config.ts"
   },
   "dependencies": {
     "docx": "^9.8.1",
