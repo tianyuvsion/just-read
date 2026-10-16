@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { sendChatStream, type ChatMessage } from '../services/chat'
+import { loadChatTemplates, sendChatStream, type ChatMessage } from '../services/chat'
 import { deleteChatSession, loadChatSessions, saveActiveChatSession, saveChatSession, type ChatSession } from '../services/chatStorage'
 
 export interface DisplayMessage extends ChatMessage {
@@ -16,6 +16,9 @@ export const useChatStore = defineStore('chat', () => {
   const storageWarning = ref('')
   const errorMessage = ref('')
   const isStreaming = ref(false)
+  const templates = ref<Awaited<ReturnType<typeof loadChatTemplates>>>([])
+  const templateError = ref('')
+  const generationStatus = ref('')
   const activeSession = computed(() => sessions.value.find(session => session.id === activeSessionId.value))
   const messages = computed(() => activeSession.value?.messages ?? [])
   const sortedSessions = computed(() => [...sessions.value].sort((a, b) => b.updatedAt - a.updatedAt))
@@ -33,6 +36,7 @@ export const useChatStore = defineStore('chat', () => {
     // Snapshot synchronously so delayed writes cannot pick up another conversation.
     return store(saveChatSession({
       id: session.id, title: session.title, createdAt: session.createdAt, updatedAt: session.updatedAt,
+      templateId: session.templateId, templatePrompt: session.templatePrompt, templateReference: session.templateReference,
       messages: session.messages.map(message => ({
         id: message.id, role: message.role, timestamp: message.timestamp,
         content: message.content + (animation?.message === message ? animation.queue.join('') : ''),
@@ -62,6 +66,7 @@ export const useChatStore = defineStore('chat', () => {
       animation = undefined
     }
     isStreaming.value = false
+    generationStatus.value = ''
     for (const message of messages.value) message.isStreaming = false
     flush()
   }
@@ -90,8 +95,32 @@ export const useChatStore = defineStore('chat', () => {
       }
       if (!activeSession.value) createSession()
       ready.value = true
+      void refreshTemplates()
     })()
     return initialization
+  }
+
+  async function refreshTemplates() {
+    templateError.value = ''
+    try { templates.value = await loadChatTemplates() }
+    catch { templateError.value = '模板暂时加载失败，请检查后端连接后重试。' }
+  }
+
+  function chooseTemplate(id: string) {
+    if (isStreaming.value || !activeSession.value) return
+    const template = templates.value.find(item => item.id === id)
+    if (id && !template) return
+    activeSession.value.templateId = template?.id
+    activeSession.value.templatePrompt = template?.default_prompt
+    activeSession.value.templateReference = true
+    flush()
+  }
+
+  function updateTemplate(prompt: string, reference: boolean) {
+    if (!activeSession.value || isStreaming.value) return
+    activeSession.value.templatePrompt = prompt
+    activeSession.value.templateReference = reference
+    flush()
   }
 
   function selectSession(id: string) {
@@ -137,6 +166,10 @@ export const useChatStore = defineStore('chat', () => {
   async function send(text: string, regenerate = false) {
     text = text.trim()
     if (!ready.value || !text || isStreaming.value || !activeSession.value) return
+    if (text.length > 60000) { errorMessage.value = '报告内容过长，请控制在 60,000 字符以内。'; return }
+    if (activeSession.value.templateId && !activeSession.value.templatePrompt?.trim()) {
+      errorMessage.value = '请填写模板提示词，或恢复默认提示词。'; return
+    }
     const session = activeSession.value
     if (regenerate) {
       const lastUserIndex = session.messages.map(message => message.role).lastIndexOf('user')
@@ -152,6 +185,7 @@ export const useChatStore = defineStore('chat', () => {
     session.updatedAt = Date.now()
     errorMessage.value = ''
     isStreaming.value = true
+    generationStatus.value = session.templateId ? '正在生成网页…' : ''
     const request = new AbortController()
     controller = request
     // Save the user's message before waiting for the network.
@@ -170,13 +204,27 @@ export const useChatStore = defineStore('chat', () => {
     await sendChatStream(payload, {
       onToken(token) {
         if (controller !== request) return
-        for (const char of token) playback.queue.push(char)
+        generationStatus.value = ''
+        if (session.templateId) assistant.content += token
+        else for (const char of token) playback.queue.push(char)
         session.updatedAt = Date.now()
         scheduleSave()
       },
       onError(error) { if (controller === request) { errorMessage.value = error; stopGenerating() } },
       onDone() { if (controller === request) { playback.done = true; flush() } },
-    }, request.signal)
+      onStatus(status) {
+        if (controller !== request) return
+        const labels: Record<string, string> = {
+          preparing: '正在等待模型响应…', thinking: '模型正在思考，尚未开始输出正文…',
+          retrying: '模型未返回正文，正在自动重试一次…', continuing: '正在继续补齐网页…',
+        }
+        generationStatus.value = labels[status] ?? ''
+      },
+    }, request.signal, session.templateId ? {
+      template_id: session.templateId,
+      template_prompt: session.templatePrompt,
+      template_reference: session.templateReference ?? true,
+    } : {})
   }
 
   function regenerate() {
@@ -190,5 +238,6 @@ export const useChatStore = defineStore('chat', () => {
 
   return { sessions, sortedSessions, activeSessionId, activeSession, messages, ready, storageWarning,
     errorMessage, isStreaming, initialize, createSession, selectSession, renameSession, removeSession,
-    clearChat, send, regenerate, stopGenerating }
+    clearChat, send, regenerate, stopGenerating, templates, templateError, generationStatus,
+    refreshTemplates, chooseTemplate, updateTemplate }
 })

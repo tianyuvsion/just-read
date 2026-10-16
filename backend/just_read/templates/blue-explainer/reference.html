@@ -1,0 +1,756 @@
+<title>RAG 检索增强生成</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* ============================================================
+   设计计划
+   布局：单栏 1080px，宽图表放进可横向滚动的图框，正文行宽 ~66ch
+   颜色：冷调墨蓝中性色 + 深蓝强调（取自校验过的色阶）+ 橙色=“检索到的信号”
+   字体：Archivo（标题/数字）· IBM Plex Sans（正文）· IBM Plex Mono（标签/代码）
+   ============================================================ */
+:root{
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --surface-2:#eaeef2;
+  --ink:#0f1418;
+  --ink-2:#49535d;
+  --muted:#7d8892;
+  --line:rgba(15,20,24,.13);
+  --line-2:rgba(15,20,24,.07);
+  --accent:#1c5cab;
+  --accent-ink:#164a8c;
+  --accent-soft:#e8f0fb;
+  --signal:#c94f1d;
+  --signal-soft:#fdeee7;
+  --good:#0b7d0b;
+  /* 图表有序色阶（validate_palette.js --ordinal 双模式 ALL PASS） */
+  --o1:#86b6ef; --o2:#5598e7; --o3:#2a78d6; --o4:#1c5cab;
+  --chart:#ffffff;
+  --grid:rgba(15,20,24,.10);
+  --font-display:"Archivo","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0d1116; --surface:#171c22; --surface-2:#1e252c;
+    --ink:#e9edf1; --ink-2:#a9b4bf; --muted:#7f8b96;
+    --line:rgba(255,255,255,.15); --line-2:rgba(255,255,255,.08);
+    --accent:#6da7ec; --accent-ink:#9ec5f4; --accent-soft:#152740;
+    --signal:#e07a4a; --signal-soft:#2a1a12;
+    --good:#3fbf3f;
+    --o1:#9ec5f4; --o2:#6da7ec; --o3:#3987e5; --o4:#256abf;
+    --chart:#171c22; --grid:rgba(255,255,255,.11);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0d1116; --surface:#171c22; --surface-2:#1e252c;
+  --ink:#e9edf1; --ink-2:#a9b4bf; --muted:#7f8b96;
+  --line:rgba(255,255,255,.15); --line-2:rgba(255,255,255,.08);
+  --accent:#6da7ec; --accent-ink:#9ec5f4; --accent-soft:#152740;
+  --signal:#e07a4a; --signal-soft:#2a1a12;
+  --good:#3fbf3f;
+  --o1:#9ec5f4; --o2:#6da7ec; --o3:#3987e5; --o4:#256abf;
+  --chart:#171c22; --grid:rgba(255,255,255,.11);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--font-body); font-size:16px; line-height:1.7;
+  padding-inline:18px; padding-block:0 96px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--font-display);text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- 报头 ---------- */
+.masthead{padding-block:52px 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted)}
+.masthead h1{font-size:clamp(34px,6vw,62px);font-weight:800;letter-spacing:-.025em;
+  line-height:1.02;margin:14px 0 0}
+.masthead h1 .cn{display:block;font-size:.46em;font-weight:600;letter-spacing:.02em;
+  color:var(--ink-2);margin-top:12px}
+.lede{max-width:62ch;margin-top:20px;font-size:17.5px;color:var(--ink-2)}
+
+/* ---------- 章节 ---------- */
+section{margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-num{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--accent);
+  padding-top:2px}
+.sec-head h2{font-size:clamp(22px,3.2vw,30px);font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.sec-sub{max-width:64ch;color:var(--ink-2);margin:0 0 22px 0}
+p+p{margin-top:13px}
+.body-copy{max-width:66ch}
+.body-copy strong{font-weight:600;color:var(--ink)}
+code{font-family:var(--font-mono);font-size:.87em;background:var(--surface-2);
+  padding:1.5px 5px;border-radius:3px;border:1px solid var(--line-2)}
+
+/* ---------- 图 ---------- */
+figure{margin:26px 0 0}
+.fig-frame{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+  padding:20px 18px 14px;overflow-x:auto}
+.fig-frame svg{display:block;width:100%;height:auto;color:var(--ink)}
+.fig-frame svg.wide{min-width:660px}
+figcaption{font-size:13px;color:var(--muted);margin-top:11px;line-height:1.6;max-width:70ch}
+figcaption b{color:var(--ink-2);font-weight:600}
+.arrow{fill:none;stroke:currentColor;stroke-width:1.6}
+.dash{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:5 4}
+.box{fill:var(--surface-2);stroke:var(--line);stroke-width:1.2}
+.box-a{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.4}
+.box-s{fill:var(--signal-soft);stroke:var(--signal);stroke-width:1.4}
+.t{font-family:var(--font-body);font-size:13px;fill:currentColor}
+.t-b{font-family:var(--font-body);font-size:13px;font-weight:600;fill:currentColor}
+.t-s{font-family:var(--font-mono);font-size:10.5px;fill:var(--muted);
+  letter-spacing:.06em;text-transform:uppercase}
+.t-m{font-family:var(--font-mono);font-size:11px;fill:var(--ink-2)}
+.t-num{font-family:var(--font-display);font-size:13px;font-weight:700;fill:currentColor}
+svg .accent{fill:var(--accent)}
+svg .signal{fill:var(--signal)}
+
+/* ---------- 卡片网格 ---------- */
+.grid{display:grid;gap:14px;margin-top:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:760px){.g3{grid-template-columns:1fr}.g2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px}
+.card h3{font-size:15px;font-weight:700;margin-bottom:5px}
+.card p{font-size:14px;color:var(--ink-2);line-height:1.62}
+.card .tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--signal);display:block;margin-bottom:7px}
+.card .tag.ok{color:var(--good)}
+
+/* ---------- 表格 ---------- */
+.tbl-scroll{overflow-x:auto;margin-top:20px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;border-bottom:1px solid var(--line)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:13px;
+  white-space:nowrap}
+
+/* ---------- 代码 ---------- */
+pre{margin:20px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:6px;
+  padding:16px 18px;overflow-x:auto;font-family:var(--font-mono);font-size:12.5px;
+  line-height:1.75;color:var(--ink)}
+pre .c{color:var(--muted)}
+pre .k{color:var(--accent);font-weight:500}
+
+/* ---------- 收尾 ---------- */
+.takeaway{margin-top:26px;background:var(--accent-soft);border:1px solid var(--line);
+  border-left:3px solid var(--accent);border-radius:6px;padding:18px 20px}
+.takeaway h3{font-size:15px;margin-bottom:7px}
+.takeaway p{font-size:14.5px;color:var(--ink-2)}
+footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--muted)}
+footer a{color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">技术讲解 · 8 张图</div>
+  <h1>RAG<span class="cn">检索增强生成：模型答不上来的那部分，去外面找</span></h1>
+  <p class="lede">大模型的知识被冻结在训练那一刻，也拿不到你公司的内部文档。RAG 的做法很直接：先把资料切成块存好，提问时按语义捞出最相关的几块，塞进提示词再让模型作答。整页讲的就是这条链路上每一步为什么存在、会在哪里断。</p>
+</header>
+
+<!-- ============ 1 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">01</span><h2>先说清楚它解决什么</h2></div>
+  <p class="sec-sub">不用 RAG 也能跑，代价是三种可预期的失败。</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg class="wide" viewBox="0 0 960 250" role="img" aria-label="纯大模型面对三类问题时的失败：训练截止导致知识过期、训练数据里没有私有文档、被问到没有依据时仍会编造答案">
+        <text class="t-s" x="0" y="14">同样的提问 · 三种失败</text>
+
+        <!-- lane -->
+        <rect class="box" x="0" y="34" width="200" height="52" rx="4"/>
+        <text class="t-b" x="100" y="66" text-anchor="middle">你的问题</text>
+
+        <!-- three branches -->
+        <path class="arrow" d="M200 60 H232" marker-end="url(#a1)"/>
+        <path class="arrow" d="M200 60 C216 60 216 60 232 60"/>
+
+        <!-- branch 1 -->
+        <rect class="box" x="232" y="10" width="238" height="52" rx="4"/>
+        <text class="t-b" x="248" y="33">① 知识过期</text>
+        <text class="t" x="248" y="51">训练截止之后发生的事，它不知道</text>
+
+        <!-- branch 2 -->
+        <rect class="box" x="232" y="82" width="238" height="52" rx="4"/>
+        <text class="t-b" x="248" y="105">② 私有数据进不来</text>
+        <text class="t" x="248" y="123">内部文档从未出现在训练集里</text>
+
+        <!-- branch 3 -->
+        <rect class="box-s" x="232" y="154" width="238" height="52" rx="4"/>
+        <text class="t-b" x="248" y="177">③ 幻觉</text>
+        <text class="t" x="248" y="195">没有依据时，它会编一个像样的</text>
+
+        <!-- converge -->
+        <path class="arrow" d="M470 36 C520 36 520 96 552 96" marker-end="url(#a1)"/>
+        <path class="arrow" d="M470 108 H552" marker-end="url(#a1)"/>
+        <path class="arrow" d="M470 180 C520 180 520 120 552 120" marker-end="url(#a1)"/>
+
+        <rect class="box" x="552" y="76" width="150" height="64" rx="4"/>
+        <text class="t-b" x="627" y="103" text-anchor="middle">不靠谱的回答</text>
+        <text class="t-m" x="627" y="122" text-anchor="middle">看起来一样自信</text>
+
+        <path class="arrow" d="M702 108 H740" marker-end="url(#a1)"/>
+        <rect class="box-a" x="740" y="76" width="220" height="64" rx="4"/>
+        <text class="t-b" x="756" y="103">RAG 介入的位置</text>
+        <text class="t" x="756" y="122">把依据先摆到模型面前</text>
+
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <figcaption><b>三条分支同源。</b>模型不是在"回忆"事实，而是在续写最可能的文本。没有给它的东西，它要么不知道，要么补一个看起来合理的——而这两种情况的输出语气完全一样。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">02</span><h2>整条链路：两条阶段，一个库</h2></div>
+  <p class="sec-sub">RAG 系统的全部结构就是下面这张图。上半段离线跑一次，下半段每个请求都跑。</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg class="wide" viewBox="0 0 1000 336" role="img" aria-label="RAG 两阶段架构：离线阶段把文档分块后嵌入写入向量库，在线阶段把问题嵌入后到向量库检索，再重排、组装提示词、交给大模型生成答案">
+        <text class="t-s" x="0" y="16">① 索引 · 离线，跑一次</text>
+
+        <rect class="box" x="0" y="30" width="146" height="46" rx="4"/>
+        <text class="t-b" x="73" y="58" text-anchor="middle">原始文档</text>
+        <path class="arrow" d="M146 53 H174" marker-end="url(#a2)"/>
+
+        <rect class="box" x="174" y="30" width="146" height="46" rx="4"/>
+        <text class="t-b" x="247" y="58" text-anchor="middle">分块</text>
+        <path class="arrow" d="M320 53 H348" marker-end="url(#a2)"/>
+
+        <rect class="box" x="348" y="30" width="146" height="46" rx="4"/>
+        <text class="t-b" x="421" y="58" text-anchor="middle">嵌入模型</text>
+        <path class="arrow" d="M494 53 H522" marker-end="url(#a2)"/>
+
+        <rect class="box-a" x="522" y="30" width="146" height="46" rx="4"/>
+        <text class="t-b" x="595" y="58" text-anchor="middle">写入索引</text>
+
+        <!-- vector store band -->
+        <path class="arrow" d="M595 76 V104" marker-end="url(#a2)"/>
+        <rect class="box-a" x="0" y="112" width="1000" height="56" rx="4"/>
+        <text class="t-b" x="20" y="146">向量库</text>
+        <text class="t" x="96" y="146">每条记录 = 向量 + 原文 + 元数据（出处、时间、权限）</text>
+        <text class="t-m" x="980" y="146" text-anchor="end">查得到，还要能追溯回原文</text>
+
+        <path class="arrow" d="M470 168 V196" marker-end="url(#a2)"/>
+        <text class="t-s" x="0" y="216">② 查询 · 在线，每次请求都跑</text>
+
+        <rect class="box" x="0" y="230" width="146" height="46" rx="4"/>
+        <text class="t-b" x="73" y="258" text-anchor="middle">用户提问</text>
+        <path class="arrow" d="M146 253 H174" marker-end="url(#a2)"/>
+
+        <rect class="box" x="174" y="230" width="146" height="46" rx="4"/>
+        <text class="t-b" x="247" y="258" text-anchor="middle">嵌成同一个向量</text>
+        <path class="arrow" d="M320 253 H348" marker-end="url(#a2)"/>
+
+        <rect class="box-s" x="348" y="230" width="146" height="46" rx="4"/>
+        <text class="t-b" x="421" y="258" text-anchor="middle">相似度检索</text>
+        <path class="arrow" d="M494 253 H522" marker-end="url(#a2)"/>
+
+        <rect class="box" x="522" y="230" width="146" height="46" rx="4"/>
+        <text class="t-b" x="595" y="258" text-anchor="middle">重排</text>
+        <path class="arrow" d="M668 253 H696" marker-end="url(#a2)"/>
+
+        <rect class="box" x="696" y="230" width="146" height="46" rx="4"/>
+        <text class="t-b" x="769" y="258" text-anchor="middle">拼进提示词</text>
+        <path class="arrow" d="M842 253 H870" marker-end="url(#a2)"/>
+
+        <rect class="box" x="870" y="230" width="130" height="46" rx="4"/>
+        <text class="t-b" x="935" y="258" text-anchor="middle">生成答案</text>
+
+        <text class="t-m" x="0" y="308">同一个嵌入模型必须用在两端——换模型等于整库重建</text>
+
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <figcaption><b>只有"写入索引"那一步是离线的。</b>其余每一步都在用户的等待时间里发生，所以后面的每一个选择——切多大、取几条、要不要重排——都同时是准确率和延迟的取舍。注意上下两段用的是<em>同一个</em>嵌入模型：查询向量必须和文档向量在同一个坐标系里才能比。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">03</span><h2>分块：最不起眼，最容易埋雷</h2></div>
+  <p class="sec-sub">把文档切碎是为了让检索精度更高，但切碎本身就毁掉了上下文。同一个段落，三种切法：</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg class="wide" viewBox="0 0 1000 330" role="img" aria-label="同一段文字按固定长度、递归、语义三种方式切块，固定长度会把一句话切断并丢失所属章节，语义切块保留完整含义">
+        <text class="t-s" x="0" y="14">第 4.2 节 · 故障排查 / 报错码对照</text>
+
+        <!-- strategy A -->
+        <text class="t-b" x="0" y="48">固定长度</text>
+        <text class="t-m" x="0" y="66">每 512 字符硬切</text>
+        <g>
+          <rect class="box" x="150" y="32" width="180" height="44" rx="3"/>
+          <text class="t" x="162" y="51">…详见第 3 章。</text>
+          <text class="t" x="162" y="68">本表的报错码分三类：</text>
+          <rect class="box-s" x="336" y="32" width="180" height="44" rx="3"/>
+          <text class="t" x="348" y="51">一类是认证失败，对应</text>
+          <text class="t" x="348" y="68">401 与 403，二类是</text>
+          <rect class="box" x="522" y="32" width="180" height="44" rx="3"/>
+          <text class="t" x="534" y="51">限流，对应 429，三类</text>
+          <text class="t" x="534" y="68">是服务端异常。</text>
+        </g>
+        <text class="t-m" x="716" y="51" fill="var(--signal)">↑ 中间这块脱离文档后，</text>
+        <text class="t-m" x="716" y="68" fill="var(--signal)">没人知道它在讲什么表</text>
+
+        <!-- strategy B -->
+        <text class="t-b" x="0" y="140">递归 / 按结构</text>
+        <text class="t-m" x="0" y="158">先按标题，再按段落</text>
+        <g>
+          <rect class="box" x="150" y="118" width="256" height="60" rx="3"/>
+          <text class="t-s" x="162" y="136">4.2 故障排查</text>
+          <text class="t" x="162" y="154">本表的报错码分三类：</text>
+          <text class="t" x="162" y="171">401/403 认证失败</text>
+          <rect class="box" x="412" y="118" width="256" height="60" rx="3"/>
+          <text class="t-s" x="424" y="136">4.2 故障排查</text>
+          <text class="t" x="424" y="154">429 为限流，需退避</text>
+          <text class="t" x="424" y="171">重试并检查配额</text>
+        </g>
+        <text class="t-m" x="684" y="137" fill="var(--good)">↑ 每块都带标题，</text>
+        <text class="t-m" x="684" y="154" fill="var(--good)">边界落在语义完整的段落上</text>
+
+        <!-- strategy C -->
+        <text class="t-b" x="0" y="236">上下文增强</text>
+        <text class="t-m" x="0" y="254">切块后再让模型补一句</text>
+        <g>
+          <rect class="box-a" x="150" y="214" width="330" height="76" rx="3"/>
+          <text class="t-m" x="162" y="233">［模型生成的前置说明］</text>
+          <text class="t" x="162" y="251">本节属于《API 手册》第 4.2 节</text>
+          <text class="t" x="162" y="268">“故障排查”，列出了报错码对照表。</text>
+          <text class="t" x="162" y="285">一类是认证失败，对应 401 与 403…</text>
+        </g>
+        <text class="t-m" x="500" y="246" fill="var(--accent)">↑ 这一句是索引时生成的，</text>
+        <text class="t-m" x="500" y="263" fill="var(--accent)">检索和展示时都跟着块走</text>
+      </svg>
+    </div>
+    <figcaption><b>失败的往往不是"没搜到"，而是"搜到的块自己说不清楚"。</b>上面中间那块（橙色）是纯文本切分最典型的产物：它命中了关键词，被检索出来了，但模型拿到手里只有半句话。递归切分靠文档自身的结构（标题、段落）解决大部分问题；上下文增强则是拿一个小模型在索引阶段给每块补一句归属说明，成本不高但收益明显——具体数字见第 06 节。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">04</span><h2>嵌入与检索：把"像不像"变成算术</h2></div>
+  <p class="sec-sub">嵌入模型把一段文本压成一个几百到几千维的坐标。语义接近的文本，坐标就接近——检索因此变成一次最近邻查找。</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg viewBox="0 0 1000 340" role="img" aria-label="两个散点图并排：左图显示按向量距离取出的最近邻里混入了字面相似但语义无关的片段，右图显示重排后相关性更高的片段被提到前面">
+        <!-- left: vector space -->
+        <text class="t-s" x="0" y="14">向量空间 · 只按距离取</text>
+        <rect class="box" x="0" y="26" width="470" height="270" rx="4" fill="var(--chart)"/>
+
+        <!-- noise dots -->
+        <g fill="var(--muted)" opacity=".45">
+          <circle cx="60" cy="70" r="4"/><circle cx="120" cy="120" r="4"/>
+          <circle cx="390" cy="80" r="4"/><circle cx="430" cy="160" r="4"/>
+          <circle cx="70" cy="230" r="4"/><circle cx="150" cy="265" r="4"/>
+          <circle cx="360" cy="250" r="4"/><circle cx="420" cy="230" r="4"/>
+          <circle cx="230" cy="60" r="4"/><circle cx="90" cy="160" r="4"/>
+        </g>
+        <!-- retrieved neighbours -->
+        <g>
+          <circle cx="250" cy="180" r="7" fill="var(--o2)"/>
+          <circle cx="300" cy="150" r="7" fill="var(--o1)"/>
+          <circle cx="215" cy="215" r="7" fill="var(--o2)"/>
+          <circle cx="290" cy="225" r="7" fill="var(--o1)"/>
+        </g>
+        <!-- query -->
+        <circle cx="262" cy="192" r="9" fill="var(--signal)"/>
+        <circle cx="262" cy="192" r="17" fill="none" stroke="var(--signal)" stroke-width="1.4" stroke-dasharray="3 3"/>
+        <text class="t-b" x="262" y="132" text-anchor="middle" fill="var(--signal)">查询向量</text>
+        <path class="dash" d="M262 136 V176" stroke="var(--signal)"/>
+
+        <text class="t-m" x="14" y="286">近邻里混着一条字面像、语义无关的块</text>
+
+        <!-- right: after rerank -->
+        <text class="t-s" x="530" y="14">重排之后 · 逐条精读打分</text>
+        <rect class="box" x="530" y="26" width="470" height="270" rx="4" fill="var(--chart)"/>
+
+        <g>
+          <rect x="548" y="60" width="434" height="46" rx="3" fill="var(--o4)"/>
+          <text class="t" x="562" y="80" fill="#fff">① 故障排查：401 / 403 认证失败</text>
+          <text class="t-m" x="562" y="98" fill="rgba(255,255,255,.8)">相关度 0.94 · 来自第 4.2 节</text>
+        </g>
+        <g>
+          <rect x="548" y="116" width="434" height="46" rx="3" fill="var(--o2)"/>
+          <text class="t" x="562" y="136" fill="#fff">② 配额与限流：429 退避策略</text>
+          <text class="t-m" x="562" y="154" fill="rgba(255,255,255,.85)">相关度 0.88 · 来自第 4.3 节</text>
+        </g>
+        <g>
+          <rect x="548" y="172" width="434" height="46" rx="3" fill="var(--surface-2)" stroke="var(--line)"/>
+          <text class="t" x="562" y="192">③ 认证服务架构概览</text>
+          <text class="t-m" x="562" y="210">相关度 0.41 · 被降到最后</text>
+        </g>
+        <g>
+          <rect x="548" y="228" width="434" height="46" rx="3" fill="var(--surface-2)" stroke="var(--line)"/>
+          <text class="t" x="562" y="248">④ 名词表：401 的定义</text>
+          <text class="t-m" x="562" y="266">相关度 0.28 · 被降到最后</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>左图的"最近"不等于"最有用"。</b>向量距离衡量的是整体语义相似，一条字面高度相似但没回答问题的块，照样能排进前几。重排模型把（问题，候选块）成对放进去逐条精读，精度高得多但慢得多——所以只对召回来的少量候选做，这就引出了下一节的漏斗。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">05</span><h2>召回 + 重排：一个代价换精度的漏斗</h2></div>
+  <p class="sec-sub">没有任何单一检索器同时做到"快而全"和"准"。工程上的答案是串两级，各干各擅长的事。</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg class="wide" viewBox="0 0 1000 300" role="img" aria-label="两阶段检索漏斗：从全库百万块中用双塔模型快速召回约一百条候选，再用交叉编码器精排到前五条，最后交给大模型">
+        <!-- funnel shape -->
+        <path d="M40 40 H420 L360 130 H100 Z" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+        <path d="M100 138 H360 L330 208 H130 Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+        <path d="M130 216 H330 L310 268 H150 Z" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="1.2"/>
+
+        <text class="t-b" x="230" y="62" text-anchor="middle">全库 · 十万到百万块</text>
+        <text class="t" x="230" y="82" text-anchor="middle">向量检索（双塔）</text>
+        <text class="t-m" x="230" y="100" text-anchor="middle">问题与块分别编码，算余弦距离</text>
+
+        <text class="t-b" x="230" y="166" text-anchor="middle">召回 top 50–100</text>
+        <text class="t-m" x="230" y="186" text-anchor="middle">毫秒级 · 全 · 但粗</text>
+
+        <text class="t-b" x="230" y="240" text-anchor="middle">重排 top 3–8</text>
+        <text class="t-m" x="230" y="258" text-anchor="middle">问题与块拼在一起过模型 · 慢 · 但准</text>
+
+        <!-- right column: what each stage needs -->
+        <path class="arrow" d="M420 80 H456" marker-end="url(#a3)"/>
+        <rect class="box" x="456" y="48" width="250" height="64" rx="4"/>
+        <text class="t-b" x="470" y="72">双塔：可预先算好</text>
+        <text class="t-m" x="470" y="92">所有块的向量离线存好，查询时只算一次</text>
+        <text class="t-m" x="470" y="107">→ 极快，代价是问题和块从不互相看见</text>
+
+        <path class="arrow" d="M360 173 H456" marker-end="url(#a3)"/>
+        <rect class="box" x="456" y="141" width="250" height="64" rx="4"/>
+        <text class="t-b" x="470" y="165">交叉编码器：不能预计算</text>
+        <text class="t-m" x="470" y="185">每一对（问题, 块）都要前向一次</text>
+        <text class="t-m" x="470" y="200">→ 准，但只能用在少量候选上</text>
+
+        <path class="arrow" d="M330 242 H456" marker-end="url(#a3)"/>
+        <rect class="box-s" x="456" y="210" width="250" height="64" rx="4"/>
+        <text class="t-b" x="470" y="234">进上下文窗口</text>
+        <text class="t-m" x="470" y="254">条数越多越容易被无关内容带偏</text>
+        <text class="t-m" x="470" y="269">→ 宁可少而准，不要多而杂</text>
+
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <figcaption><b>漏斗的宽口要"全"，窄口要"准"。</b>宽口宁可多召回——漏掉的那条永远救不回来；窄口才是省钱省延迟的地方，把 100 条精排到 5 条，比把 100 条全塞给大模型效果好也更便宜。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">06</span><h2>三种检索范式，以及为什么答案是"都要"</h2></div>
+  <p class="sec-sub">关键词检索和向量检索擅长的是完全不同的问题。下面用两种真实查询说明：</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg class="wide" viewBox="0 0 1000 330" role="img" aria-label="对比稀疏检索、稠密检索与混合检索：精确报错码查询只有关键词检索命中，口语化描述只有向量检索命中，混合检索两种都命中">
+        <!-- query -->
+        <rect class="box" x="0" y="24" width="1000" height="44" rx="4"/>
+        <text class="t-b" x="16" y="52">两个提问：</text>
+        <text class="t-m" x="112" y="52">A = “ERR_4032 怎么解”</text>
+        <text class="t-m" x="330" y="52">B = “上传到一半就断了是怎么回事”</text>
+        <text class="t-m" x="660" y="52">同一个文档库里都有答案</text>
+
+        <!-- columns -->
+        <text class="t-s" x="0" y="98">稀疏 · BM25</text>
+        <text class="t-m" x="0" y="114">按词频与词稀有度打分</text>
+
+        <text class="t-s" x="340" y="98">稠密 · 向量</text>
+        <text class="t-m" x="340" y="114">按语义距离打分</text>
+
+        <text class="t-s" x="680" y="98">混合 · 两路取并集再融合</text>
+        <text class="t-m" x="680" y="114">然后交给重排统一定序</text>
+
+        <!-- sparse card -->
+        <rect class="box" x="0" y="128" width="316" height="182" rx="4"/>
+        <rect class="box-a" x="14" y="142" width="288" height="42" rx="3"/>
+        <text class="t-b" x="26" y="160">A 命中</text>
+        <text class="t-m" x="26" y="176">ERR_4032 精确匹配，直接排第一</text>
+        <rect class="box" x="14" y="194" width="288" height="42" rx="3"/>
+        <text class="t-b" x="26" y="212">B 落空</text>
+        <text class="t-m" x="26" y="228">文档里写的是“传输中断”，字面不重合</text>
+        <text class="t-m" x="14" y="262">优点：精确串、型号、人名、代码</text>
+        <text class="t-m" x="14" y="280">盲区：同义改写、跨语言、口语</text>
+        <text class="t-m" x="14" y="298">不需要训练，换个语料也能用</text>
+
+        <!-- dense card -->
+        <rect class="box" x="340" y="128" width="316" height="182" rx="4"/>
+        <rect class="box" x="354" y="142" width="288" height="42" rx="3"/>
+        <text class="t-b" x="366" y="160">A 落空</text>
+        <text class="t-m" x="366" y="176">报错码在模型眼里≈随机字符串</text>
+        <rect class="box-a" x="354" y="194" width="288" height="42" rx="3"/>
+        <text class="t-b" x="366" y="212">B 命中</text>
+        <text class="t-m" x="366" y="228">“断”与“中断/超时/丢包”在同一片区域</text>
+        <text class="t-m" x="354" y="262">优点：口语、改写、近义表达</text>
+        <text class="t-m" x="354" y="280">盲区：罕见专名、精确串</text>
+        <text class="t-m" x="354" y="298">换嵌入模型要整库重算</text>
+
+        <!-- hybrid card -->
+        <rect class="box-a" x="680" y="128" width="316" height="182" rx="4"/>
+        <rect class="box-a" x="694" y="142" width="288" height="42" rx="3"/>
+        <text class="t-b" x="706" y="160">A 命中</text>
+        <text class="t-m" x="706" y="176">由 BM25 这一路带进来</text>
+        <rect class="box-a" x="694" y="194" width="288" height="42" rx="3"/>
+        <text class="t-b" x="706" y="212">B 命中</text>
+        <text class="t-m" x="706" y="228">由向量这一路带进来</text>
+        <text class="t-m" x="694" y="262">代价：两套索引、一次融合</text>
+        <text class="t-m" x="694" y="280">融合：按倒数排名融合，或各自归一化后加权</text>
+        <text class="t-m" x="694" y="298">实践中通常就是默认答案</text>
+      </svg>
+    </div>
+    <figcaption><b>两路检索的盲区不重叠，这是混合检索的全部理由。</b>如果只上向量而丢掉关键词，你的报错码、产品型号、人名、缩写会系统性地搜不到——这类查询在技术文档场景里占比很高。</figcaption>
+  </figure>
+
+  <div class="takeaway">
+    <h3>一个可以直接照做的默认配置</h3>
+    <p>BM25 + 向量两路各取 50 条 → 倒数排名融合 → 重排取前 5 → 进提示词。这套起点在多数文档问答场景里都不会太差，之后再按你自己的评测集调数字。</p>
+  </div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">07</span><h2>一个真实的改进案例</h2></div>
+  <p class="sec-sub">Anthropic 在 2024 年公布过一组数据：在索引阶段用模型给每个块补一句上下文说明，检索失败率逐级下降。</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg viewBox="0 0 900 288" role="img" aria-label="柱状图：检索失败率基准 5.7%，加入上下文嵌入后降到 3.7%，再加上下文 BM25 后降到 2.9%，最后加重排降到 1.9%">
+        <text class="t-s" x="0" y="12">检索失败率（越低越好）· top-20 命中</text>
+
+        <!-- gridlines -->
+        <g stroke="var(--grid)" stroke-width="1">
+          <line x1="200" y1="30" x2="200" y2="240"/>
+          <line x1="400" y1="30" x2="400" y2="240"/>
+          <line x1="600" y1="30" x2="600" y2="240"/>
+          <line x1="800" y1="30" x2="800" y2="240"/>
+        </g>
+        <g class="t-m">
+          <text x="200" y="256" text-anchor="middle">0</text>
+          <text x="400" y="256" text-anchor="middle">2%</text>
+          <text x="600" y="256" text-anchor="middle">4%</text>
+          <text x="800" y="256" text-anchor="middle">6%</text>
+        </g>
+
+        <!-- bars: 1 unit = 100px -->
+        <g>
+          <text class="t" x="188" y="55" text-anchor="end">仅向量检索</text>
+          <rect x="200" y="36" width="570" height="30" rx="2" fill="var(--o1)"/>
+          <text class="t-num" x="782" y="56">5.7%</text>
+        </g>
+        <g>
+          <text class="t" x="188" y="111" text-anchor="end">+ 上下文嵌入</text>
+          <rect x="200" y="92" width="370" height="30" rx="2" fill="var(--o2)"/>
+          <text class="t-num" x="582" y="112">3.7%</text>
+          <text class="t-m" x="642" y="112" fill="var(--good)">↓ 35%</text>
+        </g>
+        <g>
+          <text class="t" x="188" y="167" text-anchor="end">+ 上下文 BM25</text>
+          <rect x="200" y="148" width="290" height="30" rx="2" fill="var(--o3)"/>
+          <text class="t-num" x="502" y="168">2.9%</text>
+          <text class="t-m" x="562" y="168" fill="var(--good)">↓ 49%</text>
+        </g>
+        <g>
+          <text class="t" x="188" y="223" text-anchor="end">+ 重排</text>
+          <rect x="200" y="204" width="190" height="30" rx="2" fill="var(--o4)"/>
+          <text class="t-num" x="402" y="224">1.9%</text>
+          <text class="t-m" x="462" y="224" fill="var(--good)">↓ 67%</text>
+        </g>
+
+        <line x1="200" y1="30" x2="200" y2="240" stroke="var(--ink)" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <figcaption><b>三步各自贡献了一部分，没有哪一步是决定性的。</b>注意第三根柱子用的是 BM25——一个 1990 年代的关键词算法。它出现在这里不是因为新，而是因为前面两步改造的是"块能不能被认出"这个问题本身。数据来源：<a href="https://www.anthropic.com/engineering/contextual-retrieval">Anthropic, Contextual Retrieval (2024)</a>；官方给出的索引成本约为每百万文档 token 1.02 美元（配合提示缓存）。不同语料上结果会有差异。</figcaption>
+  </figure>
+
+  <div class="tbl-scroll">
+    <table>
+      <caption class="t-s" style="text-align:left;padding:0 0 8px">同样的数字，表格版</caption>
+      <thead>
+        <tr><th>配置</th><th>检索失败率</th><th>相对基准</th><th>这一层做了什么</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>仅向量检索</td><td class="num">5.7%</td><td class="num">—</td><td>块被单独嵌入，脱离原文语境</td></tr>
+        <tr><td>+ 上下文嵌入</td><td class="num">3.7%</td><td class="num">↓35%</td><td>索引前给每块补一句归属说明，再嵌入</td></tr>
+        <tr><td>+ 上下文 BM25</td><td class="num">2.9%</td><td class="num">↓49%</td><td>同样的说明也写进关键词索引</td></tr>
+        <tr><td>+ 重排</td><td class="num">1.9%</td><td class="num">↓67%</td><td>对召回结果逐条精读定序</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">08</span><h2>出问题时，先分清是哪一种坏</h2></div>
+  <p class="sec-sub">RAG 的失败集中在两处，症状很像，修法完全不同。分不清就会修错地方。</p>
+
+  <figure>
+    <div class="fig-frame">
+      <svg class="wide" viewBox="0 0 1000 300" role="img" aria-label="RAG 两类失败的分叉：检索失败是正确内容没进候选，无论模型多强都救不回来；生成失败是正确内容在上下文里但模型没采用">
+        <rect class="box" x="0" y="118" width="150" height="54" rx="4"/>
+        <text class="t-b" x="75" y="150" text-anchor="middle">答案不对</text>
+
+        <path class="arrow" d="M150 145 H196" marker-end="url(#a4)"/>
+        <circle cx="196" cy="145" r="3" fill="currentColor"/>
+
+        <path class="arrow" d="M200 145 C226 145 226 72 258 72" marker-end="url(#a4)"/>
+        <path class="arrow" d="M200 145 C226 145 226 218 258 218" marker-end="url(#a4)"/>
+
+        <!-- branch 1 -->
+        <rect class="box-s" x="258" y="34" width="330" height="76" rx="4"/>
+        <text class="t-b" x="274" y="58">检索失败：正确的块根本没进来</text>
+        <text class="t-m" x="274" y="79">上下文里就是空的或无关内容，模型再强也无从下手</text>
+        <text class="t-m" x="274" y="96" fill="var(--signal)">症状：答案泛泛而谈，或明显答非所问</text>
+
+        <path class="arrow" d="M588 72 H624" marker-end="url(#a4)"/>
+        <g>
+          <rect class="box" x="624" y="34" width="376" height="76" rx="4"/>
+          <text class="t-s" x="638" y="54">先查这里</text>
+          <text class="t-m" x="638" y="74">把召回的块原样打印出来看一眼——这一步能解</text>
+          <text class="t-m" x="638" y="91">决大半争议。再查分块是否切碎了语义、是否需要</text>
+          <text class="t-m" x="638" y="108">混合检索、top-k 是否太小</text>
+        </g>
+
+        <!-- branch 2 -->
+        <rect class="box-s" x="258" y="180" width="330" height="76" rx="4"/>
+        <text class="t-b" x="274" y="204">生成失败：块在里面，模型没用</text>
+        <text class="t-m" x="274" y="225">上下文塞太杂，关键那条被淹没了；或提示词没</text>
+        <text class="t-m" x="274" y="242" fill="var(--signal)">症状：答对了但引错来源，或答成训练里的旧知识</text>
+
+        <path class="arrow" d="M588 218 H624" marker-end="url(#a4)"/>
+        <g>
+          <rect class="box" x="624" y="180" width="376" height="76" rx="4"/>
+          <text class="t-s" x="638" y="200">先查这里</text>
+          <text class="t-m" x="638" y="220">减少条数提高信噪比；在提示词里明确要求“只依据</text>
+          <text class="t-m" x="638" y="237">给定材料作答，找不到就说找不到”；要求逐句标注</text>
+          <text class="t-m" x="638" y="254">出处，让无依据的编造变得显眼</text>
+        </g>
+
+        <defs>
+          <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <figcaption><b>这两类失败的排查成本差一个量级。</b>检索失败要动索引和管道，生成失败通常改几句提示词或调一调 top-k 就能解决。所以顺序永远是：先把召回的块打印出来，确认是"没给对"还是"给了没用"。</figcaption>
+  </figure>
+
+  <div class="grid g3">
+    <div class="card">
+      <span class="tag">检索侧</span>
+      <h3>上下文精确率</h3>
+      <p>取回来的块里，有多少条是真的相关。低就是塞了噪音，压低 <code>top-k</code> 或加重排。</p>
+    </div>
+    <div class="card">
+      <span class="tag">检索侧</span>
+      <h3>上下文召回率</h3>
+      <p>该找到的块，有多少进了候选。低说明检索漏了，查分块、加混合检索、放大 <code>top-k</code>。</p>
+    </div>
+    <div class="card">
+      <span class="tag ok">生成侧</span>
+      <h3>忠实度</h3>
+      <p>答案里的每条陈述，是否都能在给定材料里找到依据。这是防幻觉的核心指标。</p>
+    </div>
+  </div>
+
+  <p class="body-copy" style="margin-top:22px">指标要分开看，因为它们会此消彼长：把 <code>top-k</code> 拉大会提高召回率，同时把精确率拉低；把提示词写严会提高忠实度，同时可能让模型变得过度保守、该答的也不答了。所以得先有一份自己的评测集——几十条真实问题配上标准答案就够开始了，比调参重要得多。</p>
+</section>
+
+<!-- ============ 9 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">09</span><h2>什么时候不该用 RAG</h2></div>
+  <p class="sec-sub">RAG 不是"给模型加知识"的默认答案。这几种情况，别硬上：</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag">换个做法</span>
+      <h3>语料能整个装进上下文</h3>
+      <p>几页文档、一份合同、一个产品手册——直接全文给模型，长上下文模型比检索更省事也更准。检索的价值随语料规模增长，语料小的时候检索只是在引入误差。</p>
+    </div>
+    <div class="card">
+      <span class="tag">换个做法</span>
+      <h3>要的是聚合，不是查找</h3>
+      <p>"上个季度一共多少单"这类问题需要遍历全库统计，向量检索按相似度返回几条，天然答不了。这类需求应该走结构化查询，让模型生成 SQL 去查数据库。</p>
+    </div>
+    <div class="card">
+      <span class="tag">换个做法</span>
+      <h3>知识本身在快速变化</h3>
+      <p>价格、库存、库存量这类每秒都变的数字，不该进索引——索引有同步延迟。这类要实时调接口，检索只负责相对稳定的文档。</p>
+    </div>
+    <div class="card">
+      <span class="tag">先补别的</span>
+      <h3>问题是模型能力不够</h3>
+      <p>如果给足了正确材料它还是推理不出来，那是推理或提示词的问题，再堆检索也没用。先用正确的上下文手工测一轮，能迅速分清这两种情况。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section>
+  <div class="sec-head"><span class="sec-num">10</span><h2>一个能跑起来的最小骨架</h2></div>
+  <p class="sec-sub">先跑通这条线，再往里加混合检索、重排、评测。顺序反了会很难判断是哪一步在起作用。</p>
+
+  <pre><span class="c"># 1. 索引：切块 → 嵌入 → 存起来（离线，跑一次）</span>
+chunks = split(document, size=<span class="k">512</span>, overlap=<span class="k">64</span>)
+<span class="k">for</span> c <span class="k">in</span> chunks:
+    c.vector = embed(c.text)          <span class="c"># 与查询端必须同一个模型</span>
+store.add(c.vector, c.text, c.source) <span class="c"># 原文和出处一起存，便于回溯</span>
+
+<span class="c"># 2. 查询：嵌入 → 检索 → 拼提示词 → 生成（在线，每次请求）</span>
+q = embed(question)
+hits = store.search(q, top_k=<span class="k">20</span>)        <span class="c"># 先多召回，别在这一步抠</span>
+hits = rerank(question, hits)[:<span class="k">5</span>]          <span class="c"># 精排到少量，省 token 也提准</span>
+
+answer = llm(prompt=<span class="k">f</span><span class="k">"""</span>
+<span class="k">    只依据下面的材料回答。材料里没有就说"文档中没有提到"。</span>
+<span class="k">    每条结论后面用 [n] 标出它来自哪一段。</span>
+
+<span class="k">    材料：</span>
+<span class="k">    {format_with_index(hits)}</span>
+
+<span class="k">    问题：{question}</span>
+<span class="k">"""</span>)</pre>
+
+  <div class="takeaway">
+    <h3>整页的一句话总结</h3>
+    <p>RAG 的绝大部分质量问题出在检索侧，而不是模型侧。遇到答得不好，第一件事永远是<strong>把召回的块原样打印出来看一眼</strong>——是没找对，还是给了没用。这个三秒的动作能省掉大量调参。</p>
+  </div>
+</section>
+
+<footer>
+  <p>数据来源：<a href="https://www.anthropic.com/engineering/contextual-retrieval">Anthropic · Contextual Retrieval (2024)</a>。第 07 节的四项数字取自该文公布的 top-20 检索失败率对比，其余为机制说明图，不含实测数值。图表配色经对比度与色盲可辨识度校验。</p>
+</footer>
+
+</div>

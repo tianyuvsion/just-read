@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>论文页 · 准固态钠氧电池</title>
+<style>
+:root{
+  --bg:#f6f6f4; --paper:#ffffff; --ink:#1d2026; --ink2:#585d69; --ink3:#8e929c;
+  --line:#e4e4e0; --line2:#cfcfc9;
+  --learn:#3d51c4; --learn-bg:#e9ecf9; --learn-ink:#2b3a9c;
+  --short:#d3742a; --short-bg:#fbeee1; --short-ink:#9a4f14;
+  --ok:#2e7d55; --ok-bg:#e4f2ea; --bad:#b23f2e; --bad-bg:#f9e6e2;
+  --r:16px; --shadow:0 1px 2px rgba(30,32,40,.04),0 10px 30px -12px rgba(30,32,40,.12);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--line2);background:#fff;border-radius:999px;padding:7px 15px;transition:background .18s,border-color .18s,transform .12s;line-height:1.3}
+button:hover{background:#f7f7f4;border-color:#b9b9b2}
+button:active{transform:translateY(1px)}
+button:focus-visible{outline:2px solid var(--learn);outline-offset:2px}
+button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+button.primary:hover{background:#343843}
+button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+button[disabled]{opacity:.4;cursor:not-allowed}
+.page{max-width:1060px;margin:0 auto;padding:20px 16px 60px}
+.pagehead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.pagehead h1{font-size:26px;margin:0;font-weight:650;letter-spacing:-.01em}
+.pagehead .meta{color:var(--ink3);font-size:13px}
+.pagesub{color:var(--ink2);margin:0 0 22px;max-width:680px}
+.ghost{border:1px dashed var(--line2);border-radius:var(--r);padding:18px 20px;color:var(--ink3);font-size:13px;margin-top:14px;display:flex;justify-content:space-between}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .3s}
+.card.open{box-shadow:0 1px 2px rgba(30,32,40,.04),0 24px 60px -20px rgba(30,32,40,.18)}
+.head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid transparent;flex-wrap:wrap}
+.card.open .head{border-bottom-color:var(--line)}
+.head .kind{font-size:12px;color:var(--learn-ink);background:var(--learn-bg);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.head .time{font-size:12.5px;color:var(--ink3)}
+@media(max-width:560px){.head .time{display:none}}
+.head .sp{flex:1}
+.seg{display:inline-flex;background:#eeeeeb;border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:5px 12px;font-size:12.5px;color:var(--ink2);border-radius:999px;white-space:nowrap}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seg button:hover{background:#fff}
+
+.preview{display:grid;grid-template-columns:1fr 380px;gap:20px;padding:6px 22px 22px;align-items:center}
+.preview h2{font-size:21px;line-height:1.3;margin:0 0 8px;font-weight:650}
+.preview p{margin:0 0 16px;color:var(--ink2);max-width:52ch}
+.preview .cta{display:flex;align-items:center;gap:12px}
+.preview .cta span{font-size:12.5px;color:var(--ink3)}
+.thumb{height:210px;border-radius:12px;background:radial-gradient(120% 90% at 30% 20%,#ffffff,#f1f2f6 60%,#ecece8);border:1px solid var(--line);position:relative;overflow:hidden}
+.thumb canvas{width:100%!important;height:100%!important;display:block}
+.thumb .cap{position:absolute;left:10px;bottom:8px;font-size:11px;color:var(--ink3)}
+@media(max-width:720px){.preview{grid-template-columns:1fr}.thumb{height:160px}}
+
+.body{display:none;grid-template-columns:1fr 430px;height:clamp(540px,calc(100vh - 76px),760px)}
+@media(max-width:860px){.body{height:auto}}
+.card.open .body{display:grid}
+.card.open .preview{display:none}
+@media(max-width:860px){.body{grid-template-columns:1fr}.guide{border-left:0;border-top:1px solid var(--line)}}
+.stage{padding:14px 12px 14px 16px;display:flex;flex-direction:column;min-width:0;min-height:0}
+.readout{display:flex;gap:4px 12px;flex-wrap:wrap;align-items:baseline;font-size:12.5px;color:var(--ink2);margin:4px 0 2px}
+.readout .k{color:var(--ink3);font-size:12px}
+.readout .v{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.readout .v.big{font-size:20px;letter-spacing:-.01em}
+.readout .delta{font-size:12.5px;padding:2px 9px;border-radius:999px}
+.readout .delta.bad{background:var(--bad-bg);color:var(--bad)}
+.readout .delta.ok{background:var(--ok-bg);color:var(--ok)}
+.readout .delta.mix{background:#f1f1ee;color:var(--ink2)}
+.controls{display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center;font-size:13px;margin:2px 0 4px}
+.controls button{padding:5px 12px;font-size:12.5px}
+.controls .lab{color:var(--ink3);font-size:12px}
+.controls .grp{display:inline-flex;gap:4px}
+.controls .grp button{padding:5px 11px;font-size:12.5px}
+.controls .grp button.locked{opacity:.35;cursor:not-allowed}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;border:1px solid var(--line2);border-radius:999px;padding:4px 12px 4px 5px;background:#fff;font-size:12.5px}
+.switch .tr{width:34px;height:20px;border-radius:999px;background:#d3d3cd;position:relative;transition:background .25s}
+.switch .tr::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .25s var(--ease)}
+.switch.on{border-color:var(--short)}
+.switch.on .tr{background:var(--short)}
+.switch.on .tr::after{left:16px}
+.switch.locked{opacity:.55;pointer-events:none}
+.switch.hint,.grp.hint button:not(.locked),button.hint{box-shadow:0 0 0 3px rgba(61,81,196,.18)}
+
+.viewport{position:relative;border-radius:16px;overflow:hidden;background:radial-gradient(110% 90% at 28% 8%,#ffffff 0%,#eef0f6 48%,#e1e5ee 100%);border:1px solid #dfe2e9;height:100%;min-height:380px;touch-action:none;cursor:grab;flex:1}
+.viewport.grabbing{cursor:grabbing}
+.viewport>canvas{display:block;width:100%!important;height:100%!important}
+.hud{position:absolute;left:14px;top:12px;font-size:11.5px;color:var(--ink3);pointer-events:none;display:flex;gap:10px;flex-wrap:wrap}
+.hud b{color:var(--ink);font-weight:600}
+.hud2{position:absolute;right:10px;top:10px;display:flex;gap:6px;align-items:center}
+.hud2 button{padding:4px 10px;font-size:11.5px;background:rgba(255,255,255,.85)}
+.hud2 button.on{background:var(--ink);color:#fff}
+.hud3{position:absolute;right:10px;bottom:10px;display:flex;gap:8px;align-items:center;font-size:11.5px;color:var(--ink2);background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.hud3 input{width:90px;accent-color:var(--ink)}
+.vlegend{position:absolute;left:12px;bottom:10px;display:flex;gap:10px;font-size:11px;color:var(--ink2);pointer-events:none;flex-wrap:wrap;max-width:70%}
+.vlegend i{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+.tt{position:absolute;pointer-events:none;background:rgba(29,32,38,.92);color:#fff;font-size:12px;line-height:1.45;padding:7px 10px;border-radius:9px;max-width:240px;opacity:0;transition:opacity .12s;transform:translate(14px,14px)}
+.tt.on{opacity:1}
+.tt small{color:#c9ccd6}
+.evid{border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 11px 7px;display:flex;flex-direction:column;gap:4px;margin:2px 0 4px}
+.evid .eh{display:flex;align-items:center;gap:8px;margin-bottom:2px;font-size:12px;color:var(--ink3);flex-wrap:wrap}
+.evid .eh b{font-size:12.5px;color:var(--ink);font-weight:600}
+.evid .tag{font-size:10.5px;padding:1px 7px;border-radius:999px;background:var(--learn-bg);color:var(--learn-ink);font-weight:400}
+.evid .tag.obs{background:#f1f1ee;color:var(--ink2)}
+.evid .tag.arg{background:var(--short-bg);color:var(--short-ink)}
+.evid svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto}
+.evid .take{font-size:12px;color:var(--ink);line-height:1.45;padding:6px 9px;border-radius:9px;background:#f7f7f4;border-left:3px solid var(--ink)}
+.evid .take.wait{color:var(--ink3);border-left-color:#d3d3cd}
+.evid .take.bad{border-left-color:var(--bad)}
+.evid .take.ok{border-left-color:var(--ok)}
+.evid .tiles2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.evid .tile{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.evid .tile b{display:block;font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.evid .tile span{font-size:11.5px;color:var(--ink2)}
+.evid .tile i{display:block;font-style:normal;font-size:10.5px;color:var(--ink3);margin-top:2px}
+.guide .txt{font-size:13.5px}
+.guide .steps{display:flex;gap:6px;margin-bottom:12px}
+.guide .steps span{flex:1;height:3px;border-radius:2px;background:#e3e3df}
+.guide .steps span.done{background:var(--ink)}.guide .steps span.cur{background:var(--learn)}
+.q{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;margin-bottom:6px;font-size:12.5px}
+.q b{display:block;color:var(--ink);margin-bottom:4px}
+.q button{padding:3px 10px;font-size:11.5px;margin-top:4px}
+.q .a{display:none;margin-top:6px;color:var(--ink2);border-top:1px dashed var(--line);padding-top:6px}
+.q.open .a{display:block}
+.anch{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.anc{position:absolute;left:0;top:0;transform:translate(-50%,-100%);background:rgba(255,255,255,.9);border:1px solid #d9dbe2;border-radius:8px;padding:3px 9px;font-size:11.5px;line-height:1.35;color:var(--ink2);white-space:nowrap;box-shadow:0 2px 8px -4px rgba(30,32,40,.25);backdrop-filter:blur(4px);transition:opacity .2s}
+.anc b{color:var(--ink);font-weight:600}
+.anc::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:14px;background:#b9bcc8}
+.anc.hi{background:rgba(29,32,38,.92);color:#e9ebf2;border-color:transparent}
+.anc.hi b{color:#fff}
+.anc.o{border-color:#e6b08a;color:#9a4f14}.anc.o b{color:#9a4f14}.anc.o::after{background:#d3742a}
+.anc.bl{border-color:#aab5ec;color:#2b3a9c}.anc.bl b{color:#2b3a9c}.anc.bl::after{background:#3d51c4}
+.anc.small{font-size:10.5px;padding:2px 7px;opacity:.85}
+.anc.below::after{top:auto;bottom:100%}
+.dims{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2)}
+.dims .d{display:inline-flex;flex-direction:column;align-items:center;padding:4px 9px;border:1px solid var(--line);border-radius:9px;background:#fff;cursor:pointer;line-height:1.25;min-width:64px;transition:border-color .15s,background .15s}
+.dims .d:hover{border-color:#b9bcc8;background:#fafaf8}
+.dims .d b{font-size:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.dims .d i{font-style:normal;font-size:10.5px;color:var(--ink3)}
+.dims .d.st{border-bottom:2px solid var(--stc)}
+.dims .arr{color:#b9bcc8;font-size:12px}
+
+.guide{border-left:1px solid var(--line);padding:14px 16px 12px;display:flex;flex-direction:column;background:#fbfbfa;min-width:0;min-height:0}
+.gscroll{flex:1;overflow-y:auto;min-height:0;padding-right:4px;scrollbar-width:thin}
+.guide h3{font-size:16px;line-height:1.4;margin:0 0 5px}
+.guide .lead{font-size:12.5px;color:var(--ink2);margin:0 0 6px;line-height:1.48}
+.more{margin:4px 0 6px;font-size:12.5px}
+.more summary{cursor:pointer;color:var(--ink3);font-size:12px;padding:4px 0;list-style:none;display:flex;align-items:center;gap:6px}
+.more summary::before{content:"";width:6px;height:6px;border-right:1.5px solid var(--ink3);border-bottom:1.5px solid var(--ink3);transform:rotate(-45deg);transition:transform .2s;margin-left:2px}
+.more[open] summary::before{transform:rotate(45deg)}
+.more .txt{padding:4px 0 0}
+.nav{flex:none;display:flex;gap:8px;align-items:stretch;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.nav .ghostb{width:42px;padding:0;border-radius:12px;font-size:16px;flex:none;background:#fff;border:1.5px solid #b9bcc8;color:var(--ink)}
+.nextb{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;border-radius:12px;padding:9px 14px;background:#3a3e4a;border:1px solid #3a3e4a;color:#fff;transition:background .2s,transform .15s,box-shadow .2s}
+.nextb small{color:#c7cad3}
+.nextb:hover{background:#2a2d36}
+.nextb span{display:flex;flex-direction:column;line-height:1.25;font-weight:600;font-size:14px;min-width:0}
+.nextb small{font-weight:400;font-size:11.5px;color:#c7cad3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+.nextb i{font-style:normal;font-size:18px;flex:none}
+.nextb.ready{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:0 8px 20px -10px rgba(29,32,38,.6);animation:nudge 1.8s ease-in-out infinite}
+.nextb.ready small{color:#c7cad3}
+.nextb.ready:hover{background:#343843}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){.nextb.ready{animation:none}}
+.guide .txt{font-size:13px}
+.guide .txt p{margin:0 0 7px}
+.prog{display:flex;gap:4px;margin-bottom:12px}
+.prog i{flex:1;height:3px;border-radius:2px;background:#e3e3df;transition:background .3s}
+.prog i.done{background:var(--ink)}
+.prog i.cur{background:var(--learn)}
+.guide .stepno{font-size:11.5px;color:var(--ink3);white-space:nowrap}
+.steprow{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.steprow .steps{flex:1;margin:0}
+.guide h3{font-size:17px;margin:0 0 10px;line-height:1.35;font-weight:650}
+.guide .txt{font-size:13.5px;color:var(--ink2);flex:1}
+.guide .txt p{margin:0 0 9px}
+.guide .txt b{color:var(--ink)}
+.do{background:var(--learn-bg);color:var(--learn-ink);border-radius:10px;padding:7px 10px;font-size:12.5px;margin:2px 0 6px;display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+.do.ok{background:var(--ok-bg);color:var(--ok)}
+.do .n{flex:none;width:18px;height:18px;border-radius:50%;background:currentColor;display:grid;place-items:center}
+.do .n::after{content:"→";color:#fff;font-size:11px}
+.do.ok .n::after{content:"✓"}
+.term{border-bottom:1px dashed var(--learn);cursor:help}
+.src{font-size:11.5px;color:var(--ink3);margin-top:8px}
+.nav .dots{font-size:12px;color:var(--ink3)}
+.ev{display:grid;gap:6px;margin:8px 0}
+.ev div{font-size:12.5px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--ink2)}
+.ev div b{color:var(--ink);font-variant-numeric:tabular-nums}
+.selov{position:absolute;left:12px;right:12px;bottom:46px;pointer-events:none}
+.sel{background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:8px 11px;font-size:12px;color:var(--ink2);box-shadow:0 8px 24px -14px rgba(30,32,40,.3);display:flex;gap:12px;align-items:center}
+.sel .txt2{flex:1;min-width:0;line-height:1.45}
+.sel .txt2 b{display:block;margin-bottom:2px}
+.sel b{color:var(--ink)}
+.sel .tiles{display:flex;gap:6px;align-items:center;flex:none}
+.sel .tiles canvas{width:40px;height:40px;border-radius:6px;border:1px solid var(--line2);display:block}
+.sel .tiles span{font-size:11px;color:var(--ink3);text-align:center;display:block}
+.tip{position:fixed;z-index:60;background:var(--ink);color:#fff;font-size:12.5px;line-height:1.5;padding:8px 11px;border-radius:10px;max-width:270px;pointer-events:none;opacity:0;transition:opacity .12s}
+.tip.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="pagehead"><h1>PVDF–HFP@Nafion 准固态聚合物电解质与高迁移数钠氧电池</h1><span class="meta">He, Ni, Ma, Zhang, Hao, Hou, Li, Yan, Zhang, Chen · PNAS 2024, 121(23) e2320012121</span></div>
+  <div class="abs" id="abs"></div>
+  <div id="cards"></div>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const $ = s=>document.querySelector(s), $$ = s=>[...document.querySelectorAll(s)];
+const TERMS = {
+  '钠氧电池':'用金属钠做负极、空气中的氧气做正极的电池。放电时钠离子和氧气结合生成超氧化钠，充电时再分开。因为不用携带重的正极材料，理论上能存的电特别多。',
+  '能量密度':'每公斤材料能存多少电，单位 Wh/kg。数字越大，同样重量能跑得越远。',
+  '电解液':'电池里让离子在正负极之间来回跑的液体。传统钠氧电池用有机溶剂配成，易挥发、易燃、会漏。',
+  '准固态电解质':'把液体电解液吸进一张聚合物膜里，让它像果冻一样不流动。不漏、不易燃，但离子在里面跑得比在纯液体里慢。',
+  '枝晶':'充电时钠离子在负极表面沉积成金属钠，如果沉积不均匀，就会长出树枝或针一样的凸起。长到刺穿隔膜就会短路。',
+  '电流密度':'单位面积上流过的电流，mA/cm²。越大说明电池充放电越快。这篇论文里聚合物准固态电池的老毛病是只能在小电流下工作。',
+  '迁移数':'电流由正负两种离子共同搬运，钠离子迁移数 t₊ 是钠离子搬运的那一份占比（0 到 1）。t₊ 越高，负极附近越不容易出现"缺盐"，沉积越均匀。',
+  '负离子':'带负电的离子。这篇论文里的负离子是三氟甲磺酸根 OTF⁻，它只是陪着钠离子溶解，本身不参与电极反应，但会跟着电流跑。',
+  '磺酸基':'Nafion 分子上带负电的 –SO₃⁻ 基团。同性相斥，它会把同样带负电的 OTF⁻ 挡住，却让带正电的钠离子通过。',
+  'Nafion':'一种含氟聚合物膜，分子链上挂满磺酸基，常用于燃料电池。这篇论文把它做成 4 微米薄层贴在多孔膜上。',
+  'PVDF–HFP':'一种含氟聚合物，做成膜后布满 20–100 纳米的小孔，像海绵一样吸住电解液。耐高压、耐热，是准固态电解质常用的骨架。',
+  'SEI':'固体电解质界面膜：金属钠表面和电解液反应生成的一层薄壳。含氟化钠（NaF）多的 SEI 更稳定，有利于钠均匀沉积。',
+  '过电位':'让电流流过所需的额外电压。数字越小，说明界面越顺畅、损耗越小。',
+  '库仑效率':'放出的电量占充进电量的比例。越接近 100%，每圈损失越少。',
+  '电位差':'充电电压与放电电压之差。差值越小，来回一圈浪费的能量越少。',
+  '结合能':'两个分子"抓"在一起的牢固程度，负得越多抓得越牢。这里指负离子 OTF⁻ 被聚合物抓住的强度。',
+  '亲钠':'表面容易让钠沉积上去的性质。亲钠的地方钠先在那里长。',
+  'MXene':'一类二维层状陶瓷材料，这里用的是羟基化的 Ti₃C₂，对钠很亲。',
+  '骨架':'负极里的多孔支架，钠沉积时填进孔里而不是堆在表面。',
+  '对称电池':'两边都用同样的钠负极组成的测试电池，专门用来考察钠沉积和溶解的稳定性，不涉及正极。',
+  '离子电导率':'离子在电解质里跑得多顺畅，单位 S/cm。越高越好。',
+  '循环':'电池充一次放一次算一圈。能跑多少圈还不衰减，是寿命的直接指标。',
+  '氧气正极':'一层多孔碳（Super P）涂在碳纸上，氧气在这里和钠离子反应。',
+  'H 型反应器':'两个玻璃瓶中间夹一张膜。一边放含钠盐的溶剂，一边放纯溶剂，过一段时间看纯溶剂那边有没有出现盐的信号，就知道离子能不能穿膜。',
+};
+const T = s => s.replace(/\[\[(.+?)\]\]/g,(m,w)=>`<span class="term" data-term="${w}">${w}</span>`);
+Object.assign(TERMS,{
+  'SEM':'扫描电子显微镜：用电子束扫描样品表面，看微米到纳米尺度的形貌，比如膜的厚度和孔洞。',
+  'AFM':'原子力显微镜：用一根极细的探针"摸"表面，能测出纳米级的粗糙度和局部硬度（杨氏模量）。',
+  'FTIR':'傅里叶变换红外光谱：不同化学键吸收不同波长的红外光，用来判断样品里有哪些基团，比如 –SO₃ 是否出现。',
+  'XPS':'X 射线光电子能谱：测表面几纳米内元素的种类和化学状态，这里用来看钠表面 SEI 里氟和氟化钠的多少。',
+  'TGA':'热重分析：一边加热一边称重，失重多少对应挥发掉的液体，这里用来算膜吸了多少电解液。',
+  'DFT':'密度泛函理论：一种量子化学计算方法，可以算出两个分子结合时释放多少能量（结合能）。',
+  'FEM':'有限元模拟：把空间切成小格逐格求解物理方程，这里用来算电解质表面附近的电场分布。',
+  '杨氏模量':'材料抵抗形变的刚度，数字越大越硬。硬的膜更能顶住枝晶生长。',
+  '阻抗':'交流电流通过电池时遇到的阻力，用交流阻抗谱测得；越小说明离子通行越顺畅。',
+  '面容量':'单位电极面积能存放的电量，mAh/cm²。实用电池通常需要几 mAh/cm²，本文全电池限容 0.14 mAh/cm²。',
+  '纽扣电池':'CR2032 是常见的硬币大小测试电池壳，实验室用它组装小电池做性能测试。',
+  '手套箱':'充满氩气的密封操作箱，金属钠遇水和空气会反应，组装电池必须在里面进行。',
+  '介电常数':'材料削弱电场的能力。模拟中给 PVDF–HFP、溶剂和 Nafion 分别取 10、7.2、6。',
+  '浓差极化':'电流通过时，某一侧的离子浓度被消耗得比补充得快，形成浓度差，导致电压损失和沉积不均。',
+  '限容':'每圈只放到设定的容量就停，用来考察在固定深度下能循环多少圈。',
+  'Super P':'一种导电炭黑，做成多孔碳层当氧气正极的反应场所。',
+  '真空抽滤':'把分散液倒在滤膜上抽真空，固体颗粒逐层堆在滤膜上形成薄膜，这里用来叠出三层骨架。',
+  '相转化法':'把聚合物溶液铺开后让溶剂挥发或置换，聚合物析出成多孔膜的制膜方法。',
+  '计时电流法':'给电池加一个很小的固定电压，记录电流从开始到稳定下来掉了多少：掉得越少，说明钠离子扛起的电流比例越高。配合阻抗谱可算出迁移数（Bruce–Vincent 法）。',
+  '电压滞后':'充电时的电压比放电时高出的部分，越小说明能量损失越少。',
+  '载量':'单位面积电极上活性材料的质量，mg/cm²。本文正极炭黑载量 0.14 mg/cm²，很低。',
+  '超氧化钠':'NaO₂，钠氧电池放电时在正极生成的固体产物。比锂氧电池的过氧化锂容易分解，所以充电电压低，但它本身不稳定、会慢慢分解。',
+  '单离子导体':'负离子被固定在聚合物链上、只有阳离子能移动的电解质，迁移数接近 1。',
+  '软包电池':'用铝塑膜封装的大面积电池，比纽扣电池更接近实用产品。',
+  '集流体':'负极里负责导电和承载金属钠的骨架或箔片。',
+  '单线态氧':'一种高能量状态的氧分子，很活泼，会腐蚀电解液和电极材料，是金属–氧气电池共同的难题。',
+  '往返效率':'放电放出的能量与充电充进去的能量之比，越接近 100% 越好。',
+  '质子交换膜':'燃料电池里只让氢离子（质子）通过的膜，Nafion 是最常用的一种。',
+  '电化学窗口':'电解质在多大电压范围内不会被分解，越宽越能配合高电压电极。',
+  'PVDF':'聚偏氟乙烯，一种含氟塑料；PVDF–HFP 是它和六氟丙烯的共聚物，更柔软、更能吸液。',
+  'NaOTF/G2':'本文的电解液配方：三氟甲磺酸钠（NaOTF）溶在二甘醇二甲醚（G2，一种醚类溶剂）里，浓度 1 mol/L。',
+  'NaOTF':'三氟甲磺酸钠，本文用的钠盐，溶在溶剂里提供钠离子和 OTF⁻ 负离子。',
+  'OTF⁻':'三氟甲磺酸根，电解液里带负电的那一半离子，本文要拦住的就是它。',
+  'G2':'二甘醇二甲醚，钠氧电池常用的醚类溶剂，本文用它溶解钠盐。',
+  'Celgard':'锂电池里最常用的商品聚烯烃隔膜，本文用它做安全测试的对照。',
+  'h-Ti₃C₂':'表面带羟基的 Ti₃C₂ MXene 薄片，对钠有亲和力，用来做骨架里的亲钠层。',
+  '碳纳米管':'直径只有几纳米的空心碳管，导电、多孔，是骨架的主体材料。',
+  'CNTs':'碳纳米管（carbon nanotubes）的缩写。',
+  'M-GSS':'作者的三层梯度亲钠骨架负极（MXene-based gradient sodiophilic structure），底层最亲钠、往上递减，让钠从底部开始填。',
+  'QPE':'本文的准固态电解质（quasisolid polymer electrolyte）：PVDF–HFP@Nafion 膜吸满 NaOTF/G2 电解液。',
+  'PEO':'聚环氧乙烷，最经典的聚合物电解质基体，缺点是结晶度高、室温下离子跑得慢。',
+  'PAN':'聚丙烯腈，一种耐热的聚合物电解质基体。',
+  'PMMA':'聚甲基丙烯酸甲酯，就是有机玻璃，也用作凝胶电解质基体。',
+  'NZSP':'Na₃Zr₂Si₂PO₁₂，一种能导钠离子的陶瓷，常作固态电解质或复合膜的填料。',
+  'Pebax':'聚酰胺–聚醚嵌段共聚物：硬段提供强度、软段导离子，不含氟。',
+  'NaTFSI':'双三氟甲磺酰亚胺钠，另一种常用钠盐。',
+  'rGO':'还原氧化石墨烯，层状碳材料，常用作金属负极的骨架。',
+  'NaF':'氟化钠。SEI 里的氟化钠多，作者认为有利于钠离子通过并抑制枝晶。',
+  'eV':'电子伏特，能量单位。结合能 −0.886 eV 比 −0.087 eV 负得多，说明抓得牢得多。',
+  'EDS':'能谱分析，配合电镜看样品里各元素分布在哪。',
+  'Ti 基底':'钛箔，作者把骨架抽滤在钛箔上，钛只导电、不参与反应。',
+  '超氧根':'O₂⁻，氧气得到一个电子后形成的活性离子，是钠氧电池放电的中间产物，会攻击电解液和聚合物。',
+  '受阻醚':'在醚类溶剂分子末端换上体积大的叔丁基，让溶剂更稳定、不易被分解。',
+});
+
+function barsSvg(items,opts){ const W=300,H=opts.arrow?116:108,pad={l:36,r:8,t:opts.arrow?34:26,b:28}; const min=opts.min,max=opts.max; const n=items.length; const bw=Math.min(46,(W-pad.l-pad.r)/n*.62); const step=(W-pad.l-pad.r)/n; const tickStep=opts.tick||2; const fmt=opts.fmt||(v=>v.toFixed(2));
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img">`; const ticks=[]; for(let v=Math.ceil(min/tickStep)*tickStep; v<=max+1e-9; v+=tickStep) ticks.push(+v.toFixed(6));
+  ticks.forEach(v=>{ const y=H-pad.b-(v-min)/(max-min)*(H-pad.t-pad.b); g+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="#f0f0ec"/><text x="${pad.l-4}" y="${y+3}" text-anchor="end" font-size="8.5" fill="#a5a8b2">${v}</text>`; });
+  g+=`<line x1="${pad.l}" y1="${pad.t-4}" x2="${pad.l}" y2="${H-pad.b}" stroke="#d4d4cf"/><line x1="${pad.l}" y1="${H-pad.b}" x2="${W-pad.r}" y2="${H-pad.b}" stroke="#d4d4cf"/>`;
+  g+=`<text transform="translate(8,${(pad.t+H-pad.b)/2}) rotate(-90)" text-anchor="middle" font-size="9" fill="#8e929c">${opts.ylab}</text>`;
+  g+=`<text x="${pad.l+(W-pad.l-pad.r)/2}" y="${H-3}" text-anchor="middle" font-size="9" fill="#8e929c">${opts.xlab}</text>`;
+  items.forEach((it,i)=>{ const cx=pad.l+step*(i+.5); const v=it.value; const h=v==null?0:(v-min)/(max-min)*(H-pad.t-pad.b); const y=H-pad.b-h; const col=it.color||'#8a8f9c';
+    if(v==null){ g+=`<rect x="${cx-bw/2}" y="${H-pad.b-30}" width="${bw}" height="30" rx="6" fill="none" stroke="#cfcfc9" stroke-dasharray="3 3"/><text x="${cx}" y="${H-pad.b-36}" text-anchor="middle" font-size="9.5" fill="#8e929c">${it.note||'未报告'}</text>`; }
+    else { g+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${Math.max(2,h)}" rx="6" fill="${col}" ${it.hatch?'stroke="'+col+'" stroke-dasharray="3 2" fill-opacity=".25"':''}/>`; g+=`<text x="${cx}" y="${y-5}" text-anchor="middle" font-size="11" font-weight="600" fill="#1d2026">${fmt(v)}${opts.unit||''}</text>`; }
+    g+=`<text x="${cx}" y="${H-pad.b+11}" text-anchor="middle" font-size="9.5" fill="#585d69">${it.label}</text>`; });
+  if(opts.arrow){ const [i,j,txt,col]=opts.arrow; const x1=pad.l+step*(i+.5), x2=pad.l+step*(j+.5); const y=pad.t-6; g+=`<path d="M${x1},${y} C${x1},${y-12} ${x2},${y-12} ${x2},${y}" fill="none" stroke="${col}" stroke-width="1.3"/><text x="${(x1+x2)/2}" y="${y-13}" text-anchor="middle" font-size="10" fill="${col}">${txt}</text>`; }
+  return g+'</svg>'; }
+const tip=$('#tip'); function showTip(t){ tip.innerHTML=`<b>${t.dataset.term}</b><br>${TERMS[t.dataset.term]||''}`; tip.classList.add('on'); const r=t.getBoundingClientRect(); tip.style.left=Math.max(12,Math.min(r.left,window.innerWidth-282))+'px'; const th=tip.offsetHeight||60; tip.style.top=(r.bottom+8+th>window.innerHeight-8 ? Math.max(8,r.top-8-th) : r.bottom+8)+'px'; }
+document.addEventListener('mouseover',e=>{ const t=e.target.closest('.term'); if(t) showTip(t); });
+document.addEventListener('mouseout',e=>{ if(e.target.closest('.term')) tip.classList.remove('on'); });
+document.addEventListener('click',e=>{ const t=e.target.closest('.term'); if(t) showTip(t); else tip.classList.remove('on'); });
+
+const D = {
+  energy: 1108,                 // Wh kg-1，理论能量密度，p.1
+  quasiCurrentLimit: 0.5,       // mA cm-2，聚合物准固态电解质通常的工作电流上限，p.1
+  memPH: 48, memNafion: 4,      // µm，Fig. 1B/1E，p.2
+  porePH: [20,100,60], poreNafion: [5,20,10], // nm，p.2、p.5
+  modulus: 33.1, roughness: 18.5, // GPa / nm，Fig. 1F/1G
+  celgardBurn: 4,               // s，Fig. 1K，p.3
+  celgardWater: 120,            // s 内钠片被水毁，Fig. 1J，p.3
+  absorb: [12.05,16.62],        // %，吸液率，SI Fig. S4，p.3
+  t: {PH:0.33, NAF:0.68},       // Na+ 迁移数，Fig. 2G/2H，p.3
+  cond: {PH:5.31, NAF:3.64},    // ×10⁻⁴ S cm⁻¹，Fig. 3A，p.3
+  imp: {PH:4.5, NAF:7.1},       // Ω，Fig. 3A
+  Eb: {PH:-0.087, NAF:-0.886},  // eV，OTF⁻ 与聚合物的结合能，Fig. 4A，p.4
+  symQPE: {j:1.0, cap:1.0, over:17, cycles:200},   // mA cm-2 / mAh cm-2 / mV，Fig. 3B/3C，p.3–4
+  symMGSS: {j:3.0, cap:3.0, over:23, cycles:100, pureNaShortH:57}, // Fig. 5C，p.6
+  full: {j:1000, jArea:0.14, cap:1000, LE:6, QPE:23, MGSS:80, CE:96.07, gap:0.166}, // Fig. 5E–H，p.6
+  mgssThick: 221, mgssAfter: 248, // µm，p.5
+};
+
+const ABSTRACT=`<div><b>论文摘要</b>[[钠氧电池]]能存很多电，但液体[[电解液]]会漏、会烧，金属钠还会长出刺一样的[[枝晶]]；把液体锁进聚合物膜里虽然安全，电池却一直只能在很小的电流下工作。本文在多孔膜上加了一层只让钠离子通过的 [[Nafion]]，把在膜里乱跑的[[负离子]]拦住，再配上让钠从底部开始沉积的[[骨架]]负极，做出的准固态钠氧电池寿命比液体电解液电池长了十几倍。</div><div class="foot">依据原文 Abstract（p.1）整理；带虚线的词悬停可见解释。七张小卡点开后在窗口内阅读。</div>`;
+
+const CARDS=[
+/* ---------- 1 研究问题 ---------- */
+{ id:'q', kind:'研究问题', h2:'准固态钠氧电池能否既安全又能在较大电流下工作？', brief:'液体电解液会漏、易燃，把它锁进聚合物膜虽然安全，电池却一直只能在很小的电流下工作。论文要弄清原因，并让这类电池在较大电流下稳定循环。', sum:'钠氧电池能存很多电，但液体电解液会漏、易燃，金属钠还长枝晶。把液体锁进聚合物膜能解决安全问题，却一直只能在很小的电流下工作。这篇论文问的是：这类膜为什么跑不了大电流，以及怎样改。', pills:['理论能量密度 1,108 Wh/kg','准固态膜的电流上限 <0.5 mA/cm²','两个改动：Nafion 层 + 梯度骨架负极'],
+  tabs:[
+   {t:'为什么研究钠氧电池',vis:'qtree:0|p.1 引言第一段',html:`<h3>钠氧电池的吸引力：钠资源丰富，理论上一公斤能存 1,108 瓦时的电，而且比锂便宜得多</h3><p>电动车和电网储能需要更高[[能量密度]]的电池。[[钠氧电池]]用金属钠做负极、空气中的氧气做正极，不用携带重的正极材料，理论能量密度达到 1,108 Wh/kg，而且钠比锂便宜得多。</p><p>但它是一个"开放体系"：正极要接触空气，空气里的水、氧气和二氧化碳会顺着进来腐蚀[[电解液]]和金属负极；金属钠充电时还会长[[枝晶]]，液体电解液又易挥发、易漏。这些问题让它一直停留在实验室。</p><div class="src">出处：p.1 引言第一段（refs 1–9）</div>`},
+   {t:'准固态膜的老毛病',vis:'qtree:1|p.1 引言第二、三段',html:`<h3>准固态膜不漏不烧，但电池只能在 <0.5 mA/cm² 的小电流下工作</h3><p>把液体电解液吸进聚合物膜里做成[[准固态电解质]]，能同时挡住漏液、燃烧和空气污染，膜本身的硬度还能顶住枝晶。常用的膜材料有 PVDF、[[PVDF–HFP]]、PAN、PMMA、PEO，其中 PVDF–HFP 的[[电化学窗口]]宽（4.8 V 以上不分解）、耐热，最受关注。</p><p>可作者指出两件事：一是 PVDF–HFP 膜很少被用到钠氧电池上，只有少数锂氧、锂二氧化碳、钠二氧化碳电池的先例；二是聚合物膜的[[离子电导率]]比液体差一截，导致这类电池的工作[[电流密度]]一般低于 0.5 mA/cm²，"这个难题至今没有被有效解决"。</p><div class="src">出处：p.1 引言第二、三段（refs 22–36）</div>`},
+   {t:'本文的切入点',vis:'qtree:2|p.2 左栏；摘要',html:`<h3>作者的切入点：不追求更高的电导率，而是用 Nafion 层拦住负离子、用梯度骨架让钠从底部开始沉积</h3><p>作者没有去追求更高的电导率，而是换了一个角度：在 PVDF–HFP 膜上复合一层 [[Nafion]]，利用它的[[磺酸基]]拦住[[负离子]]，把钠离子[[迁移数]]提高到 0.68，减轻负极附近的[[浓差极化]]，并促成富含氟化钠的 [[SEI]]。</p><p>负极则沿用作者此前的 [[MXene]] 三层梯度[[骨架]]（M-GSS），让钠优先沉积在骨架底部而不是表面。论文要验证的是：两者组合后，准固态钠氧电池能否在相对较大的电流下稳定循环。</p><div class="src">出处：p.2 左栏"Herein, we report…"段；摘要</div>`},
+  ]},
+/* ---------- 2 关键发现 ---------- */
+{ id:'f', kind:'关键发现', h2:'加一层 Nafion 拦住负离子，配合骨架负极后，钠氧全电池的寿命提高了一个数量级', brief:'Nafion 层让电流更多地由钠离子搬运，钠的沉积变得平整；配上梯度骨架负极后，准固态钠氧全电池的循环寿命比液体电解液电池长了十几倍。', sum:'Nafion 层把钠离子迁移数从 0.33 提到 0.68；装了这层膜的对称电池在 1 mA/cm² 下稳定 200 圈、过电位 17 mV；梯度骨架负极在 3 mA/cm² 下稳定 100 圈；三者组合的钠氧全电池从 6 圈跑到 80 圈。', pills:['t₊ 0.33 → 0.68','对称电池 17 mV，200 圈','骨架负极 23 mV，100 圈','全电池 6 → 23 → 80 圈'],
+  tabs:[
+   {t:'发现一：拦住负离子',vis:'bars:t|Fig. 2G/2H；Fig. 4A；p.3–4',html:`<h3>Nafion 层拦住了负离子，电流里由钠离子搬运的份额从三分之一提高到三分之二</h3><p>用 [[H 型反应器]]做渗透实验：普通 PVDF–HFP 膜 24 小时后另一侧就出现负离子的 [[FTIR]] 信号，48 小时更强；贴了 Nafion 的膜 48 小时内始终没有。用[[计时电流法]]测得钠离子[[迁移数]]分别为 0.33 和 0.68，也就是说加了 Nafion 后，电流里由钠离子搬运的份额从三分之一提高到了三分之二。[[DFT]] 计算解释了原因：负离子 OTF⁻ 与 Nafion 的[[结合能]]是 −0.886 eV，与 PVDF–HFP 只有 −0.087 eV。</p><div class="kv"><div><b>0.33 → 0.68</b><span>钠离子迁移数 t₊</span><i>Fig. 2G/2H</i></div><div><b>−0.087 → −0.886 eV</b><span>OTF⁻ 与聚合物的结合能</span><i>Fig. 4A</i></div></div><p>代价是[[阻抗]]从 4.5 Ω 升到 7.1 Ω，[[离子电导率]]从 5.31 降到 3.64 ×10⁻⁴ S/cm，作者认为仍处于可用水平（10⁻⁴ 量级）。</p><div class="src">出处：Fig. 2A–H, p.3；Fig. 3A, p.4；Fig. 4A, p.4</div>`},
+   {t:'发现二：钠面变平',vis:'bars:sym1|Fig. 3B–G；p.4',html:`<h3>装了 Nafion 膜后，只有钠电极的对称电池能在 1 mA/cm² 下稳定循环 200 圈，钠表面保持平整</h3><p>两边都用金属钠的[[对称电池]]专门考察沉积是否稳定。普通 PVDF–HFP 膜的电池在 1.0 mA/cm²、1.0 mAh/cm² 条件下电压剧烈波动；换成带 Nafion 的 QPE 后电压平稳，[[过电位]]只有约 17 mV。200 圈后拆开看：普通膜一侧的钠表面出现大坑和粗糙面，Nafion 一侧的钠面平整、没有孔洞。</p><p>[[XPS]]（分析表面几纳米里有哪些元素和化合物）显示靠 Nafion 一侧的 [[SEI]] 含氟更多、氟化钠的信号更强。作者把这归因于 Nafion 的含氟基团，认为富含 NaF 的 SEI 有利于钠离子迁移。</p><div class="src">出处：Fig. 3B–G, p.4</div>`},
+   {t:'发现三：骨架填底',vis:'bars:sym3|Fig. 5A–C；p.5–6',html:`<h3>梯度骨架负极让钠从底部开始填充，在 3 mA/cm² 的较大电流下稳定循环 100 圈以上</h3><p>M-GSS 骨架由三层组成，[[亲钠]]的 h-Ti₃C₂ 含量自底向上递减。沉积 10 mAh/cm² 的钠后，骨架从 221 µm 增厚到 248 µm，[[SEM]] 显示钠从底部开始填充：底部最致密，中部由微米级钠颗粒组成，表面疏松多孔。</p><p>[[对称电池]]在 3.0 mA/cm²、3.0 mAh/cm² 的较大电流下：M-GSS/Na 稳定超过 100 圈，过电位约 23 mV；只用碳纳米管骨架的电池电压波动且过电位上升；纯钠 57 小时后剧烈波动并短路。</p><div class="src">出处：Fig. 5A–C, p.5–6；SI Fig. S6</div>`},
+   {t:'发现四：全电池循环 80 圈',vis:'bars:full|Fig. 5E–H；p.5–6',html:`<h3>膜和骨架组合后，钠氧全电池稳定循环 80 圈，而液体电解液电池只有 6 圈</h3><p>三种电池在同样条件下测试（1,000 mA/g，[[限容]] 1,000 mAh/g，按 [[Super P]] 载量折合 0.14 mA/cm² 和 0.14 mAh/cm²）：液体电解液 + 纯钠只跑 6 圈；QPE 膜 + 纯钠 23 圈；QPE 膜 + M-GSS 骨架 80 圈，平均[[库仑效率]] 96.07%，80 圈后充放电[[电位差]]约 0.166 V，放电容量没有明显衰减。</p><div class="kv"><div><b>6 → 23 → 80 圈</b><span>三种电池的循环寿命</span><i>Fig. 5E–G</i></div><div><b>96.07% · 0.166 V</b><span>平均库仑效率 · 80 圈后电位差</span><i>Fig. 5G/5H</i></div></div><p>作者的结论：膜和负极的协同作用显著提高了钠氧电池的循环稳定性。</p><div class="src">出处：Fig. 5E–H, p.5–6</div>`},
+  ]},
+/* ---------- 3 实验过程与结果 ---------- */
+{ id:'e', kind:'实验过程与结果', h2:'实验先验证膜本身，再验证它拦负离子的能力，最后装成电池比寿命', brief:'先看膜的结构、防水和阻燃性能，再用渗透实验和迁移数测试证明膜拦住了负离子，用对称电池比较钠沉积的稳定性，最后组装三种钠氧全电池比较循环寿命。', sum:'先看膜长什么样（SEM、AFM、FTIR），再测它安不安全（防水、阻燃），然后用渗透实验和迁移数证明它能拦负离子，用对称电池证明钠沉积变稳，最后组装钠氧全电池比寿命。每一步的数值都可以在这里查到。', pills:['膜表征','安全测试','渗透实验','迁移数与电导率','对称电池','全电池'],
+  tabs:[
+   {t:'膜表征',vis:'exp:mem|Fig. 1B–H；p.2',html:`<h3>膜的结构：48 微米厚的多孔 PVDF–HFP 层，贴着一层 4 微米厚、孔更小的 Nafion</h3><p>用[[相转化法]]制得 PVDF–HFP 膜，再滴涂 Nafion。[[SEM]] 截面显示 PVDF–HFP 层 48 µm、布满 20–100 nm 的孔（均值 60 nm）；Nafion 层约 4 µm、孔 5–20 nm（均值 10 nm）。[[AFM]]（用极细的探针扫描表面）测得表面粗糙度 18.5 nm、[[杨氏模量]] 33.1 GPa。[[FTIR]]（红外光谱，看分子里有哪些基团）在 637 cm⁻¹ 处出现 Nafion 磺酸基的峰、在 1,092 cm⁻¹ 处出现溶剂的 C–O–C 峰，而且 C–O–C 峰的位置比纯溶剂略有偏移，说明膜和溶剂分子之间有相互吸引，液体不容易跑出来。</p><table class="tb"><tr><td>PVDF–HFP 层厚 / 孔径</td><td><b>48 µm</b> / 20–100 nm，均值 60 nm</td></tr><tr><td>Nafion 层厚 / 孔径</td><td><b>4 µm</b> / 5–20 nm，均值 10 nm</td></tr><tr><td>粗糙度 / 杨氏模量</td><td><b>18.5 nm</b> / <b>33.1 GPa</b></td></tr><tr><td>吸液率（TGA）</td><td>12.05% → <b>16.62%</b></td></tr></table><div class="src">出处：Fig. 1B–H, p.2；SI Fig. S1–S4</div>`},
+   {t:'安全测试',vis:'exp:safe|Fig. 1I–K；p.2–3',html:`<h3>安全测试：膜能挡住水滴保护钠片，遇到明火也不燃烧</h3><p>防水实验：把钠片分别盖上普通 Celgard 隔膜和 PVDF–HFP@Nafion 膜，往上滴水。Celgard 盖住的钠片不到 120 秒就因进水发生副反应，变成一小块不规则的钠；PVDF–HFP@Nafion 盖住的钠片完好无损。作者归因于膜的非贯通纳米孔和含氟链的疏水性。</p><p>阻燃实验：Celgard 隔膜在明火下 4 秒烧尽；PVDF–HFP 膜只是轻微形变。锁液实验：按压后普通玻璃纤维隔膜渗出电解液，QPE 没有。</p><table class="tb"><tr><td>Celgard 覆盖的钠片</td><td>&lt;120 s 被水毁</td></tr><tr><td>PVDF–HFP@Nafion 覆盖的钠片</td><td><b>完好</b></td></tr><tr><td>Celgard 明火</td><td>4 s 烧尽</td></tr><tr><td>PVDF–HFP 明火</td><td><b>轻微形变</b></td></tr></table><div class="src">出处：Fig. 1I–K, p.2–3</div>`},
+   {t:'渗透实验',vis:'exp:hcell|Fig. 2A–D；p.3',html:`<h3>渗透实验：普通膜 24 小时就漏过负离子，Nafion 膜 48 小时不漏</h3><p>[[H 型反应器]]中间夹膜，左边放纯溶剂 G2，右边放 1 M NaOTF/G2。在 0、24、48 小时取左侧溶液做 [[FTIR]]。普通 PVDF–HFP 膜：24 小时后左侧出现 –SO₃ 峰，说明 OTF⁻ 负离子已穿膜到达纯溶剂一侧，48 小时更明显，右侧对应峰减弱。PVDF–HFP@Nafion 膜：左侧光谱在 48 小时内与初始一致，负离子没有穿过。</p><table class="tb"><tr><td>PVDF–HFP，24 h</td><td>左侧出现 –SO₃ 峰（637 cm⁻¹）</td></tr><tr><td>PVDF–HFP，48 h</td><td>峰更强</td></tr><tr><td>PVDF–HFP@Nafion，48 h</td><td><b>左侧无变化</b></td></tr></table><div class="src">出处：Fig. 2A–D, p.3；SI Fig. S5</div>`},
+   {t:'迁移数与电导率',vis:'exp:t|Fig. 2E–H；Fig. 3A；p.3–4',html:`<h3>钠离子迁移数从 0.33 提高到 0.68，代价是离子电导率下降约三成，作者认为仍在可用范围</h3><p>[[迁移数]]用[[计时电流法]]测：给两片钠夹着膜的[[对称电池]]加一个很小的固定电压，一开始钠离子和负离子都在动、电流大；负离子很快在两侧堆积、不再净移动，电流掉到只剩钠离子搬运的那部分。稳定电流占初始电流的比例（扣除界面[[阻抗]]的变化）就是迁移数。PVDF–HFP：电流从 0.05109 掉到 0.01236 mA，界面阻抗 176 → 219 Ω，算得 t₊ = 0.33。PVDF–HFP@Nafion：电流从 0.01321 掉到 0.00942 mA，阻抗 295 → 382 Ω，t₊ = 0.68。</p><p>电导率由阻抗谱得到：加 Nafion 后膜本身的电阻从 4.5 升到 7.1 Ω，[[离子电导率]]从 5.31 降到 3.64 ×10⁻⁴ S/cm。作者指出仍在 10⁻⁴ 量级（这是聚合物电解质通常能接受的水平），而且膜的吸液率上升（12.05% → 16.62%）部分抵消了电阻的增加。</p><div class="src">出处：Fig. 2E–H, p.3；Fig. 3A, p.4</div>`},
+   {t:'对称电池',vis:'exp:sym|Fig. 3B–E；Fig. 5C；p.4–6',html:`<h3>对称电池测试表明：Nafion 膜在 1 mA/cm² 下、梯度骨架在 3 mA/cm² 下都能让钠稳定地沉积和溶解</h3><p>[[对称电池]]排除正极的影响，只看钠的沉积与溶解。膜的对比（1.0 mA/cm²，1.0 mAh/cm²）：PVDF–HFP 电压剧烈波动；QPE 平稳，[[过电位]]约 17 mV，200 圈后钠面平整。负极的对比（3.0 mA/cm²，3.0 mAh/cm²）：M-GSS/Na 稳定超过 100 圈，过电位约 23 mV；CNTs/Na 波动且过电位上升；纯钠 57 小时后波动并短路。</p><table class="tb"><tr><td>PVDF–HFP + 纯钠，1 mA/cm²</td><td>电压剧烈波动</td></tr><tr><td>QPE + 纯钠，1 mA/cm²</td><td><b>约 17 mV</b>，200 圈</td></tr><tr><td>纯钠，3 mA/cm²</td><td>57 h 后短路</td></tr><tr><td>M-GSS/Na，3 mA/cm²</td><td><b>约 23 mV</b>，&gt;100 圈</td></tr></table><div class="src">出处：Fig. 3B–E, p.4；Fig. 5C, p.5–6</div>`},
+   {t:'全电池',vis:'exp:full|Fig. 5E–H；p.5–6',html:`<h3>三种钠氧全电池同条件比较：液体电解液 6 圈、换成 Nafion 膜 23 圈、再换骨架负极 80 圈</h3><p>正极为喷涂在碳纸上的 [[Super P]] 炭黑，[[载量]] 0.14 ± 0.01 mg/cm²（每平方厘米碳纸上只有零点一几毫克炭黑，所以按面积折算的电流和容量都很小）。以 1,000 mA/g 充放电（折合 0.14 mA/cm²），[[限容]] 1,000 mAh/g（0.14 mAh/cm²）。Na|LE|O₂（液体电解液）6 圈后失效；Na|QPE|O₂ 23 圈；M-GSS/Na|QPE|O₂ 80 圈，平均[[库仑效率]] 96.07%，80 圈后[[电位差]]约 0.166 V，放电容量未见明显衰减。</p><table class="tb"><tr><td>Na | 液体电解液 | O₂</td><td><b>6 圈</b></td></tr><tr><td>Na | QPE | O₂</td><td><b>23 圈</b></td></tr><tr><td>M-GSS/Na | QPE | O₂</td><td><b>80 圈</b>，CE 96.07%，电位差 0.166 V</td></tr></table><div class="src">出处：Fig. 5E–H, p.5–6；p.6 Materials and Methods</div>`},
+  ]},
+/* ---------- 4 研究方法 ---------- */
+{ id:'m', kind:'研究方法', h2:'分别制备复合膜和骨架负极，装成纽扣电池测试，并用计算解释机理', brief:'膜用[[相转化法]]制成后滴涂 Nafion，骨架用[[真空抽滤]]叠成三层，两者在手套箱里装成纽扣电池；表征用电镜、光谱等手段，机理用量子化学和有限元计算解释。', sum:'膜用相转化法浇铸 PVDF–HFP 再滴涂 Nafion；负极用真空抽滤叠出三层 MXene 骨架；电池在氩气手套箱里装成 CR2032 纽扣电池；表征用 SEM、AFM、FTIR、XPS、TGA；理论部分用 DFT 算结合能、用有限元算电场。', pills:['相转化制膜','真空抽滤骨架','CR2032 组装','DFT + FEM'],
+  tabs:[
+   {t:'制膜',vis:'prep:0|p.6 Materials and Methods',html:`<h3>制膜两步：相转化法做多孔 PVDF–HFP 膜，再滴涂 Nafion</h3><p>第一步，[[相转化法]]制 PVDF–HFP 膜：4.0 g PVDF–HFP 溶于 50 mL 丙酮，55 °C 搅拌 4 h 至均匀；刮涂在铝箔上，80 °C 干燥 10 h。第二步，取 3 µL 5% 的 Nafion 水溶液滴在直径 18 mm 的膜片上，得到 PVDF–HFP@Nafion。</p><p>准固态电解质（QPE）= 这张膜 + 1 M NaOTF/G2 电解液（三氟甲磺酸钠溶于二甘醇二甲醚），膜把液体吸进孔里。</p><table class="tb"><tr><td>PVDF–HFP 用量 / 溶剂</td><td>4.0 g / 丙酮 50 mL</td></tr><tr><td>溶解</td><td>55 °C，4 h</td></tr><tr><td>成膜</td><td>刮涂铝箔，80 °C，10 h</td></tr><tr><td>Nafion</td><td>3 µL，5%，Ø18 mm</td></tr></table><div class="src">出处：p.6 Materials and Methods</div>`},
+   {t:'制骨架',vis:'prep:1|p.6 Synthesis of M-GSS Scaffolds',html:`<h3>制骨架：三种 MXene/碳纳米管分散液依次真空抽滤成三层</h3><p>把羟基化的 Ti₃C₂（h-Ti₃C₂，一种 [[MXene]]）与碳纳米管按质量比 0:1、0.3:1、1.0:1 配成三种分散液（碳纳米管浓度 2.0 g/L，各 10 mL），按 1.0-h-Ti₃C₂/CNTs → 0.3-h-Ti₃C₂/CNTs → CNTs 的顺序[[真空抽滤]]叠加，得到底层最[[亲钠]]、往上递减的三层骨架，厚约 221 µm。</p><p>制备方法来自作者此前的两篇工作（refs 18、37）。</p><div class="src">出处：p.6 Synthesis of M-GSS Scaffolds；p.5</div>`},
+   {t:'装电池',vis:'prep:2|p.6 Synthesis of the Cathode；Fabrication',html:`<h3>电池在充满氩气的手套箱里装成 CR2032 纽扣电池，正极是喷在碳纸上的炭黑</h3><p>正极：15 mg [[Super P]] 与 660 mg PVDF 粉分散于 150 mL 乙醇，超声后喷涂在 12 cm × 14 cm 碳纸上，100 °C 干燥，称重得[[载量]] 0.14 ± 0.01 mg/cm²。电解液：1 M NaOTF 溶于 G2。液体电解液电池用玻璃纤维隔膜、100 µL 电解液。所有电池在氩气[[手套箱]]中装成 CR2032 [[纽扣电池]]。</p><div class="src">出处：p.6 Synthesis of the Cathode；Fabrication of Na–O₂ Battery</div>`},
+   {t:'表征',vis:'prep:3|p.6 Characterization',html:`<h3>五种表征手段分别看形貌、基团、表面、成分和吸液量</h3><table class="tb"><tr><td>[[SEM]] + EDS</td><td>JEOL JSM-7500F：膜的截面、孔、元素分布；钠面形貌</td></tr><tr><td>[[FTIR]]</td><td>Bruker Tensor II，ATR 模式：–SO₃、C–O–C 等基团</td></tr><tr><td>[[AFM]]</td><td>Bruker Icon：粗糙度与杨氏模量</td></tr><tr><td>[[XPS]]</td><td>PHI 1600，Al Kα 1486.6 eV：SEI 中 F、NaF</td></tr><tr><td>[[TGA]]</td><td>NETZSCH STA 449 F3：吸液率</td></tr><tr><td>电化学</td><td>计时电流 + 阻抗谱测迁移数；恒流充放电测循环</td></tr></table><div class="src">出处：p.6 Characterization</div>`},
+   {t:'计算',vis:'prep:4|p.6 DFT Calculations；Finite Element Simulations',html:`<h3>两种计算：DFT 算聚合物抓负离子有多牢，有限元算膜内电场是否均匀</h3><p>[[DFT]]（用量子化学算分子之间抓得多牢）：软件 Gaussian 16，用常见的 B3LYP/6-311+G(d,p) 精度设定优化分子结构，并用频率计算确认结构是稳定的。[[结合能]] = 负离子与聚合物片段结合后的能量 − 两者各自的能量，数值越负说明抓得越牢；片段 A 取 PVDF–HFP 或 Nafion 的一小段分子。</p><p>[[FEM]]（把膜切成小格子算电场怎样分布）：求解静电方程 E = −∇φ、∇·(ε₀εᵣE) = ρ，即电场由电位差决定、电荷决定电场的强弱。PVDF–HFP 体系建为 420 nm × 48 µm，PVDF–HFP@Nafion 为 420 nm × 52 µm；PVDF–HFP 用 48 µm、孔 60 nm 的筛板表示，Nafion 用 4 µm、孔 10 nm 的板表示；施加 Δφ = 0.02 V；[[介电常数]]分别取 10（PVDF–HFP）、7.2（G2）、6（Nafion）。作者明确说明这是简化模型，只用于比较孔径和介电常数对电场分布的影响，不能复现真实孔结构。</p><div class="src">出处：p.6 DFT Calculations；Finite Element Simulations；p.5</div>`},
+  ]},
+/* ---------- 5 文献关系图谱（研究谱系） ---------- */
+{ id:'r', kind:'文献关系图谱', h2:'论文处在钠氧电池、金属钠负极和准固态电解质三条研究脉络的交汇点', brief:'负极沿用作者自己的 MXene 骨架系列，电解质参照燃料电池领域的 Nafion 膜，用来解决准固态电解质电流上不去的老问题。', sum:'', pills:[],
+  tabs:[
+   {t:'总览',vis:'lineage:-1|p.1–2 引言；p.7 参考文献表',html:`<h3>本文的参考文献分属三条研究脉络，Nafion 膜的做法参照了燃料电池领域</h3><p>图按年份从左到右排，每个圆圈是本文参考文献表里的一篇文献（数字是它在文末的编号，悬停看题目，点它看那条脉络）。上面三条线是从引言和参考文献里能看出的三条研究线：钠氧电池本身、金属钠负极、准固态电解质；最下面一条是相邻领域：燃料电池的 [[Nafion]] 膜、锂金属电池里“含氟 [[SEI]] 更稳定”的认识和计算工具。右端的黑点是本文，它同时接在三条脉络上。</p><p>一句话定位：本文是作者 [[MXene]] 骨架负极系列的第三篇，把它与一张新的复合膜组合，第一次把 [[PVDF–HFP]] 基准固态电解质用到钠氧电池上，并针对"聚合物膜跑不了大电流"这个老问题给出了一个新解法——不追求电导率，而是拦住负离子、提高[[迁移数]]。</p><div class="note ed"><span class="tag ed">编辑归纳</span> 脉络划分依据本文引言的引用语境与参考文献表；文献之间的先后关系按发表年份排列，不表示它们彼此引用。</div><div class="src">出处：p.1–2 引言；p.7 参考文献表</div>`},
+   {t:'脉络一：钠氧电池',vis:'lineage:0|p.1；refs 4–7, 22, 44–46',html:`<h3>钠氧电池这条线 2013 年起步，此前的研究集中在正极与放电产物</h3><p>2013 年 Hartmann、Adelhelm 等人报道了第一块室温可充的[[钠氧电池]]（ref 45，Nat. Mater.）：放电产物是[[超氧化钠]] NaO₂，而不是锂氧电池里那种难以分解的过氧化物，所以充电[[过电位]]低于 200 mV，用纯碳正极就能工作。之后这条线主要围绕正极和产物展开：同组 2014 年研究热力学、碳正极的作用和循环寿命（6）；Zhao 2014 年用低过电位电化学拆分 NaO₂ 延长寿命（22）；Yadegari 2015 年做三维空气电极并研究循环机理（46），2016 年写了系统综述（7）；Sun 2017 年用原子层沉积催化剂调控产物形貌（44）；Zhu 2019 年（4）和 Zhao 2021 年（5）分别用混合阳离子电解液和阳离子添加剂改善可充性。</p><p><b>本文与这条线的关系：</b>不碰正极、不研究产物——正极沿用最普通的 [[Super P]] 炭黑，把这条线当作背景（能量密度、开放体系的问题）和 Fig. 5D 里的对比对象（43–46）。</p><div class="src">出处：refs 4–7, 22, 44–46；p.1 引言第一段；p.6 左栏</div>`},
+   {t:'脉络二：金属钠负极',vis:'lineage:1|p.1–2；refs 10, 14–19, 37, 40–42',html:`<h3>金属钠负极的防枝晶方法从锂电池学来，作者此前已发表两篇 MXene 骨架</h3><p>金属负极长[[枝晶]]的对策最早在锂上成熟：Lin 与 Cui 2016 年用层状石墨烯做锂的三维[[骨架]]（10），2017 年综述了"复活锂金属负极"的策略（19）。钠沿用了同样三类办法——三维骨架、电解液优化、人工保护层：Luo 2016 年超薄涂层（14）、Wei 2017 年功能离子聚合物膜（16）、Lee 2017 年超高浓度电解液（17）、Wang 2017 年可塑钠负极（42）、Sun 2018 年无枝晶钠负极（41）、本课题组 Ma 2019 年在钠上原位生成铋层（40）、Wang 2022 年用添加剂造出富含 NaF 的 [[SEI]]（15）。</p><p><b>作者自己的三步：</b>2020 年羟基化 MXene/碳纳米管骨架（18，Angew. Chem.）→ 2022 年[[亲钠]]程度自下而上递减的"梯度骨架"M-GSS，让钠氧电池能在大电流下工作（37，Adv. Mater.）→ 本文沿用 M-GSS，把它和新膜组合。本文属于"三维骨架"这一类，再加上"让 SEI 富含 NaF"的思路（呼应 15、21）。</p><div class="src">出处：refs 10, 14–19, 21, 37, 40–42；p.1 引言第二段；p.6 方法</div>`},
+   {t:'脉络三：准固态电解质',vis:'lineage:2|p.1；refs 8, 9, 12, 22–36, 43',html:`<h3>准固态电解质的先例多在锂氧、锂二氧化碳电池，用于钠氧电池的只有三篇</h3><p>把液体锁进聚合物膜的[[准固态电解质]]，在金属–气体电池里先用于锂：Jung 2014 年离子液体凝胶锂氧电池（8）、Yi 2016 年混合准固态锂氧电池（24）、Zhang 2017 年多功能凝胶（33）、2017 年凝胶锂二氧化碳电池（34）、Zou 2018 年阻燃凝胶锂氧/空气电池（32）、Zhou 2019 年纤维状锂二氧化碳电池（9）。钠体系的先例只有几篇：Hu 2017 年准固态钠二氧化碳电池（12）、Ma 2018 年 PVDF 中间层抑制钠氧电池枝晶（25）、Wang 2020 年室温柔性准固态钠氧电池（43）。全固态是另一条平行路（23、26）。膜的基体材料有 PVDF、PVDF–HFP、PAN、PMMA、PEO 可选（27–31），PVDF–HFP 因耐高压、耐热最受关注（32）。</p><p><b>这条线的瓶颈</b>：聚合物电解质的[[离子电导率]]比液体差，电池的工作[[电流密度]]普遍低于 0.5 mA/cm²，作者引 35、36 说明"至今没有被有效解决"。<b>本文的位置</b>：作者称 PVDF–HFP 基准固态电解质"很少用于钠氧电池"，本文把它带进钠氧电池，并把解题思路从"提高电导率"换成"提高迁移数"。</p><div class="src">出处：refs 8, 9, 12, 22–36, 43；p.1 引言第二、三段</div>`},
+   {t:'相邻领域的启发',vis:'lineage:3|p.4–5；refs 15, 16, 21, 38, 47',html:`<h3>Nafion 膜参照燃料电池的质子交换膜，“含氟 SEI 更稳定”的认识来自锂金属电池</h3><p>[[Nafion]] 是燃料电池里常用的[[质子交换膜]]材料（ref 38 是它在燃料电池里的应用），侧链上的[[磺酸基]]带负电，天然排斥[[负离子]]、只让阳离子通过。把这种“只放一种离子过”的思路用到钠电池的先例是 Wei 2017 年的功能离子聚合物膜（16）。本文把 Nafion 做成 4 µm 的薄层贴在 PVDF–HFP 膜上，用 [[DFT]] 算 OTF⁻ 与两种聚合物的[[结合能]]来解释它为什么拦得住（工具：Gaussian 16，47）。</p><p>另一个来自锂金属电池领域的认识是"含氟的 SEI 更好"：Li 2019 年在高压锂金属电池里论证氟化 SEI 的价值（21），Wang 2022 年在钠上用添加剂做出 NaF 富集的 SEI（15）；本文把 Nafion 的含氟基团当作 NaF 的来源。有限元模拟里的介电常数取值来自 4、39。</p><div class="src">出处：refs 4, 15, 16, 21, 38, 39, 47；p.4–5</div>`},
+   {t:'本文的定位',vis:'pos:0|p.1–2 引言；p.6 结论',html:`<h3>本文同时属于三个研究方向：准固态钠氧电池、拦负离子的聚合物膜、梯度骨架钠负极；改的是电解质和负极，不涉及正极</h3><p><b>在钠氧电池里</b>：属于"电解质 + 负极"一侧的工作，不涉及正极催化和产物化学。<b>在准固态电解质里</b>：不是新基体、也不是提高电导率，而是加一层阴离子拦截层提高[[迁移数]]——这和之后兴起的[[单离子导体]]路线是同一个方向（见"局限与后续研究"卡）。<b>在钠负极里</b>：是作者 MXene 梯度骨架系列的延续，本文的新意在组合而不在负极本身。</p><div class="note ok"><span class="tag obs">后来者怎么看它</span> 2025 年 Yahia 等人（Adv. Sci.）在梳理准固态钠氧电池先例时引用本文，肯定其阻燃、锁液、疏水和 80 圈的结果，同时提出含氟聚合物遇到[[超氧化钠]]中的超氧根可能因 C–F 键断裂而降解——这是对本文路线的一个直接质疑。</div><div class="note ed"><span class="tag ed">检索补充</span> "后来者"一段来自 2025 年文献，不在本文参考文献表内。</div><div class="src">出处：p.1–2 引言；Yahia et al., Adv. Sci. 2025（PMC12376506）</div>`},
+  ]},
+/* ---------- 6 局限与后续研究 ---------- */
+{ id:'l', kind:'研究局限', h2:'全电池只在很小的电流下验证过，“大电流下稳定”的证据来自更简单的对称电池', brief:'作者说明两处计算都是简化模型；钠氧全电池本身只在很小的电流下循环过，较大电流下的稳定性证据来自只有钠电极的对称电池。另有几个原文没有回答的问题。', sum:'作者自己说明了两处简化：有限元模型不能复现真实孔结构；DFT 用的是聚合物片段。数据的适用范围也有边界：全电池仍在 0.14 mA/cm² 的小电流下运行，"较大电流"的证据来自对称电池。此外有几个问题论文没有涉及。', pills:['作者自述的简化','数据适用范围','未回答的问题（编辑归纳）'],
+  tabs:[
+   {t:'自述的简化',vis:'scope:0|p.6 Finite Element Simulations；p.4',html:`<h3>作者明确说明：有限元模型和 DFT 计算都是简化模型，只用于比较趋势，不能复现真实环境</h3><div class="note"><span class="tag obs">原文自述</span> [[FEM]] 模型"不能完全复现真实世界条件"：膜被建成固定孔径的筛板（60 nm 与 10 nm），只用于比较孔径和[[介电常数]]对电场分布的影响。</div><div class="note"><span class="tag obs">原文自述</span> [[DFT]] 计算的是 OTF⁻ 与 PVDF–HFP、Nafion 片段的结合能，是对"Nafion 更擅长抓负离子"的支持性证据，不是膜内真实环境的完整模拟。</div><p>此外，Fig. 5D 与文献的对比数值放在补充材料 Table S1，主文只给出了定性结论"优于大多数碳基钠负极"。</p><div class="src">出处：p.6 Finite Element Simulations；p.4 DFT；p.6 左栏</div>`},
+   {t:'数据的适用范围',vis:'scope:1|Fig. 3B/3C；Fig. 5C；Fig. 5E–H；p.6',html:`<h3>钠氧全电池只在 0.14 mA/cm² 的小电流下循环过，“较大电流下稳定”的证据来自只有钠电极的对称电池</h3><p>图中横轴是[[电流密度]]、纵轴是循环圈数，每个点是论文实际报告过的一组条件。"较大电流"下的稳定性证据（1 和 3 mA/cm²）来自[[对称电池]]，只考察钠的沉积与溶解；钠氧全电池本身运行在 0.14 mA/cm²、[[面容量]] 0.14 mAh/cm²，这与实用电池通常需要的几 mAh/cm² 还有数量级差距。</p><p>所有数据来自 CR2032 [[纽扣电池]]和实验室条件，未报告大面积制膜的一致性和长期空气暴露下的表现。</p><div class="src">出处：Fig. 3B/3C；Fig. 5C；Fig. 5E–H；p.6</div>`},
+   {t:'未答的问题',vis:'scope:2|p.6 Conclusion',html:`<h3>原文没有回答的五个问题（编辑归纳）</h3><div class="note ed"><span class="tag ed">编辑归纳</span> 以下为根据原文内容整理的开放问题，原文未作陈述。</div><ul class="refl"><li>80 圈之后电池为什么衰减：论文只报告到 80 圈，未给出失效分析。</li><li>能否把全电池电流从 0.14 mA/cm² 提到对称电池验证过的 1–3 mA/cm²，同时提高面容量。</li><li>正极侧的产物（超氧化钠）与空气中 CO₂/H₂O 的相互作用在准固态体系下如何，本文全电池未考察空气气氛。</li><li>Nafion 使电导率下降约 30%，更薄的 Nafion 层或其他阴离子捕获基团能否在保持 t₊ 的同时减少损失。</li><li>成本与放大：3 µL Nafion 滴涂在 18 mm 膜片上，大面积均匀制备的工艺未讨论。</li></ul><div class="note ok"><span class="tag obs">原文展望</span> 作者的表述是：这项工作"可为构建长循环稳定的准固态钠氧电池提供参考"。</div><div class="src">出处：Conclusion, p.6</div>`},
+
+  ]},
+/* ---------- 7 后续研究 ---------- */
+{ id:'n', kind:'后续研究', h2:'此后准固态钠氧电池出现了不含氟的新路线，钠负极骨架能承受的电流也高了几倍', brief:'2024 年以来，同类工作里电解质出现了加陶瓷填料、不含氟聚合物、新溶剂三条路，钠负极骨架能承受的电流已是本文的几倍，正极一侧出现了补偿容量损失的思路。当前争论集中在含氟聚合物是否可靠等四个问题。', sum:'', pills:[],
+  tabs:[
+{t:'后续：电解质',vis:'after:0|检索资料，见右栏来源',html:`<h3>2024–2025 年，准固态钠氧电池的电解质出现了三条新路：加陶瓷填料、改用不含氟的聚合物、换更稳定的溶剂</h3><div class="note ed"><span class="tag ed">检索补充</span> 以下来自 2026 年 9 月检索到的公开文献，不在本文参考文献表内；数值取自各文摘要。</div><ul class="refl"><li><b>2024.7 · Iputera 等，ACS Appl. Mater. Interfaces</b> 走"陶瓷填料"路线：PEO + NaTFSI + 纳米 NZSP 复合膜做准固态钠氧电池，吸液后电导率 3.5×10⁻⁴ S/cm，100 mA/g、限容 500 mAh/g 下 25 圈——与本文同年，电流比本文小一个量级。</li><li><b>2025 · Yahia 等，Adv. Sci.</b> 不含氟的 Pebax1657（聚酰胺–聚醚）准固态膜：电导率 6.57×10⁻⁴ S/cm，[[迁移数]]约 0.40（液体 0.32），150 µA/cm² 浅循环 35 圈（液体 20 圈）。引言把本文列为先例，同时指出含氟聚合物遇超氧根可能因 C–F 键断裂而降解。</li><li><b>2025 · Enterría 等，J. Mater. Chem. A</b> 液体路线仍在推进：把醚类溶剂末端的甲氧基换成叔丁基（"受阻醚"），无衰减循环从 10 圈提高到 91 圈，产物仍是[[超氧化钠]]。</li></ul><div class="src">来源：PMC11261556；PMC12376506；J. Mater. Chem. A 2025, d5ta03233d</div>`},
+   {t:'后续：负极与正极',vis:'after:1|检索资料，见右栏来源',html:`<h3>2026 年，钠金属负极的骨架已能在 10 mA/cm² 下稳定沉积（本文对称电池的三倍以上），正极一侧出现了补偿容量损失的思路</h3><div class="note ed"><span class="tag ed">检索补充</span> 同上，均为本文之后的公开文献。</div><ul class="refl"><li><b>2026 · Guo … Bresser，Adv. Sci.</b>（钠金属电池，非钠氧）聚硅氧烷[[单离子导体]]：负离子直接接在聚合物链上，电导率 0.2–0.4 mS/cm，对称电池 >2,000 h、全电池 >1,000 圈，正极[[载量]] 18 mg/cm² 并做了[[软包电池]]。"拦住负离子"的思路从本文的复合层走到了分子层面。</li><li><b>2026 · Yan … Cui，Sci. China Mater.</b>（钠金属电池）亲钠梯度 + 电场梯度的双梯度[[集流体]]，10 mA/cm²、10 mAh/cm² 下稳定 1,185 h——梯度骨架这条线已把电流和面容量推到本文对称电池（3 mA/cm²、3 mAh/cm²）的三倍以上。</li><li><b>2026 · J. Am. Chem. Soc.</b> 用 KO₂ 做固态"超氧化物储库"补偿超氧化物型钠氧电池的不可逆容量——正极产物侧的新思路（仅据题名，全文未能获取）。</li></ul><div class="src">来源：Adv. Sci. 2026, advs.202600077；Sci. China Mater. 2026, s40843-026-4188-x；JACS 2026, 148(31) 33735</div>`},
+   {t:'前沿议题',vis:'front:0|检索资料，见右栏来源',html:`<h3>研究者当前关注四件事：含氟聚合物是否可靠、大电流负极能否用于氧气环境、放电产物是否稳定、怎样走向实用</h3><div class="note ed"><span class="tag ed">编辑归纳</span> 据前两节文献的引言与结论整理，非本文观点。</div><ul class="refl"><li><b>电解质：含氟还是不含氟，怎样把负离子固定住。</b> 本文用 Nafion 的含氟磺酸基拦负离子；2025 年的非氟 Pebax 路线担心超氧根攻击 C–F 键；2026 年的单离子导体把负离子直接锚在链上。三者都要高迁移数，分歧在"氟"是资产还是隐患。</li><li><b>负极：大电流、高面容量的骨架能不能进氧气环境。</b> 梯度骨架在封闭的钠金属电池里已到 10 mA/cm²、10 mAh/cm²，但放进开放的钠氧电池、面对 O₂ 和超氧根腐蚀时表现如何，仍缺数据。</li><li><b>正极与产物：NaO₂ 的不稳定与不可逆容量。</b> 超氧化钠会自发分解、造成容量损失，2026 年出现"超氧化物储库"的补偿思路；[[单线态氧]]等活性氧对电解质的破坏是金属–氧气电池的共同难题。</li><li><b>整体：从纽扣电池走向实用。</b> 2025 年的文献仍把"低[[往返效率]]、高过电位、循环差、产物不理想"列为共同障碍；软包、空气气氛（而非纯氧）和长期暴露的测试是所有路线都要过的关。</li></ul><div class="src">来源：前两节文献；Electrochem. Energy Rev. 2023</div>`},
+  ]},
+];
+
+function svgWrap(inner,vb='0 0 600 400'){ return `<svg viewBox="${vb}" role="img">${inner}</svg>`; }
+function qtree(sel){ const box=(x,y,w,h,t,sub,cls,i)=>`<g class="qn" data-i="${i}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${cls==='bad'?'#f9e6e2':cls==='ok'?'#e4f2ea':cls==='hi'?'#e9ecf9':'#fff'}" stroke="${sel===i?'#1d2026':'#d4d4cf'}" stroke-width="${sel===i?2:1}"/><text x="${x+w/2}" y="${y+22}" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">${t}</text>${sub.map((s,k)=>`<text x="${x+w/2}" y="${y+40+k*15}" text-anchor="middle" font-size="11" fill="#585d69">${s}</text>`).join('')}</g>`;
+  const ar=(x1,y1,x2,y2)=>`<path d="M${x1},${y1} C${x1},${(y1+y2)/2} ${x2},${(y1+y2)/2} ${x2},${y2}" fill="none" stroke="#b9bcc8" stroke-width="1.4"/>`;
+  let s=''; s+=box(190,14,220,74,'钠氧电池',['理论能量密度 1,108 Wh/kg','钠资源丰富'],'hi',0);
+  s+=ar(300,88,150,130)+ar(300,88,450,130);
+  s+=box(40,130,220,88,'液体电解液',['会漏、易燃','钠长枝晶','空气侵蚀'],'bad',0);
+  s+=box(340,130,220,88,'准固态聚合物膜',['不漏、不燃','但电流 <0.5 mA/cm²','原因未解决'],'bad',1);
+  s+=ar(450,218,300,262);
+  s+=box(150,262,300,60,'本文的问题',['膜为什么跑不了大电流？怎样改？'],'hi',1);
+  s+=ar(300,322,150,352)+ar(300,322,450,352);
+  s+=box(30,352,240,42,'Nafion 层：拦负离子',[],'ok',2); s+=box(330,352,240,42,'梯度骨架：钠往底部长',[],'ok',2);
+  return svgWrap(s); }
+function findBars(which){ const D2=D; let items,opts;
+  if(which==='t'){ items=[{label:'PVDF–HFP',value:D2.t.PH,color:'#8a8f9c'},{label:'PVDF–HFP@Nafion',value:D2.t.NAF,color:'#2fae86'}]; opts={min:0,max:1,tick:.2,ylab:'钠离子迁移数 t₊',xlab:'电解质膜（Fig. 2G/2H）',fmt:v=>v.toFixed(2),arrow:[0,1,'0.33 → 0.68','#2e7d55']}; }
+  else if(which==='sym1'){ items=[{label:'PVDF–HFP',value:null,note:'剧烈波动'},{label:'QPE（@Nafion）',value:D2.symQPE.over,color:'#2fae86'}]; opts={min:0,max:40,tick:10,ylab:'过电位（mV）',xlab:'对称电池，1 mA/cm²，1 mAh/cm²（Fig. 3B/3C）',fmt:v=>v+' mV'}; }
+  else if(which==='sym3'){ items=[{label:'纯钠',value:null,note:'57 h 短路'},{label:'CNTs/Na',value:null,note:'波动、上升'},{label:'M-GSS/Na',value:D2.symMGSS.over,color:'#2fae86'}]; opts={min:0,max:40,tick:10,ylab:'过电位（mV）',xlab:'对称电池，3 mA/cm²，3 mAh/cm²（Fig. 5C）',fmt:v=>v+' mV'}; }
+  else { items=[{label:'液体 + 纯钠',value:D2.full.LE,color:'#b23f2e'},{label:'QPE + 纯钠',value:D2.full.QPE,color:'#5468de'},{label:'QPE + 骨架',value:D2.full.MGSS,color:'#2fae86'}]; opts={min:0,max:100,tick:20,ylab:'循环圈数',xlab:'钠氧全电池，1,000 mA/g，限容 1,000 mAh/g（Fig. 5E–H）',fmt:v=>v+' 圈',arrow:[0,2,'6 → 80 圈','#2e7d55']}; }
+  return `<div style="width:100%;max-width:500px">${barsSvg(items,opts)}</div>`; }
+function expVis(k){
+  const lay=(x,w,col,label,sub)=>`<rect x="${x}" y="90" width="${w}" height="220" rx="6" fill="${col}" stroke="#b9bfcc"/><text x="${x+w/2}" y="330" text-anchor="middle" font-size="11.5" fill="#1d2026">${label}</text>${sub?`<text x="${x+w/2}" y="346" text-anchor="middle" font-size="10.5" fill="#8e929c">${sub}</text>`:''}`;
+  if(k==='mem'){ // 厚度按比例 48:4
+    let s=lay(150,240,'#f2f2f5','PVDF–HFP 层','48 µm · 孔 20–100 nm')+lay(130,20,'#2fae86','Nafion','4 µm · 孔 5–20 nm');
+    for(let i=0;i<60;i++){ const x=160+Math.random()*220,y=100+Math.random()*200,r=1.5+Math.random()*3.5; s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#cfd2da"/>`; }
+    s+=`<text x="300" y="50" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">膜的截面（厚度按 48 : 4 比例，孔为示意）</text><text x="300" y="70" text-anchor="middle" font-size="11" fill="#585d69">粗糙度 18.5 nm · 杨氏模量 33.1 GPa · 吸液率 16.62%</text><text x="80" y="200" text-anchor="middle" font-size="11" fill="#585d69">负极侧</text><text x="520" y="200" text-anchor="middle" font-size="11" fill="#585d69">正极侧</text>`;
+    return svgWrap(s); }
+  if(k==='safe'){ const col=(x,t,a,b,c)=>`<text x="${x}" y="40" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">${t}</text><rect x="${x-90}" y="60" width="180" height="120" rx="12" fill="#fff" stroke="#d4d4cf"/><text x="${x}" y="90" text-anchor="middle" font-size="12" fill="#585d69">滴水实验</text><text x="${x}" y="118" text-anchor="middle" font-size="15" font-weight="600" fill="${a[1]}">${a[0]}</text><text x="${x}" y="150" text-anchor="middle" font-size="11" fill="#8e929c">Fig. 1J</text><rect x="${x-90}" y="200" width="180" height="120" rx="12" fill="#fff" stroke="#d4d4cf"/><text x="${x}" y="230" text-anchor="middle" font-size="12" fill="#585d69">明火实验</text><text x="${x}" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="${b[1]}">${b[0]}</text><text x="${x}" y="290" text-anchor="middle" font-size="11" fill="#8e929c">Fig. 1K</text>`;
+    return svgWrap(col(170,'Celgard 普通隔膜',['钠片 <120 s 被水毁','#b23f2e'],['4 s 烧尽','#b23f2e'])+col(430,'PVDF–HFP@Nafion',['钠片完好','#2e7d55'],['轻微形变，不燃','#2e7d55'])); }
+  if(k==='hcell'){ const cell=(y,name,left,ok)=>`<text x="40" y="${y-14}" font-size="12.5" font-weight="600" fill="#1d2026">${name}</text><rect x="40" y="${y}" width="200" height="90" rx="10" fill="#fff" stroke="#b9bfcc"/><rect x="360" y="${y}" width="200" height="90" rx="10" fill="#fdf1e6" stroke="#b9bfcc"/><rect x="240" y="${y+25}" width="120" height="40" fill="#fff" stroke="#b9bfcc"/><rect x="${ok?292:296}" y="${y+25}" width="${ok?12:8}" height="40" fill="${ok?'#2fae86':'#e9e9ec'}" stroke="#b9bfcc"/><text x="140" y="${y+30}" text-anchor="middle" font-size="11" fill="#585d69">纯溶剂 G2</text><text x="460" y="${y+30}" text-anchor="middle" font-size="11" fill="#585d69">1 M NaOTF/G2</text>${left.map((t,i)=>`<text x="140" y="${y+52+i*16}" text-anchor="middle" font-size="11" fill="${ok?'#2e7d55':'#b23f2e'}">${t}</text>`).join('')}${[0,1,2,3].map(i=>`<circle cx="${390+i*40}" cy="${y+60}" r="6" fill="#d9601a"/>`).join('')}${ok?'':`<circle cx="200" cy="${y+72}" r="6" fill="#d9601a"/><circle cx="170" cy="${y+78}" r="6" fill="#d9601a"/>`}`;
+    return svgWrap(`<text x="300" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">H 型反应器：膜夹在中间，看负离子会不会跑到左边</text>`+cell(60,'PVDF–HFP 膜',['24 h：出现 –SO₃ 峰','48 h：更强'],false)+cell(220,'PVDF–HFP@Nafion 膜',['48 h：无变化'],true)+`<text x="300" y="370" text-anchor="middle" font-size="11" fill="#8e929c">橙点 = 负离子 OTF⁻ · Fig. 2A–D</text>`); }
+  if(k==='t'){ return `<div style="width:100%;max-width:460px">${barsSvg([{label:'PVDF–HFP',value:D.cond.PH,color:'#8a8f9c'},{label:'@Nafion',value:D.cond.NAF,color:'#2fae86'}],{min:0,max:6,tick:1,ylab:'离子电导率（×10⁻⁴ S/cm）',xlab:'电解质膜（Fig. 3A）',fmt:v=>v.toFixed(2)})}<div style="height:10px"></div>${barsSvg([{label:'PVDF–HFP',value:D.t.PH,color:'#8a8f9c'},{label:'@Nafion',value:D.t.NAF,color:'#2fae86'}],{min:0,max:1,tick:.2,ylab:'钠离子迁移数 t₊',xlab:'电解质膜（Fig. 2G/2H）',fmt:v=>v.toFixed(2)})}</div>`; }
+  if(k==='sym'){ return `<div style="width:100%;max-width:460px">${barsSvg([{label:'PVDF–HFP',value:null,note:'剧烈波动'},{label:'QPE',value:17,color:'#2fae86'}],{min:0,max:40,tick:10,ylab:'过电位（mV）',xlab:'膜的对比：1 mA/cm²，1 mAh/cm²（Fig. 3B/3C）',fmt:v=>v+' mV'})}<div style="height:10px"></div>${barsSvg([{label:'纯钠',value:null,note:'57 h 短路'},{label:'CNTs/Na',value:null,note:'波动'},{label:'M-GSS/Na',value:23,color:'#2fae86'}],{min:0,max:40,tick:10,ylab:'过电位（mV）',xlab:'负极的对比：3 mA/cm²，3 mAh/cm²（Fig. 5C）',fmt:v=>v+' mV'})}</div>`; }
+  if(k==='full'){ return findBars('full'); }
+}
+function prepVis(sel){ // 材料制备 → 器件 → 测试与计算（依 p.6 方法部分的结构）
+  const INK='#1d2026',INK2='#585d69';
+  const bx=(i,x,y,w,h,t,l1,l2)=>{ const on=sel===i; return `<g class="qn" data-i="${i}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${on?'#e9ecf9':'#fff'}" stroke="${on?INK:'#d4d4cf'}" stroke-width="${on?2:1}"/><text x="${x+w/2}" y="${y+22}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${INK}">${t}</text><text x="${x+w/2}" y="${y+40}" text-anchor="middle" font-size="10" fill="${INK2}">${l1}</text><text x="${x+w/2}" y="${y+55}" text-anchor="middle" font-size="10" fill="${INK2}">${l2}</text></g>`; };
+  let s=`<text x="300" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="${INK}">两条制备线汇成一颗电池，再做测试与计算（点一格查看细节）</text>`;
+  s+=`<text x="150" y="62" text-anchor="middle" font-size="10.5" fill="${INK2}">电解质一侧</text><text x="450" y="62" text-anchor="middle" font-size="10.5" fill="${INK2}">负极一侧</text>`;
+  s+=bx(0,50,72,200,66,'制膜','相转化法做多孔 PVDF–HFP 膜','滴涂 Nafion 层')+bx(1,350,72,200,66,'制骨架','三种 MXene/碳纳米管分散液','依次真空抽滤成三层');
+  s+=`<path d="M150,138 C150,170 300,160 300,190 M450,138 C450,170 300,160 300,190" fill="none" stroke="#b9bcc8" stroke-width="1.5"/>`;
+  s+=bx(2,200,190,200,66,'装电池','氩气手套箱内装 CR2032','炭黑正极 + NaOTF/G2 电解液');
+  s+=`<path d="M300,256 C300,280 150,275 150,300 M300,256 C300,280 450,275 450,300" fill="none" stroke="#b9bcc8" stroke-width="1.5"/>`;
+  s+=bx(3,50,300,200,66,'表征','SEM · AFM · FTIR · XPS · TGA','计时电流法 + 阻抗谱')+bx(4,350,300,200,66,'计算','DFT 算结合能','有限元算膜内电场');
+  s+=`<text x="300" y="392" text-anchor="middle" font-size="10" fill="#8e929c">p.6 Materials and Methods</text>`;
+  return svgWrap(s); }
+function scopeVis(k){ // 横轴电流密度（对数），纵轴循环圈数
+  const W=600,H=400,pad={l:70,r:30,t:50,b:60}; const xs=[0.1,0.3,1,3,10]; const X=v=>pad.l+(Math.log10(v)-Math.log10(0.1))/(Math.log10(10)-Math.log10(0.1))*(W-pad.l-pad.r); const Y=v=>H-pad.b-(v/220)*(H-pad.t-pad.b);
+  let s=''; xs.forEach(v=>{ s+=`<line x1="${X(v)}" y1="${pad.t}" x2="${X(v)}" y2="${H-pad.b}" stroke="#eeeeea"/><text x="${X(v)}" y="${H-pad.b+16}" text-anchor="middle" font-size="10.5" fill="#8e929c">${v}</text>`; });
+  [0,50,100,150,200].forEach(v=>{ s+=`<line x1="${pad.l}" y1="${Y(v)}" x2="${W-pad.r}" y2="${Y(v)}" stroke="#eeeeea"/><text x="${pad.l-6}" y="${Y(v)+3}" text-anchor="end" font-size="10.5" fill="#8e929c">${v}</text>`; });
+  s+=`<rect x="${X(0.5)}" y="${pad.t}" width="${W-pad.r-X(0.5)}" height="${H-pad.t-pad.b}" fill="#fbeee1" opacity=".55"/><text x="${X(0.5)+8}" y="${pad.t+16}" font-size="10.5" fill="#9a4f14">聚合物准固态电解质通常达不到的电流（>0.5 mA/cm²，p.1）</text>`;
+  s+=`<text x="${(pad.l+W-pad.r)/2}" y="${H-14}" text-anchor="middle" font-size="11" fill="#585d69">电流密度（mA/cm²，对数刻度）</text><text transform="translate(18,${(pad.t+H-pad.b)/2}) rotate(-90)" text-anchor="middle" font-size="11" fill="#585d69">报告的循环圈数</text><text x="300" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">论文实际报告过数据的条件</text>`;
+  const pts=[{x:0.14,y:80,c:'#2fae86',l:'钠氧全电池 80 圈',s:'M-GSS/Na | QPE | O₂'},{x:0.14,y:23,c:'#5468de',l:'钠氧全电池 23 圈',s:'Na | QPE | O₂',dy:-12},{x:0.14,y:6,c:'#b23f2e',l:'钠氧全电池 6 圈',s:'Na | LE | O₂',dy:8},{x:1,y:200,c:'#8a8f9c',l:'对称电池 200 圈',s:'QPE，17 mV'},{x:3,y:100,c:'#8a8f9c',l:'对称电池 >100 圈',s:'M-GSS/Na，23 mV'}];
+  pts.forEach((p,i)=>{ const hi=(k===1); s+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="7" fill="${p.c}" stroke="#fff" stroke-width="2"/><text x="${X(p.x)+11}" y="${Y(p.y)+4+(p.dy||0)}" font-size="10.5" fill="#1d2026">${p.l}</text><text x="${X(p.x)+11}" y="${Y(p.y)+16+(p.dy||0)}" font-size="9.5" fill="#8e929c">${p.s}</text>`; });
+  if(k===2){ s+=`<rect x="${X(1)-10}" y="${Y(120)}" width="${X(5)-X(1)+20}" height="${Y(0)-Y(120)}" fill="none" stroke="#d3742a" stroke-dasharray="5 4" rx="10"/><text x="${X(2.2)}" y="${Y(125)}" text-anchor="middle" font-size="10.5" fill="#9a4f14">全电池尚无数据的区间（编辑归纳）</text>`; }
+  if(k===0){ s+=`<text x="300" y="${H-pad.b-8}" text-anchor="middle" font-size="10.5" fill="#8e929c">FEM 与 DFT 为计算结果，不在此图中</text>`; }
+  return svgWrap(s); }
+/* ---- 研究谱系图 ---- */
+const LANES=[['钠氧电池','#5468de'],['金属钠负极','#2fae86'],['准固态电解质','#d3742a'],['相邻领域','#8a8f9c']];
+const REFS={
+ 45:[2013,0,'室温 NaO₂ 电池','Hartmann et al. 2013, Nat. Mater.：第一块室温可充超氧化钠电池','end'],6:[2014,0,'','Bender et al. 2014, Adv. Energy Mater.：NaO₂ 电池的热力学、碳正极与寿命'],22:[2014,0,'','Zhao et al. 2014, PCCP：低过电位拆分 NaO₂ 的长寿命钠氧电池'],46:[2015,0,'','Yadegari et al. 2015, Chem. Mater.：三维纳米结构空气电极与循环机理'],7:[2016,0,'综述','Yadegari, Sun & Sun 2016, Adv. Mater.：钠氧电池对比综述'],44:[2017,0,'','Sun et al. 2017, AFM：原子层沉积催化剂调控放电产物'],4:[2019,0,'','Zhu et al. 2019, Research：Na//K⁺ 混合电解液钠氧电池'],5:[2021,0,'','Zhao et al. 2021, Angew.：阳离子添加剂的双重作用'],
+ 10:[2016,1,'锂：rGO 骨架','Lin et al. 2016, Nat. Nanotechnol.：层状 rGO 作锂金属骨架'],14:[2016,1,'','Luo et al. 2016, AEM：超薄涂层稳定钠负极'],19:[2017,1,'','Lin, Liu & Cui 2017, Nat. Nanotechnol.：复活锂金属负极（综述）'],16:[2017,1,'','Wei et al. 2017, Adv. Mater.：功能离子聚合物膜稳定钠电池'],17:[2017,1,'','Lee et al. 2017, ACS AMI：超高浓度 NaFSI 电解液'],42:[2017,1,'','Wang et al. 2017, Angew.：可加工可塑的钠负极'],41:[2018,1,'','Sun et al. 2018, Adv. Mater.：无枝晶钠金属负极'],40:[2019,1,'','Ma, Lu, Yan & Chen 2019：钠负极原位铋层（同课题组）'],18:[2020,1,'MXene 骨架','He et al. 2020, Angew.：羟基化 MXene/CNT 骨架，无枝晶钠负极（作者）'],37:[2022,1,'梯度骨架 M-GSS','He et al. 2022, Adv. Mater.：阶梯亲钠梯度 MXene 负极，大电流钠氧电池（作者）'],15:[2022,1,'','Wang et al. 2022, Angew.：添加剂诱导 NaF 富集 SEI'],
+ 8:[2014,2,'','Jung et al. 2014, Chem. Commun.：离子液体凝胶准固态锂氧电池'],24:[2016,2,'','Yi & Zhou 2016, ChemSusChem：混合准固态电解质锂氧电池'],12:[2017,2,'','Hu et al. 2017, Sci. Adv.：准固态钠二氧化碳电池'],33:[2017,2,'','Zhang et al. 2017, ESM：多功能凝胶共聚物锂氧电池'],34:[2017,2,'','2017, Angew.：凝胶聚合物电解质锂二氧化碳电池'],25:[2018,2,'PVDF 层 · Na–O₂','Ma et al. 2018, AFM：PVDF 中间层抑制钠氧电池枝晶'],32:[2018,2,'','Zou et al. 2018, Small：阻燃、抗枝晶凝胶电解质锂氧/空气电池'],35:[2018,2,'','Chen et al. 2018, AEM：PVDF–HFP 改性凝胶双离子电池（低电流瓶颈的例证）'],9:[2019,2,'','Zhou et al. 2019, Adv. Mater.：纤维状准固态锂二氧化碳电池'],23:[2019,2,'','Wang et al. 2019, Small Methods：全固态锂离子电池界面'],43:[2020,2,'柔性准固态 Na–O₂','Wang et al. 2020, ACS Cent. Sci.：室温柔性准固态钠氧电池'],26:[2020,2,'','Fan et al. 2020, ESM：反钙钛矿固态电解质钠金属电池'],36:[2021,2,'','Chen et al. 2021, Adv. Mater.：水凝胶电解质锌锰电池（低电流瓶颈的例证）'],
+ 47:[2016,3,'','Frisch et al. 2016：Gaussian 16'],38:[2018,3,'Nafion · 燃料电池','Asmatulu et al. 2018：石墨烯/Nafion 薄膜用于燃料电池'],39:[2018,3,'','Hoshi et al. 2018：二甘醇二甲醚的低介电常数'],21:[2019,3,'氟化 SEI','Li et al. 2019, Joule：高压锂金属电池中的氟化 SEI','below'],
+};
+Object.keys(REFS).forEach(k=>{ TERMS['ref '+k]=REFS[k][3]; });
+function lineageVis(sel){ const W=600,H=400,x0=112,x1=468; const X=y=>x0+(y-2013)/(2024-2013)*(x1-x0); const laneY=[64,150,236,322]; let s='';
+  for(let y=2013;y<=2024;y++){ const x=X(y); s+=`<line x1="${x}" y1="36" x2="${x}" y2="${H-30}" stroke="#eeeeea"/>${y%2?'' : `<text x="${x}" y="${H-14}" text-anchor="middle" font-size="9.5" fill="#a5a8b2">${y}</text>`}`; }
+  const groups={}; Object.entries(REFS).forEach(([k,v])=>{ const key=v[1]+'_'+v[0]; (groups[key]=groups[key]||[]).push(k); });
+  const pos={}; Object.entries(groups).forEach(([key,list])=>{ list.forEach((k,i)=>{ const v=REFS[k]; const n=list.length; pos[k]=[X(v[0])+(i-(n-1)/2)*(n>1?20:0), laneY[v[1]]+(n>1?(i%2?13:-13):0), n>1&&i%2]; }); });
+  LANES.forEach((L,i)=>{ const on=sel<0||sel===i; const y=laneY[i]; s+=`<g class="gnode" data-i="${i}" opacity="${on?1:.28}"><line x1="${x0-6}" y1="${y}" x2="${x1+10}" y2="${y}" stroke="${L[1]}" stroke-width="${sel===i?3:1.5}" opacity=".55"/><text x="${x0-12}" y="${y+4}" text-anchor="end" font-size="10.5" font-weight="600" fill="${L[1]}">${L[0]}</text><path d="M${x1+10},${y} C${x1+40},${y} ${x1+30},200 ${x1+50},200" fill="none" stroke="${L[1]}" stroke-width="1.5" opacity=".55"/></g>`; });
+  Object.entries(REFS).forEach(([k,v])=>{ const [x,y,low]=pos[k]; const on=sel<0||sel===v[1]; const col=LANES[v[1]][1]; const own=(k==='18'||k==='37'||k==='40');
+    s+=`<g class="gnode term" data-i="${v[1]}" data-term="ref ${k}" opacity="${on?1:.28}"><circle cx="${x}" cy="${y}" r="9" fill="${own?col:'#fff'}" stroke="${col}" stroke-width="1.5"/><text x="${x}" y="${y+3.2}" text-anchor="middle" font-size="8.5" font-weight="600" fill="${own?'#fff':'#1d2026'}">${k}</text>${v[2]?`<text x="${v[4]==='end'?x+8:x}" y="${(low||v[4]==='below')?y+21:y-14}" text-anchor="${v[4]==='end'?'end':'middle'}" font-size="9.5" fill="#1d2026">${v[2]}</text>`:''}</g>`; });
+  s+=`<circle cx="${x1+70}" cy="200" r="24" fill="#1d2026"/><text x="${x1+70}" y="197" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff">本文</text><text x="${x1+70}" y="209" text-anchor="middle" font-size="8.5" fill="#c7cad3">2024</text>`;
+  s+=`<text x="300" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">${sel<0?'本文参考文献里的三条脉络（按发表年份）':LANES[sel][0]+'：这条线上的文献'}</text><text x="10" y="${H-14}" font-size="9" fill="#a5a8b2">实心 = 作者课题组</text>`;
+  return svgWrap(s); }
+function posVis(){ const c=[[225,175,'准固态钠氧电池','refs 12, 25, 43','#d3742a'],[375,175,'拦负离子的聚合物膜','refs 16, 38','#5468de'],[300,285,'梯度骨架钠负极','refs 18, 37','#2fae86']]; let s='';
+  c.forEach(([x,y,t,r,col])=>{ s+=`<circle cx="${x}" cy="${y}" r="112" fill="${col}" opacity=".13" stroke="${col}" stroke-width="1.5"/>`; });
+  c.forEach(([x,y,t,r,col],i)=>{ const ly=i<2?y-70:y+70; s+=`<text x="${x}" y="${ly}" text-anchor="middle" font-size="12" font-weight="600" fill="${col}">${t}</text><text x="${x}" y="${ly+15}" text-anchor="middle" font-size="9.5" fill="#585d69">${r}</text>`; });
+  s+=`<circle cx="300" cy="212" r="22" fill="#1d2026"/><text x="300" y="209" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff">本文</text><text x="300" y="221" text-anchor="middle" font-size="8.5" fill="#c7cad3">2024</text>`;
+  s+=`<text x="300" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">本文在三个细分领域的交叉点上</text><text x="300" y="392" text-anchor="middle" font-size="10" fill="#8e929c">圆的大小无含义；文献编号按本文参考文献表</text>`;
+  return svgWrap(s); }
+function afterVis(sel){ const items=[[2024,'本文','PNAS · 本文','#1d2026',-1],[2024,'Iputera','ACS AMI · PEO+NZSP 复合膜','#d3742a',1],[2025,'Yahia','Adv. Sci. · 非氟 Pebax 膜','#d3742a',-1],[2025,'Enterría','JMCA · 受阻醚液体电解液','#5468de',1],[2026,'Yan','SCM · 双梯度钠负极','#2fae86',-1],[2026,'Guo','Adv. Sci. · 单离子导体','#d3742a',1],[2026,'JACS','KO₂ 超氧化物储库','#5468de',-1]]; const X=i=>80+i*75; let s='';
+  const yrs={}; items.forEach((it,i)=>{ (yrs[it[0]]=yrs[it[0]]||[]).push(i); }); Object.entries(yrs).forEach(([y,list])=>{ const a=X(list[0])-30,b=X(list[list.length-1])+30; s+=`<rect x="${a}" y="70" width="${b-a}" height="270" rx="10" fill="#fff" opacity=".55"/><text x="${(a+b)/2}" y="360" text-anchor="middle" font-size="11" fill="#8e929c">${y}</text>`; });
+  s+=`<line x1="40" y1="205" x2="560" y2="205" stroke="#b9bfcc"/>`;
+  items.forEach(([t,n,d,col,dir],i)=>{ const x=X(i), y=205+dir*(i%4<2?60:100); const on=(n==='本文')||(sel===0&&t<2026)||(sel===1&&t>=2026); s+=`<g opacity="${on?1:.3}"><line x1="${x}" y1="205" x2="${x}" y2="${y}" stroke="${col}" opacity=".5"/><circle cx="${x}" cy="205" r="${n==='本文'?9:6}" fill="${col}"/><text x="${x}" y="${y+(dir<0?-6:16)}" text-anchor="middle" font-size="11" font-weight="600" fill="#1d2026">${n}</text><text x="${x}" y="${y+(dir<0?6:28)}" text-anchor="middle" font-size="9" fill="#585d69">${d}</text></g>`; });
+  s+=`<text x="300" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">本文之后的相关工作（2024–2026，检索补充；按时间顺序排列）</text><g font-size="9.5"><circle cx="150" cy="386" r="5" fill="#d3742a"/><text x="160" y="390" fill="#585d69">准固态电解质</text><circle cx="250" cy="386" r="5" fill="#5468de"/><text x="260" y="390" fill="#585d69">钠氧电池其他环节</text><circle cx="380" cy="386" r="5" fill="#2fae86"/><text x="390" y="390" fill="#585d69">钠金属负极</text></g>`;
+  return svgWrap(s); }
+function frontVis(){ const b=[[40,60,'电解质','含氟还是不含氟？','怎样固定负离子','#d3742a'],[310,60,'负极','大电流骨架','能否进氧气环境','#2fae86'],[40,220,'正极与产物','NaO₂ 不稳定','不可逆容量、活性氧','#5468de'],[310,220,'走向实用','往返效率、过电位','软包与空气气氛','#8a8f9c']]; let s=`<text x="300" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="#1d2026">当前研究者集中讨论的四个议题（编辑归纳）</text>`;
+  b.forEach(([x,y,t,a,c,col])=>{ s+=`<rect x="${x}" y="${y}" width="250" height="130" rx="14" fill="#fff" stroke="${col}" stroke-width="1.5"/><rect x="${x}" y="${y}" width="6" height="130" rx="3" fill="${col}"/><text x="${x+24}" y="${y+34}" font-size="14" font-weight="600" fill="#1d2026">${t}</text><text x="${x+24}" y="${y+66}" font-size="11.5" fill="#585d69">${a}</text><text x="${x+24}" y="${y+88}" font-size="11.5" fill="#585d69">${c}</text>`; });
+  s+=`<text x="300" y="380" text-anchor="middle" font-size="10" fill="#8e929c">来源见右栏</text>`; return svgWrap(s); }
+function renderVis(card,tab){ const full=tab.vis; const bar=full.indexOf('|'); const v=bar<0?full:full.slice(0,bar); const ref=bar<0?'':full.slice(bar+1); const i0=v.indexOf(':'); const kind=v.slice(0,i0), arg=v.slice(i0+1); let out='';
+  if(kind==='qtree') out=qtree(+arg); else if(kind==='bars') out=findBars(arg); else if(kind==='exp') out=expVis(arg); else if(kind==='prep') out=prepVis(+arg); else if(kind==='lineage') out=lineageVis(+arg); else if(kind==='pos') out=posVis(); else if(kind==='scope') out=scopeVis(+arg); else if(kind==='after') out=afterVis(+arg); else if(kind==='front') out=frontVis();
+  return `<div class="visw">${out}${ref?`<a class="viref" href="#" data-ref="${ref}" onclick="return false">↗ 对应原文：${ref}</a>`:''}</div>`; }
+function miniVis(card){ const W=v=>`<svg viewBox="0 0 300 150" role="img">${v}</svg>`; const bx=(x,y,w,h,t,fill,st,fs=11)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="${st}"/><text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" font-size="${fs}" font-weight="600" fill="#1d2026">${t}</text>`;
+  if(card.id==='q') return W(bx(95,10,110,30,'钠氧电池：能量高','#e9ecf9','#1d2026')+`<path d="M150,40 L80,62 M150,40 L220,62" stroke="#b9bcc8" fill="none"/>`+bx(20,62,120,30,'液体：漏、烧、枝晶','#fbeae6','#b23f2e',10.5)+bx(160,62,120,30,'准固态：电流上不去','#fdf1e6','#d3742a',10.5)+`<path d="M80,92 L150,112 M220,92 L150,112" stroke="#b9bcc8" fill="none"/>`+bx(70,112,160,30,'本文：为什么？怎么改？','#fff','#1d2026',10.5));
+  if(card.id==='f'){ const bars=[['液体 + 纯钠',6,'#b23f2e'],['膜 + 纯钠',23,'#5468de'],['膜 + 骨架',80,'#2fae86']]; return W(`<text x="150" y="18" text-anchor="middle" font-size="11" font-weight="600" fill="#1d2026">钠氧全电池能稳定循环的圈数</text><line x1="30" y1="122" x2="280" y2="122" stroke="#b9bfcc"/>`+bars.map((b,i)=>{ const x=55+i*85, h=b[1]/80*88; return `<rect x="${x}" y="${122-h}" width="46" height="${h}" rx="4" fill="${b[2]}"/><text x="${x+23}" y="${122-h-6}" text-anchor="middle" font-size="12" font-weight="600" fill="#1d2026">${b[1]} 圈</text><text x="${x+23}" y="137" text-anchor="middle" font-size="10" fill="#585d69">${b[0]}</text>`; }).join('')); }
+  if(card.id==='e') return W(`<rect x="60" y="30" width="180" height="90" rx="6" fill="#f2f2f5" stroke="#b9bfcc"/><rect x="44" y="30" width="16" height="90" rx="4" fill="#2fae86"/>`+[...Array(26)].map((_,i)=>`<circle cx="${75+(i*53)%160}" cy="${40+(i*37)%72}" r="${2+(i%3)}" fill="#cfd2da"/>`).join('')+`<text x="52" y="138" text-anchor="middle" font-size="10.5" fill="#1d2026">Nafion 4 µm</text><text x="160" y="138" text-anchor="middle" font-size="10.5" fill="#1d2026">PVDF–HFP 48 µm</text><text x="150" y="18" text-anchor="middle" font-size="11" font-weight="600" fill="#1d2026">膜的截面（厚度按比例）</text>`);
+  if(card.id==='m'){ const b=(x,y,t)=>`<rect x="${x-40}" y="${y-12}" width="80" height="24" rx="7" fill="#fff" stroke="#d4d4cf"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="10" font-weight="600" fill="#1d2026">${t}</text>`; return W(`<path d="M80,42 C80,62 150,58 150,72 M220,42 C220,62 150,58 150,72 M150,96 C150,110 80,106 80,120 M150,96 C150,110 220,106 220,120" fill="none" stroke="#b9bcc8" stroke-width="1.5"/>`+b(80,30,'制膜')+b(220,30,'制骨架')+b(150,84,'装纽扣电池')+b(80,132,'表征')+b(220,132,'计算')); }
+  if(card.id==='r'){ const ln=[['钠氧电池','#5468de'],['钠负极','#2fae86'],['准固态电解质','#d3742a']]; return W(ln.map((l,i)=>{ const y=40+i*34; return `<text x="14" y="${y+4}" font-size="10.5" font-weight="600" fill="${l[1]}">${l[0]}</text><line x1="96" y1="${y}" x2="200" y2="${y}" stroke="${l[1]}" stroke-width="2" opacity=".6"/><path d="M200,${y} C230,${y} 225,74 250,74" fill="none" stroke="${l[1]}" stroke-width="2" opacity=".6"/>`+[0,1,2,3].map(k=>`<circle cx="${112+k*26}" cy="${y}" r="5" fill="#fff" stroke="${l[1]}" stroke-width="1.5"/>`).join(''); }).join('')+`<circle cx="262" cy="74" r="16" fill="#1d2026"/><text x="262" y="78" text-anchor="middle" font-size="9.5" font-weight="600" fill="#fff">本文</text><text x="150" y="138" text-anchor="middle" font-size="10" fill="#585d69">三条脉络 2013 → 2024 汇成本文</text>`); }
+  if(card.id==='n'){ const it=[['2024','本文','#1d2026'],['2024','Iputera','#d3742a'],['2025','Yahia','#d3742a'],['2025','Enterría','#5468de'],['2026','Yan','#2fae86'],['2026','Guo','#d3742a'],['2026','JACS','#5468de']]; return W(`<line x1="20" y1="80" x2="280" y2="80" stroke="#b9bfcc"/>`+it.map((p,i)=>{ const x=36+i*38, up=i%2===0; return `<line x1="${x}" y1="80" x2="${x}" y2="${up?52:108}" stroke="${p[2]}" opacity=".5"/><circle cx="${x}" cy="80" r="${i?5:7}" fill="${p[2]}"/><text x="${x}" y="${up?46:120}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1d2026">${p[1]}</text>`; }).join('')+`<text x="36" y="140" text-anchor="middle" font-size="9.5" fill="#8e929c">2024</text><text x="150" y="140" text-anchor="middle" font-size="9.5" fill="#8e929c">2025</text><text x="245" y="140" text-anchor="middle" font-size="9.5" fill="#8e929c">2026</text><text x="150" y="20" text-anchor="middle" font-size="11" font-weight="600" fill="#1d2026">本文之后的同类工作</text>`); }
+  const X=v=>40+(Math.log10(v)+1)/2*240, Y=v=>130-v/220*110; const pts=[[0.14,80,'#2fae86'],[0.14,23,'#5468de'],[0.14,6,'#b23f2e'],[1,200,'#8a8f9c'],[3,100,'#8a8f9c']];
+  return W(`<rect x="${X(.5)}" y="15" width="${280-X(.5)}" height="115" fill="#fbeee1" opacity=".6"/><line x1="40" y1="130" x2="280" y2="130" stroke="#b9bfcc"/><line x1="40" y1="15" x2="40" y2="130" stroke="#b9bfcc"/>`+pts.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="5" fill="${p[2]}" stroke="#fff" stroke-width="1.5"/>`).join('')+`<text x="${X(.14)}" y="${Y(80)-10}" text-anchor="middle" font-size="10" fill="#1d2026">全电池 0.14 mA/cm²</text><text x="${X(2)}" y="${Y(200)-10}" text-anchor="middle" font-size="10" fill="#1d2026">对称电池 1–3 mA/cm²</text><text x="160" y="146" text-anchor="middle" font-size="9.5" fill="#8e929c">电流密度（对数）→ · 纵轴：报告圈数</text>`); }
+
+
+const ORDER=['q','m','e','f','l','r','n']; CARDS.sort((x,y)=>ORDER.indexOf(x.id)-ORDER.indexOf(y.id));
+
+function svgWrap(inner,vb='0 0 600 400'){ return `<svg viewBox="${vb}" role="img">${inner}</svg>`; }
+/* 自动给正文里第一次出现的术语加解释（已用 [[ ]] 标注的不重复） */
+const TERM_KEYS=()=>Object.keys(TERMS).filter(k=>!k.startsWith('ref ')).sort((a,b)=>b.length-a.length);
+function autoTerms(root){ const keys=TERM_KEYS(); const skip=n=>{ for(let e=n.parentNode;e&&e!==root;e=e.parentNode){ const tg=e.tagName; if(tg==='H2'||tg==='H3'||tg==='SVG'||tg==='svg'||tg==='BUTTON'||(e.classList&&(e.classList.contains('term')||e.classList.contains('src')||e.classList.contains('tag')||e.classList.contains('kv')))) return true; } return false; };
+  keys.forEach(k=>{ if(root.querySelector(`.term[data-term="${k}"]`)) return; const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())){ if(skip(n)) continue; const i=n.nodeValue.indexOf(k); if(i<0) continue; const before=n.nodeValue[i-1]||' ', after=n.nodeValue[i+k.length]||' '; if(/[A-Za-z0-9₀-₉⁰-⁹–-]/.test(k[0])&&/[A-Za-z0-9]/.test(before)) continue; if(/[A-Za-z0-9]/.test(k[k.length-1])&&/[A-Za-z0-9]/.test(after)) continue; const s=document.createElement('span'); s.className='term'; s.dataset.term=k; s.textContent=k; const rest=n.splitText(i); rest.nodeValue=rest.nodeValue.slice(k.length); n.parentNode.insertBefore(s,rest); return; } }); }
+const CST={open:null,tab:0}; // 当前打开的卡与节
+const OV=document.createElement('div'); OV.className='ov'; OV.id='ov';
+const XP=document.createElement('section'); XP.className='card c2x'; XP.id='xp'; XP.setAttribute('role','dialog'); XP.setAttribute('aria-modal','true');
+XP.innerHTML=`<div class="head"><span class="kind"></span><span class="time"></span><span class="sp"></span><button class="x" aria-label="关闭">×</button></div>
+  <div class="bd"><div class="vis"><div class="vp2"><div class="visin" style="width:100%;height:100%;display:grid;place-items:center"></div><div class="vtag"></div><div class="vcap">数据与结构均来自原文；示意部分已在图内注明</div></div></div><aside class="side"><div class="tabs"></div><div class="sbody"></div><div class="snav"></div></aside></div>`;
+OV.appendChild(XP);
+function closeCard(){ if(!CST.open) return; const id=CST.open; CST.open=null; CST.tab=0; OV.classList.remove('show'); document.body.classList.remove('lock'); setTimeout(()=>{ if(!CST.open) OV.remove(); },200); const t=$('#card-'+id); if(t) t.focus({preventScroll:true}); }
+function openCard(id,tab){ CST.open=id; CST.tab=tab||0; renderCard(CARDS.find(c=>c.id===id)); if(!OV.parentNode){ document.body.appendChild(OV); document.body.classList.add('lock'); requestAnimationFrame(()=>requestAnimationFrame(()=>OV.classList.add('show'))); } }
+OV.addEventListener('click',e=>{ if(e.target===OV) closeCard(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&CST.open) closeCard(); });
+function renderCard(c){ const st=CST; const el=XP; const tab=c.tabs[st.tab]; try{ tip.classList.remove('on'); }catch(e){}
+  el.querySelector('.head .kind').textContent=c.kind; el.querySelector('.head .time').textContent=`${c.tabs.length} 节 · 第 ${st.tab+1} 节：${tab.t}`;
+  el.querySelector('.vp2 .visin').innerHTML=renderVis(c,tab);
+  el.querySelector('.vtag').innerHTML=`<span class="tag">${c.kind}</span><span>${tab.t}</span>`;
+  el.querySelector('.tabs').innerHTML=c.tabs.map((t,i)=>`<button class="${i===st.tab?'on':''}" data-i="${i}">${t.t}</button>`).join('');
+  el.querySelector('.sbody').innerHTML=T(tab.html); autoTerms(el.querySelector('.sbody')); el.querySelector('.sbody').scrollTop=0;
+  const nx=c.tabs[st.tab+1]; el.querySelector('.snav').innerHTML=`<button class="ghostb" data-go="-1" ${st.tab===0?'disabled':''}>←</button>${nx?`<button class="nextb ready" data-go="1"><span>下一节<small>${nx.t}</small></span><i>→</i></button>`:`<button class="nextb ready" data-go="close"><span>看完了，关闭<small>回到论文页</small></span><i>×</i></button>`}`;
+  el.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{ st.tab=+b.dataset.i; renderCard(c); }));
+  el.querySelectorAll('.snav button').forEach(b=>b.addEventListener('click',()=>{ const g=b.dataset.go; if(g==='close'){ closeCard(); return; } st.tab=Math.max(0,Math.min(c.tabs.length-1,st.tab+(+g))); renderCard(c); }));
+  el.querySelectorAll('.qn,.gnode').forEach(g=>g.addEventListener('click',()=>{ const i=+g.dataset.i; const t=c.nodeTab?c.nodeTab(i):i; st.tab=Math.max(0,Math.min(c.tabs.length-1,t)); renderCard(c); }));
+}
+XP.querySelector('.x').addEventListener('click',closeCard);
+(function(){ const host=$('#cards');
+  CARDS.forEach(c=>{ const el=document.createElement('section'); el.className='card c2'; el.id='card-'+c.id; el.tabIndex=0; el.setAttribute('role','button');
+    if(c.wide) el.classList.add('wide');
+    el.innerHTML=`<div class="mini">${miniVis(c)}</div><div class="tb2"><div class="row"><span class="kind">${c.kind}</span><span class="n">${c.tabs.length} 节</span></div><h2>${c.h2}</h2><p>${T(c.brief)}</p><div class="go">打开 <i>→</i></div></div>`;
+    host.appendChild(el); autoTerms(el.querySelector('.tb2 p'));
+    el.addEventListener('click',e=>{ if(e.target.closest('.term')) return; openCard(c.id,0); });
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openCard(c.id,0); } }); });
+})();
+
+(function(){ const el=$('#abs'); if(!el) return; el.innerHTML=T(ABSTRACT); autoTerms(el); })();
+</script>
+<style>
+/* ===== 通用卡片（探索模型之外的六张） ===== */
+#cards{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:16px}
+.c2{width:calc((100% - 28px)/3)}
+@media(max-width:820px){.c2{width:calc((100% - 14px)/2)}}
+@media(max-width:520px){.c2{width:100%}}
+.c2{margin:0;cursor:pointer;position:relative;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s,transform .15s}
+.c2:hover{border-color:#b9bcc8;transform:translateY(-1px)}
+.c2.wide{grid-column:1/-1;flex-direction:row;align-items:stretch}
+.c2.wide .mini{width:320px;flex:none;height:auto;margin:10px 0 10px 10px}
+.c2.wide .tb2{padding:14px 20px}
+.c2.wide .tb2 p{max-width:70ch}
+@media(max-width:820px){.c2.wide{flex-direction:column}.c2.wide .mini{width:auto;height:118px;margin:10px 10px 0}}
+.c2 .mini{height:118px;margin:10px 10px 0;border-radius:12px;background:radial-gradient(110% 90% at 28% 8%,#ffffff 0%,#eef0f6 48%,#e1e5ee 100%);border:1px solid var(--line);display:grid;place-items:center;padding:8px;overflow:hidden}
+.c2 .mini svg{width:100%;height:100%}
+.c2 .tb2{padding:12px 16px 14px;display:flex;flex-direction:column;flex:1}
+.c2 .tb2 .row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.c2 .tb2 .kind{font-size:11.5px;padding:3px 8px;border-radius:999px;background:#f1f1ee;color:var(--ink2)}
+.c2 .tb2 .n{font-size:11.5px;color:var(--ink3);margin-left:auto}
+.c2 .tb2 h2{font-size:15px;line-height:1.4;margin:0 0 6px;font-weight:650;letter-spacing:-.005em}
+.c2 .tb2 p{margin:0;color:var(--ink2);font-size:12.5px;line-height:1.5}
+.c2 .tb2 .go{margin-top:auto;padding-top:10px;font-size:12px;color:var(--ink);font-weight:600;display:flex;align-items:center;gap:6px}
+.c2 .tb2 .go i{font-style:normal;transition:transform .15s}
+.c2:hover .tb2 .go i{transform:translateX(3px)}
+.ov{position:fixed;inset:0;z-index:60;background:rgba(22,24,30,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .18s}
+.ov.show{opacity:1}
+.c2x{width:min(1040px,100%);margin:0;box-shadow:0 30px 80px rgba(20,22,30,.28),0 2px 8px rgba(20,22,30,.08);transform:translateY(10px) scale(.985);transition:transform .2s;cursor:default}
+.ov.show .c2x{transform:none}
+.c2x .head{padding-right:12px}
+.c2x .head .kind{background:#f1f1ee;color:var(--ink2)}
+.c2x .head .x{width:34px;height:34px;padding:0;border-radius:10px;font-size:18px;line-height:1;display:grid;place-items:center;background:#fff;border:1.5px solid #b9bcc8;color:var(--ink)}
+.c2x .head .x:hover{border-color:var(--ink)}
+.c2x .bd{display:grid;grid-template-columns:1fr 430px;height:clamp(440px,calc(100vh - 150px),540px)}
+body.lock{overflow:hidden}
+.visw{width:100%;height:100%;box-sizing:border-box;padding-bottom:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:0}
+.visw>svg{flex:1;min-height:0;width:100%}
+.visw>div{flex:0 0 auto;max-height:calc(100% - 30px);overflow:hidden}
+.c2x .vis .visw>div svg{height:auto;max-height:none}
+.viref{flex:none;font-size:11px;color:var(--ink2);text-decoration:none;border-bottom:1px dashed var(--ink3);cursor:pointer}
+.viref:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.ofig{margin:0;height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:0}
+.ofig img{max-width:100%;max-height:calc(100% - 44px);object-fit:contain;border-radius:10px;background:#fff;padding:6px;border:1px solid #dfe2e9;box-sizing:border-box}
+.ofig figcaption{font-size:11px;line-height:1.45;color:var(--ink2);text-align:center;max-width:60ch;padding:0 8px}
+.ofig figcaption b{color:var(--ink)}
+.abs{display:grid;grid-template-columns:1fr;gap:10px;margin:4px 0 24px;padding:16px 20px;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+.abs div{font-size:14px;line-height:1.65;color:var(--ink2);max-width:80ch}
+.abs b{display:block;font-size:11.5px;color:var(--ink3);letter-spacing:.06em;margin-bottom:4px;font-weight:600}
+.abs .foot{grid-column:1/-1;font-size:11.5px;color:var(--ink3);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+@media(max-width:720px){.abs{grid-template-columns:1fr}}
+.tip{z-index:200}
+.gnode.term{cursor:pointer}
+@media(max-width:860px){.c2x .bd{grid-template-columns:1fr;height:auto}}
+.c2x .vis{padding:14px 12px 14px 16px;min-width:0;min-height:0;display:flex}
+.c2x .vis .vp2{flex:1;position:relative;border-radius:16px;overflow:hidden;background:radial-gradient(110% 90% at 28% 8%,#ffffff 0%,#eef0f6 48%,#e1e5ee 100%);border:1px solid #dfe2e9;display:grid;place-items:center;padding:14px}
+.c2x .vis svg{width:100%;height:100%;max-height:100%}
+.c2x .vis .vcap{position:absolute;left:12px;bottom:10px;font-size:11px;color:var(--ink3);pointer-events:none}
+.c2x .vis .vtag{position:absolute;left:12px;top:10px;font-size:11.5px;color:var(--ink2);display:flex;gap:8px}
+.c2x .side{border-left:1px solid var(--line);padding:14px 16px 12px;display:flex;flex-direction:column;background:#fbfbfa;min-width:0;min-height:0}
+.c2x .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.c2x .tabs button{padding:5px 11px;font-size:12.5px}
+.c2x .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.c2x .sbody{flex:1;overflow-y:auto;min-height:0;padding-right:4px;scrollbar-width:thin}
+.c2x .sbody h3{font-size:16px;line-height:1.38;margin:0 0 6px}
+.c2x .sbody p{font-size:12.5px;color:var(--ink2);margin:0 0 8px;line-height:1.5}
+.c2x .sbody p b{color:var(--ink)}
+.c2x .kv{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 8px}
+.c2x .kv div{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#fff}
+.c2x .kv b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
+.c2x .kv span{font-size:11.5px;color:var(--ink2)}
+.c2x .kv i{display:block;font-style:normal;font-size:10.5px;color:var(--ink3)}
+.c2x .note{font-size:12px;color:var(--ink);line-height:1.5;padding:7px 10px;border-radius:9px;background:#f7f7f4;border-left:3px solid var(--ink);margin:6px 0}
+.c2x .note.ed{border-left-color:#d3742a;background:#fbf3ea}
+.c2x .note.ok{border-left-color:var(--ok)}
+.c2x .tag{font-size:10.5px;padding:1px 7px;border-radius:999px;background:var(--learn-bg);color:var(--learn-ink);white-space:nowrap}
+.c2x .tag.obs{background:#f1f1ee;color:var(--ink2)}
+.c2x .tag.ed{background:#fbeee1;color:#9a4f14}
+.c2x .src{font-size:11.5px;color:var(--ink3);margin-top:6px}
+.c2x .snav{flex:none;display:flex;gap:8px;align-items:stretch;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.c2x .snav .ghostb{width:42px;padding:0;border-radius:12px;font-size:16px;flex:none;background:#fff;border:1.5px solid #b9bcc8;color:var(--ink)}
+.c2x .nextb small{max-width:300px}
+.c2x table.tb{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 8px}
+.c2x table.tb td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+.c2x table.tb td:first-child{color:var(--ink3);width:38%}
+.c2x table.tb td b{color:var(--ink);font-variant-numeric:tabular-nums}
+.c2x .refl{font-size:12px;color:var(--ink2);margin:0;padding:0;list-style:none}
+.c2x .refl li{padding:5px 0;border-bottom:1px dashed var(--line);line-height:1.4}
+.c2x .refl li b{color:var(--ink);font-weight:600}
+.c2x .refl li em{font-style:normal;color:var(--ink3);font-size:11px}
+.gnode{cursor:pointer}
+.gnode:hover circle{stroke:var(--ink)}
+.qn{cursor:pointer}
+.qn:hover rect{stroke:var(--ink)}
+</style>
+</body>
+</html>

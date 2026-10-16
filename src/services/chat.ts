@@ -9,12 +9,39 @@ export interface StreamCallbacks {
   onToken: (token: string) => void
   onError: (error: string) => void
   onDone: () => void
+  onStatus?: (status: string) => void
+}
+
+export interface ChatTemplate {
+  id: string
+  name: string
+  description: string
+  tags: string[]
+  palette: string[]
+  preview_url: string
+  default_prompt: string
+}
+
+export interface TemplateOptions {
+  template_id?: string
+  template_prompt?: string
+  template_reference?: boolean
+}
+
+export async function loadChatTemplates(): Promise<ChatTemplate[]> {
+  const health = await fetch('/api/v1/health', { credentials: 'same-origin' })
+  if (!health.ok) throw new Error('无法连接对话服务')
+  const response = await fetch('/api/v1/chat/templates', { credentials: 'same-origin' })
+  if (!response.ok) throw new Error('模板加载失败')
+  const data = await response.json()
+  return Array.isArray(data.templates) ? data.templates : []
 }
 
 export async function sendChatStream(
   messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
   callbacks: StreamCallbacks,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  options: TemplateOptions = {},
 ): Promise<void> {
   let response: Response
   try {
@@ -24,7 +51,7 @@ export async function sendChatStream(
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, ...options }),
       signal,
     })
   } catch (err: unknown) {
@@ -84,6 +111,11 @@ export async function sendChatStream(
 
           try {
             const data = JSON.parse(dataStr)
+            if (currentEvent === 'status') {
+              callbacks.onStatus?.(data.status)
+              currentEvent = 'message'
+              continue
+            }
             if (currentEvent === 'error' || data.code || data.error) {
               const msg = data.message || (typeof data.error === 'string' ? data.error : data.error?.message) || '生成中断'
               callbacks.onError(msg)
@@ -99,7 +131,7 @@ export async function sendChatStream(
         }
       }
     }
-    callbacks.onDone()
+    callbacks.onError('数据流在完成前结束，已保留收到的内容，请重试。')
   } catch (err: unknown) {
     if (err instanceof DOMException && err.name === 'AbortError') {
       callbacks.onDone()

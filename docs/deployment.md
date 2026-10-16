@@ -1,6 +1,14 @@
 # 配置与部署
 
-此版本采用一个 FastAPI 进程、进程内异步 worker 和一个 SQLite 数据库。前端使用 HTTP 轮询，模型请求 `stream=false`；不需要 SSE、WebSocket、Redis 或独立任务网关。
+此版本采用一个 FastAPI 进程、进程内异步 worker 和一个 SQLite 数据库。调研任务使用 HTTP 轮询和非流式模型请求；AI 对话使用 `/api/v1/chat/stream` 的 SSE 流。无需 WebSocket、Redis 或独立任务网关。
+
+## AI 对话与报告模板
+
+`/#/chat` 提供15个报告模板、风格搜索和可编辑默认提示词。模板源码保存在 `backend/just_read/templates`，缩略图位于 `public/chat-templates`，构建前端时会复制进 `dist`。默认由后端附加当前选中模板的源码；取消“附带原案例源码”后只发送风格提示词。部署时必须保留后端模板目录。
+
+对话、模板选择及生成内容保存在浏览器 IndexedDB，刷新后可恢复，同一浏览器的不同 Origin 不共享这些记录。完整 HTML 可以在隔离 iframe 内预览并下载；预览禁止连接外部资源。
+
+模板生成默认每段24,000 token、最多三段正文、总时限600秒；空响应最多额外重试一次，未指定预算且耗尽额度时重试最多32,000 token。Kimi K3 经 OpenRouter 调用时使用 `reasoning.effort=low`，避免默认最高思考强度耗尽正文预算。客户端需处理 SSE 的 `status`、`error` 和 `[DONE]`；HTTP 200不代表生成完成。反向代理应关闭此接口的响应缓冲，并允许长时间流式响应。
 
 ## 环境变量
 

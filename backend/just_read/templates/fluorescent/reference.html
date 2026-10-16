@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>06-迁移体-黑底荧光交互图解-run-63-opus55</title>
+<meta name="description" content="迁移体是什么、最新研究进展与主要团队、它和公众有什么关系。依据原始论文与机构发布，资料截至 2026-10-12。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305080b'/%3E%3Cpath d='M52 30 C40 30 30 30 14 22 M52 30 C38 34 26 40 16 46' stroke='%2339ff9f' stroke-width='2' fill='none'/%3E%3Ccircle cx='14' cy='22' r='7' fill='none' stroke='%2339ff9f' stroke-width='3'/%3E%3Ccircle cx='16' cy='46' r='5' fill='none' stroke='%23ff4fd8' stroke-width='3'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#04070a; --panel:rgba(14,24,32,.72); --line:rgba(120,255,200,.14);
+  --ink:#e8f3ef; --ink2:#a9bdb6; --ink3:#6f8780;
+  --gfp:#39ff9f; --wga:#ff4fd8; --cy:#49d6ff; --amb:#ffc857; --red:#ff6b6b;
+  --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-snap-type:y proximity;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--gfp);text-decoration:none;border-bottom:1px solid rgba(57,255,159,.35)}
+a:hover{border-bottom-color:var(--gfp)}
+section{position:relative;min-height:100vh;min-height:100svh;scroll-snap-align:start;padding:88px 6vw 72px;display:flex;flex-direction:column;justify-content:center}
+.wrap{max-width:1160px;margin:0 auto;width:100%}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--gfp);text-transform:uppercase;margin:0 0 14px;display:flex;gap:10px;align-items:center}
+.kicker::before{content:"";width:22px;height:1px;background:currentColor}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+h2{font-size:clamp(28px,4.2vw,48px);margin-bottom:18px;text-wrap:balance}
+h3{font-size:19px;margin-bottom:6px}
+p{margin:0 0 14px}
+.lead{font-size:clamp(17px,1.6vw,20px);color:var(--ink2);max-width:46em}
+.muted{color:var(--ink3)}
+.small{font-size:14px;line-height:1.65}
+.mono{font-family:var(--mono)}
+.g{color:var(--gfp)} .m{color:var(--wga)} .c{color:var(--cy)} .a{color:var(--amb)}
+.grid-bg::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(120,255,200,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(120,255,200,.035) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;backdrop-filter:blur(6px)}
+.deep{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 14px}
+.deep a{border:0;color:var(--cy)} .deep a::after{content:" ↗"}
+
+#bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gfp),var(--wga));z-index:50;width:0}
+header.top{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:center;padding:14px 6vw;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--ink3);pointer-events:none;background:linear-gradient(var(--bg),rgba(4,7,10,0))}
+header.top b{color:var(--ink);font-weight:600}
+header.top .cur{color:var(--gfp)}
+nav.dots{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:12px}
+nav.dots a{border:0;display:flex;align-items:center;justify-content:flex-end;gap:10px;color:var(--ink3);font-size:12px}
+nav.dots a span{opacity:0;transform:translateX(6px);transition:.25s;white-space:nowrap;background:rgba(4,7,10,.85);padding:2px 8px;border-radius:6px}
+nav.dots a:hover span,nav.dots a.on span{opacity:1;transform:none}
+nav.dots a i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink3);transition:.25s;flex:none}
+nav.dots a.on i{background:var(--gfp);border-color:var(--gfp);box-shadow:0 0 12px var(--gfp)}
+nav.dots a.on{color:var(--ink)}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:none}
+
+#hero{padding-top:70px;overflow:hidden}
+.lane{position:relative;height:clamp(150px,22vh,220px);margin:0 0 8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:radial-gradient(ellipse at 60% 50%,rgba(57,255,159,.06),transparent 70%)}
+#hero canvas{position:absolute;inset:0;width:100%;height:100%}
+#hero .wrap{position:relative;z-index:2}
+.hud{position:absolute;z-index:1;font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.1em}
+.hud.tl{top:8px;left:10px}.hud.br{bottom:8px;right:10px;text-align:right}
+.hero-title{text-wrap:balance;font-size:clamp(34px,6vw,78px);line-height:1.08;margin:6px 0 18px;max-width:11em}
+.hero-title em{font-style:normal;background:linear-gradient(90deg,var(--gfp),var(--cy) 60%,var(--wga));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:clamp(16px,1.5vw,19px);color:var(--ink2);max-width:36em;margin-bottom:22px;text-shadow:0 1px 12px var(--bg)}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
+.ans{display:block;border:1px solid var(--line);border-radius:16px;padding:16px 18px 14px;background:rgba(6,12,16,.8);backdrop-filter:blur(8px);color:var(--ink);transition:.25s}
+.ans:hover{border-color:var(--gfp);transform:translateY(-3px)}
+.ans .q{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--gfp);margin-bottom:6px}
+.ans:nth-child(2) .q{color:var(--cy)} .ans:nth-child(3) .q{color:var(--wga)}
+.ans p{font-size:14.5px;line-height:1.65;margin:0 0 8px;color:var(--ink2)}
+.ans p b{color:var(--ink)}
+.ans .go{font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.kpis{display:flex;flex-wrap:wrap;gap:10px 34px;margin:4px 0 22px}
+.kpi b{display:block;font-family:var(--mono);font-size:clamp(24px,2.6vw,34px);font-weight:600;color:var(--ink);line-height:1.1}
+.kpi span{font-size:12.5px;color:var(--ink3)}
+.scrollhint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:2;font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.2em;animation:bob 2.4s infinite}
+@keyframes bob{50%{transform:translate(-50%,6px)}}
+
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.ruler svg{width:100%;height:auto;display:block}
+.ruler .rowlab{font-size:13px;fill:var(--ink2)}
+.rbar{transition:opacity .2s}
+.ruler svg:hover .rbar{opacity:.35}.ruler svg .rbar:hover{opacity:1}
+.def{border-left:2px solid var(--gfp);padding:4px 0 4px 16px;margin:16px 0}
+
+#procsvg{width:100%;height:auto;display:block}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 14px}
+.steps button{font:inherit;font-family:var(--mono);font-size:12.5px;background:transparent;color:var(--ink2);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;transition:.2s}
+.steps button.on{background:var(--gfp);color:#02130b;border-color:var(--gfp)}
+.steps button.play{border-style:dashed}
+.stepbox{min-height:150px}
+.stepbox h3{color:var(--gfp)}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:16px;padding:18px 18px 14px;background:linear-gradient(160deg,rgba(18,30,38,.8),rgba(8,14,18,.8));position:relative;overflow:hidden}
+.card .ic{width:44px;height:44px;margin-bottom:8px}
+.card p{font-size:14.5px;line-height:1.7;color:var(--ink2);margin-bottom:8px}
+.card .why{color:var(--ink);font-weight:600}
+.card .ev{font-family:var(--mono);font-size:11.5px;color:var(--ink3)}
+.card::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,var(--glow,rgba(57,255,159,.18)),transparent 70%)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.chip{font:inherit;font-size:13px;border-radius:99px;padding:4px 12px;border:1px solid var(--line);background:transparent;color:var(--ink2);cursor:pointer;display:flex;gap:6px;align-items:center}
+.chip i{width:8px;height:8px;border-radius:50%}
+.chip.off{opacity:.35}
+#tlsvg{width:100%;height:auto;display:block;margin-bottom:10px}
+.tl-list{max-height:50vh;overflow:auto;padding-right:8px;border-top:1px solid var(--line);scrollbar-width:thin;scrollbar-color:var(--ink3) transparent}
+.tl-item{display:grid;grid-template-columns:86px 1fr;gap:14px;padding:12px 6px;border-bottom:1px solid rgba(120,255,200,.07);transition:background .3s}
+.tl-item.hl{background:rgba(57,255,159,.09)}
+.tl-item .d{font-family:var(--mono);font-size:12.5px;color:var(--ink3);padding-top:3px}
+.tl-item h4{margin:0 0 3px;font-size:16px;line-height:1.45;display:flex;gap:8px;align-items:baseline}
+.tl-item h4 i{width:8px;height:8px;border-radius:50%;flex:none;transform:translateY(-2px)}
+.tl-item p{font-size:14.5px;color:var(--ink2);margin:0 0 4px;line-height:1.65}
+.tl-item .src{font-family:var(--mono);font-size:11.5px;color:var(--ink3)}
+.tl-item.hide{display:none}
+.tip{position:fixed;z-index:60;pointer-events:none;background:rgba(6,12,16,.95);border:1px solid var(--gfp);border-radius:10px;padding:8px 12px;font-size:13px;max-width:280px;opacity:0;transition:opacity .15s}
+
+#growsvg{width:100%;height:auto;display:block}
+.bar{transition:height 1s cubic-bezier(.2,.8,.2,1),y 1s cubic-bezier(.2,.8,.2,1)}
+
+.teamwrap{display:grid;grid-template-columns:1.25fr 1fr;gap:30px;align-items:start}
+#netsvg{width:100%;height:auto;display:block}
+#net .node{cursor:pointer;transition:opacity .2s}
+#net .node text{fill:var(--ink)}
+#net .edge{transition:opacity .2s}
+#net.focus .edge{opacity:.08}#net.focus .edge.on{opacity:.9}
+#net.focus .node{opacity:.35}#net.focus .node.on{opacity:1}
+.teaminfo{min-height:260px}
+.teaminfo h3{font-size:21px}
+.teaminfo .aff{font-family:var(--mono);font-size:12px;color:var(--ink3);margin-bottom:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--c)}
+
+.mtx{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.mtx th{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.06em;color:var(--ink3);text-align:center;padding:6px 4px;border-bottom:1px solid var(--line)}
+.mtx th:first-child{text-align:left}
+.mtx td{padding:9px 4px;border-bottom:1px solid rgba(120,255,200,.07);text-align:center;vertical-align:middle}
+.mtx td:first-child{text-align:left}
+.mtx td:first-child b{display:block;font-size:15px}
+.mtx td:first-child small{color:var(--ink3);font-size:12.5px}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(169,189,182,.25)}
+.dot.y{background:var(--gfp);border-color:var(--gfp);box-shadow:0 0 10px rgba(57,255,159,.6)}
+.dot.no{border-style:dashed;border-color:rgba(255,107,107,.55)}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.cols3 .panel h3{font-size:17px}
+.cols3 .panel p{font-size:14.5px;color:var(--ink2);margin:0}
+
+.qs{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 28px;margin-top:10px}
+.qs div{border-top:1px solid var(--line);padding-top:12px}
+.qs b{font-family:var(--mono);color:var(--amb);font-weight:500;margin-right:8px}
+
+.lib{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.lib h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--gfp);font-weight:500;margin-bottom:10px}
+.lib ul{list-style:none;margin:0;padding:0}
+.lib li{font-size:14px;line-height:1.55;padding:8px 0;border-bottom:1px solid rgba(120,255,200,.07)}
+.lib li a{border:0;color:var(--ink)} .lib li a:hover{color:var(--gfp)}
+.lib li span{display:block;color:var(--ink3);font-size:12.5px;font-family:var(--mono)}
+footer{padding:30px 6vw 40px;font-size:13px;color:var(--ink3);border-top:1px solid var(--line)}
+
+@media (max-width:900px){
+  body{font-size:16px}
+  section{padding:76px 16px 56px;min-height:auto}
+  #hero{min-height:100svh}
+  .answers,.cards,.cols3,.lib{grid-template-columns:1fr}
+  .two,.teamwrap{grid-template-columns:1fr!important;gap:20px}
+  .qs{grid-template-columns:1fr}
+  nav.dots{display:none}
+  header.top{padding:12px 16px}
+  .tl-item{grid-template-columns:1fr;gap:2px}
+  .tl-list{max-height:none}
+  .panel{padding:16px}
+  .kpis{gap:10px 24px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<header class="top"><span><b>MIGRASOME</b> / 迁移体</span><span class="cur" id="curlab">00 首屏</span></header>
+<nav class="dots" id="dots" aria-label="章节导航"></nav>
+<div class="tip" id="tip"></div>
+
+<!-- 00 HERO -->
+<section id="hero" data-name="首屏">
+  <div class="wrap">
+    <p class="kicker">前沿细胞生物学 · 资料截至 2026-10-12</p>
+    <div class="lane"><canvas id="hero-cv" aria-hidden="true"></canvas>
+      <div class="hud tl">CH1 TSPAN4-GFP · CH2 WGA · LIVE</div>
+      <div class="hud br">示意动画，非真实比例与速度</div></div>
+    <h1 class="hero-title">细胞爬过的地方，<em>会留下小包裹</em></h1>
+    <p class="hero-sub">这些小包裹叫“迁移体”。它们装着信号分子、RNA，甚至坏掉的线粒体，有的留在原地，有的被别的细胞吸收。2014 年清华大学俞立团队首次报道并命名了迁移体；十多年后，研究已扩展到凝血、血管生成、免疫和肿瘤。</p>
+    <div class="kpis">
+      <div class="kpi"><b class="g">2014</b><span>首次报道</span></div>
+      <div class="kpi"><b>0.5–3<small style="font-size:.5em"> μm</small></b><span>直径，约为红细胞的 1/15 到 2/5</span></div>
+      <div class="kpi"><b class="c">2 → 80</b><span>年发表文献数：2015 年 → 2025 年</span></div>
+      <div class="kpi"><b class="m">0</b><span>项登记的临床试验</span></div>
+    </div>
+    <div class="answers">
+      <a class="ans" href="#what"><div class="q">Q1 · 是什么</div>
+        <p>细胞爬行时，尾部会拉出细长的膜管，叫回缩纤维。纤维的分叉处和末端会鼓出<b>直径 0.5–3 微米的膜泡</b>，里面装着细胞要“寄出”或“扔掉”的东西。纤维断开后，这些膜泡留在细胞走过的路上，它们就是迁移体。</p><span class="go">→ 形态、大小与形成过程</span></a>
+      <a class="ans" href="#timeline"><div class="q">Q2 · 进展与团队</div>
+        <p>近两年的新发现集中在血液和免疫：<b>白细胞的迁移体参与凝血</b>（2024），<b>转移中的癌细胞借迁移体把抗原交给免疫系统</b>（2026，小鼠实验）。俞立团队仍是主力；以色列特拉维夫大学研究膜力学的团队，以及国内多家医院和研究所也在研究迁移体。</p><span class="go">→ 时间线、论文增长、团队地图</span></a>
+      <a class="ans" href="#public"><div class="q">Q3 · 与你何关</div>
+        <p>目前<b>还没有面向公众的检测或药物</b>，也没有登记的临床试验。正在探索的方向有三个：用尿液、血液里的迁移体辅助诊断；用改造的迁移体运送疫苗或药物；把迁移体当作凝血、炎症和肿瘤治疗的新靶点。多数证据仍来自细胞和小鼠实验。</p><span class="go">→ 证据走到了哪一步</span></a>
+    </div>
+  </div>
+  <div class="scrollhint">SCROLL ↓</div>
+</section>
+
+<!-- 01 WHAT -->
+<section id="what" class="grid-bg" data-name="是什么">
+  <div class="wrap two">
+    <div class="rv">
+      <p class="kicker">01 · 是什么</p>
+      <h2>像掰开的石榴一样的膜泡</h2>
+      <p class="lead">俞立团队在培养大鼠肾细胞时，用电子显微镜看到一种大膜泡，里面挤着许多更小的囊泡，看起来像掰开的石榴，所以最初叫它“石榴样结构”。</p>
+      <p>扫描电镜进一步显示，这些膜泡通过细长的膜管连在细胞上。这种膜管叫<b>回缩纤维</b>：细胞向前爬时，尾部仍粘在基底上的部分被拉长，留下一根根细丝。团队用质谱分析发现，膜泡里特别富集一种膜蛋白 <span class="g mono">TSPAN4</span>（属于“四跨膜蛋白”家族）。他们给 TSPAN4 接上绿色荧光蛋白后观察到，只有细胞迁移时才会形成这种膜泡，于是把它改名为 <b>migrasome，即迁移体</b>。</p>
+      <div class="def"><b>它算细胞器还是细胞外囊泡？</b><br><span class="muted">迁移体还连在细胞上时，能像一个局部出口一样把蛋白分泌出去；断开以后，它和外泌体等细胞外囊泡一样，在细胞外漂流。俞立团队在 2025 年的十年综述中认为，把它定义为“参与细胞间通讯的特化细胞器”更准确。</span></div>
+      <div class="deep"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4650581/" target="_blank" rel="noopener">2014 发现论文</a><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12408842/" target="_blank" rel="noopener">十年综述（全文免费）</a><a href="https://doi.org/10.1038/s41421-019-0093-y" target="_blank" rel="noopener">怎样认出迁移体：标志蛋白</a></div>
+    </div>
+    <div class="rv panel ruler">
+      <div class="mono small muted" style="margin-bottom:6px">尺寸对比 · 对数刻度</div>
+      <svg id="rulersvg" viewBox="0 0 520 330" role="img" aria-label="迁移体与其他细胞外囊泡的直径范围对比"></svg>
+      <p class="small muted" style="margin:6px 0 0">迁移体比外泌体大 10 倍以上，来源也不同：外泌体来自细胞内部的多泡体，迁移体则从回缩纤维的膜上鼓出来。迁移体还有两个形态特征：常带一小截纤维“尾巴”，像蝌蚪；内部装有小囊泡。数据来自 Yu &amp; Yu, <i>Cell Research</i> 2025 表 1；红细胞是常识参照。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 HOW -->
+<section id="proc" data-name="怎么长出来">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">02 · 怎么长出来</p>
+      <h2>位置在细胞前端选好，长大发生在细胞身后</h2>
+      <p class="lead">迁移体长在细胞尾部的纤维上，但 2023 年的研究发现，它在哪里生长，在细胞前端就已经标记好了。目前的研究把这个过程分成以下五步，可以逐步点看，也可以自动播放。</p>
+    </div>
+    <div class="rv panel" style="margin-top:10px">
+      <svg id="procsvg" viewBox="0 0 800 250" role="img" aria-label="迁移体形成过程示意动画"></svg>
+      <div class="steps" id="steps"></div>
+      <div class="stepbox" id="stepbox" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 DO -->
+<section id="do" class="grid-bg" data-name="做什么">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">03 · 装什么、做什么</p>
+      <h2>它让细胞可以“定点发货”</h2>
+      <p class="lead">已知迁移体运送的东西有五类：装着分泌蛋白的小囊泡、受损线粒体、mRNA、病毒颗粒，以及吸附在表面的凝血因子。细胞一边走，一边把这些东西留在特定位置，让信号在合适的地点和时间出现。下面六个实验各说明一种用途。</p>
+    </div>
+    <div class="cards" id="cards"></div>
+    <p class="small muted rv" style="margin-top:14px">另有一项 2024 年的研究发现，迁移中的细胞有相当一部分分泌蛋白经迁移体排出，阻断迁移体形成后总分泌量明显下降。作者据此认为，迁移体是迁移细胞的主要分泌途径之一（<a href="https://doi.org/10.1038/s41422-024-00992-7" target="_blank" rel="noopener">Jiao et al., Cell Res 2024</a>）。</p>
+  </div>
+</section>
+
+<!-- 04 TIMELINE -->
+<section id="timeline" data-name="时间线">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">04 · 最新进展</p>
+      <h2>十二年：从一张电镜照片到免疫学期刊</h2>
+      <p class="lead">前五年的研究主要回答迁移体怎样形成；2019 年起，研究进入活体动物；2023 年以后，关于疾病和应用的研究明显增多。最新一项发表于 2026 年 9 月的《自然·免疫学》。点击颜色标签可以按主题筛选，点击圆点可以跳到对应条目。</p>
+    </div>
+    <div class="rv">
+      <div class="chips" id="chips"></div>
+      <svg id="tlsvg" viewBox="0 0 1000 124" role="img" aria-label="迁移体研究里程碑时间分布"></svg>
+      <div class="tl-list" id="tllist"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 GROWTH -->
+<section id="growth" class="grid-bg" data-name="论文增长">
+  <div class="wrap two" style="grid-template-columns:1.4fr 1fr">
+    <div class="rv panel"><svg id="growsvg" viewBox="0 0 640 340" role="img" aria-label="每年迁移体相关文献数量柱状图"></svg></div>
+    <div class="rv">
+      <p class="kicker">05 · 研究热度</p>
+      <h2>2022 年起<br>文献快速增长</h2>
+      <p>标题或摘要提到迁移体的同行评议文献，2021 年只有 9 篇，2022 年增至 24 篇，2025 年达到 80 篇。截至 2026 年 10 月中旬，当年已有 98 篇，超过 2025 年全年。</p>
+      <p>新增文献很多来自医学院和附属医院，常见做法是检查某种疾病中迁移体或相关基因是否增多，或者能否用作标志物。这类结果多数只能说明“相关”。俞立团队在综述中也指出，迁移体与多数疾病之间的因果关系还有待证实。</p>
+      <p class="small muted">统计口径：Europe PMC，检索标题或摘要含 migrasome/migrasomes 的文献，排除预印本，包括综述，按出版年份计数；查询日期 2026-10-12。首篇论文 2014 年 10 月在线发表，计入 2015 年卷期。<a href="data/publications_per_year.csv">下载数据</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- 06 TEAMS -->
+<section id="teams" data-name="研究团队">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">06 · 谁在研究</p>
+      <h2>一个发源地，几个扩展方向</h2>
+      <p class="lead">清华大学俞立课题组发现了迁移体，至今仍是机制和生理功能研究的主力。它和以色列及国内多个团队合作发表论文；另有许多团队从各自的疾病领域独立开展研究。点击节点可以查看该团队的代表论文。</p>
+    </div>
+    <div class="teamwrap">
+      <div class="rv panel" id="net"><svg id="netsvg" viewBox="0 0 560 530" role="img" aria-label="迁移体主要研究团队关系图"></svg>
+        <div class="legend"><span style="--c:var(--gfp)">发现者</span><span style="--c:var(--cy)">与俞立团队合著过</span><span style="--c:var(--wga)">疾病方向（多为独立发表）</span><span style="--c:var(--amb)">方法与工具</span></div>
+      </div>
+      <div class="rv panel teaminfo" id="teaminfo"></div>
+    </div>
+    <p class="small muted rv" style="margin-top:12px">图中只列出发表了代表性原始论文的团队，并非完整名单。团队名称和单位按论文署名的通讯作者及其单位整理。</p>
+  </div>
+</section>
+
+<!-- 07 PUBLIC -->
+<section id="public" class="grid-bg" data-name="与你何关">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">07 · 与公众的关系</p>
+      <h2>离医院还有多远：看证据走到了哪一步</h2>
+      <p class="lead">新闻里常说“迁移体有望用于治疗某种疾病”。判断这类说法时，最有用的是看证据来自哪里：培养皿里的细胞、实验动物、病人样本，还是临床试验。下表根据论文摘要整理，绿点表示该方向已有这一类证据。</p>
+    </div>
+    <div class="rv panel" style="overflow-x:auto"><table class="mtx" id="mtx"></table>
+      <p class="small muted" style="margin:10px 0 0">“临床试验”一列：2026-10-12 在 ClinicalTrials.gov 检索 migrasome，结果为 0 项；未检索其他国家的登记平台。</p></div>
+    <div class="cols3">
+      <div class="panel rv"><h3 class="g">现在</h3><p>普通人还接触不到与迁移体相关的检测或药物。俞立是北京迈格松生物的科学创始人，公司成立于 2022 年。据《中国科学报》2025 年 1 月的报道，公司当时仍处于研发阶段，没有药物产品，已上市的只有供医院、高校科研使用的试剂盒。</p></div>
+      <div class="panel rv"><h3 class="c">可能较早落地：检测</h3><p>迁移体会出现在尿液和血液中。南京的团队发现，足细胞（肾脏过滤屏障上的一种细胞）受损的肾病患者，尿液里来自足细胞的迁移体明显多于健康人；他们还开发了用磁珠和流式细胞仪计数的方法。要从“测得出差异”走到“能用于诊断”，还需要更大规模的临床验证。</p></div>
+      <div class="panel rv"><h3 class="m">更远的设想：治疗与递送</h3><p>俞立团队在综述中设想了三类用途：读取迁移体携带的疾病信息，纠正异常的迁移体生成，以及把迁移体改造成运送药物的载体。其中，工程化迁移体疫苗在小鼠实验中经室温保存后仍然有效，将来也许能减少疫苗对冷链的依赖，但目前尚未进入人体试验。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 OPEN -->
+<section id="open" data-name="未解之谜">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">08 · 尚未解决</p>
+      <h2>还不知道的，比已经知道的多</h2>
+      <p class="lead">俞立团队在十年综述的最后一节列出了这个领域目前的主要缺口。了解这些缺口，有助于判断今后哪些新闻真正填补了空白。</p>
+    </div>
+    <div class="qs rv">
+      <div><b>01</b>人体内有多少迁移体、分布在哪里、能存在多久，目前都不清楚，因为活体显微镜只能观察很窄的区域。作者建议建立一份“迁移体图谱”。</div>
+      <div><b>02</b>还没有找到只在迁移体上出现、能和其他大囊泡区分开的表面标志物，所以很难从血液或组织中把迁移体高纯度地分离出来。</div>
+      <div><b>03</b>器官、肿瘤等实体组织中的迁移体缺少可靠的分离方法：把组织打散时，破碎的细胞会产生大小相近的杂质。</div>
+      <div><b>04</b>形成迁移体会让细胞损失不少膜和物质，作者推测这个过程受到严格调控；但哪些信号触发它、如何触发，相关研究还很少。</div>
+      <div><b>05</b>mRNA 和胞质蛋白如何被挑选进迁移体，仍是空白。已知迁移体只富集细胞里约 200 种 mRNA，挑选机制未知。</div>
+      <div><b>06</b>许多疾病研究只发现迁移体增多与疾病相关。迁移体是病因、结果还是旁观者，多数情况下还没有用“敲除后再补回”的实验来区分。</div>
+    </div>
+    <p class="small muted rv" style="margin-top:18px">来源：<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12408842/" target="_blank" rel="noopener">Yu J &amp; Yu L. A decade of migrasome research. Cell Research 2025</a> 的 “Challenge and future direction” 与 “Cargo-loading mechanisms” 两节，本页为中文转述。</p>
+  </div>
+</section>
+
+<!-- 09 LIBRARY -->
+<section id="library" class="grid-bg" data-name="深读">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">09 · 继续深读</p>
+      <h2>按兴趣继续往下读</h2>
+      <p class="lead">三列从左到右由浅入深。原始论文都附有链接，标“免费”的可以直接读全文。</p>
+    </div>
+    <div class="lib rv" id="lib"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">本页依据公开的原始论文、综述与机构发布整理，资料截至 2026-10-12。论文摘要取自 Europe PMC；“证据阶段”表按摘要判断，没有逐篇精读全文。来源清单见同目录 <a href="sources.md">sources.md</a>，图表数据见 <a href="data/index.html">data/</a>。示意动画只用来说明过程，不代表真实比例和速度。</div>
+</footer>
+
+<script>
+/*DATA_START*/
+const DATA = {
+"themes": {"discovery":["发现与工具","#39ff9f"],"mechanism":["形成机制","#49d6ff"],"function":["生理功能","#ffc857"],"disease":["疾病","#ff4fd8"],"application":["应用","#ff8a5c"]},
+"timeline": [
+ {"date":"2014-10","theme":"discovery","title":"发现并命名迁移体","text":"在大鼠肾细胞中看到回缩纤维上长出的大膜泡，里面装有小囊泡；它的形成依赖细胞迁移，因此命名为 migrasome，并把经它释放胞内物质的过程称为 migracytosis（迁移胞吐）。","src":"Ma L … Yu L. Cell Research","doi":"10.1038/cr.2014.135","team":"清华 俞立"},
+ {"date":"2017-08","theme":"mechanism","title":"整合素必须和对应的基质蛋白配对","text":"细胞表面的整合素要与培养表面上相应的细胞外基质蛋白配对，迁移体才会形成。这解释了为什么培养条件不同，看到的迁移体多少也不同。","src":"Wu D … Yu L. Cell Research","doi":"10.1038/cr.2017.108","team":"清华 俞立"},
+ {"date":"2019-05","theme":"discovery","title":"找到识别迁移体的标志蛋白","text":"筛选出 NDST1、PIGK、CPQ、EOGT 等在迁移体上富集的蛋白，可以用来区分迁移体和外泌体。","src":"Zhao X … Yu L, Chen Y. Cell Discovery","doi":"10.1038/s41421-019-0093-y","team":"清华 俞立"},
+ {"date":"2019-08","theme":"mechanism","title":"TSPAN4 和胆固醇让膜变硬，从而鼓起","text":"四跨膜蛋白和胆固醇聚成微米级的膜区。这片膜比周围硬，被拉伸时不容易变细，于是鼓成泡；在人工膜系统中也能复现。这项工作与以色列膜力学理论学者 Kozlov 合作完成。","src":"Huang Y … Kozlov MM, Yu L. Nature Cell Biology","doi":"10.1038/s41556-019-0367-5","team":"清华 俞立 × 特拉维夫大学"},
+ {"date":"2019-08","theme":"function","title":"首次在活体动物中证明功能：斑马鱼器官形成","text":"斑马鱼胚胎中的迁移体富含趋化因子，聚集在胚盾下方，引导一群细胞到达正确位置；敲除 tspan4a 或 tspan7 后，器官形态发生受损。","src":"Jiang D … Meng A, Yu L. Nature Cell Biology","doi":"10.1038/s41556-019-0358-6","team":"清华 俞立 × 孟安明"},
+ {"date":"2020-09","theme":"function","title":"把 mRNA 和蛋白传给邻近细胞","text":"迁移体里的 mRNA 和蛋白可以被附近细胞吸收，并改变接收细胞的行为。","src":"Zhu M … Yu L. Cell Research","doi":"10.1038/s41422-020-00415-3","team":"清华 俞立"},
+ {"date":"2021-05","theme":"function","title":"线粒体胞吐：把受损线粒体打包排出","text":"线粒体轻度受损时，受损线粒体被运到细胞边缘，装进迁移体排出。这一过程帮助维持线粒体质量；小鼠的中性粒细胞需要它来保持活力。","src":"Jiao H … Yu L. Cell","doi":"10.1016/j.cell.2021.04.027","team":"清华 俞立"},
+ {"date":"2022-02","theme":"mechanism","title":"走得越快越直，迁移体越多","text":"频繁转弯的细胞尾部较窄，拉出的回缩纤维少，迁移体也少；迁移速度越快，迁移体越多。","src":"Fan C … Jiu Y. Journal of Cell Biology","doi":"10.1083/jcb.202109168","team":"中科院上海巴斯德所 酒亚明"},
+ {"date":"2022-11","theme":"function","title":"单核细胞沿途留下迁移体，为血管生长指路","text":"在鸡胚中，巡游的单核细胞留下富含 VEGFA、CXCL12 的迁移体，促进毛细血管生成；减少 TSPAN4 会损害血管形成。","src":"Zhang C … Yu L. Nature Cell Biology","doi":"10.1038/s41556-022-01026-3","team":"清华 俞立"},
+ {"date":"2023-02","theme":"mechanism","title":"分两步形成：张力先鼓包，TSPAN4 再稳住","text":"活细胞成像和仿生膜实验显示，膜张力先在纤维上造出不稳定的小鼓包，TSPAN4 随后聚集过去，让鼓包长大并稳定成迁移体。","src":"Dharan R … Yu L, Sorkin R. Nature Communications","doi":"10.1038/s41467-023-36596-9","team":"特拉维夫大学 Sorkin"},
+ {"date":"2023-07","theme":"mechanism","title":"生长位置在细胞前端就已标记","text":"鞘磷脂合成酶 SMS2 在细胞前端的底面聚成固定的点。细胞走过以后，这些点落在回缩纤维上，成为迁移体的生长位点。","src":"Liang H … Yu L. Nature Cell Biology","doi":"10.1038/s41556-023-01188-8","team":"清华 俞立"},
+ {"date":"2023-07","theme":"disease","title":"巨噬细胞迁移体与脑血管淀粉样病","text":"在患者皮肤活检和小鼠模型中，β 淀粉样蛋白诱导巨噬细胞产生迁移体；这些迁移体粘附在血管上，激活补体，损伤血脑屏障。","src":"Hu M … Lu Z, Cai W. Nature Communications","doi":"10.1038/s41467-023-39693-x","team":"中山大学附属第三医院"},
+ {"date":"2024-06","theme":"disease","title":"尿液中的迁移体可提示肾病","text":"足细胞受损的肾病患者，尿液中来自足细胞的迁移体显著多于健康人；团队开发了用磁珠和流式细胞仪定量的方法。","src":"Yang R … Zen K, Liang H. J Extracellular Vesicles","doi":"10.1002/jev2.12460","team":"南京大学等"},
+ {"date":"2024-06","theme":"mechanism","title":"迁移体是迁移细胞的主要分泌出口","text":"细胞迁移时，装着分泌蛋白的小泡被马达蛋白 Myosin-5a 运到尾部、送进迁移体，再与迁移体膜融合并释放内容物。阻断迁移体形成会显著减少分泌。","src":"Jiao H … Yu L. Cell Research","doi":"10.1038/s41422-024-00992-7","team":"清华 俞立"},
+ {"date":"2024-07","theme":"function","title":"白细胞迁移体是凝血系统的必要部分","text":"小鼠和人的血液中有大量中性粒细胞迁移体，表面富集凝血因子，会聚集到伤口处激活血小板。减少这类迁移体会损害小鼠止血，注射纯化的迁移体可以挽救。","src":"Jiang D … Yu L. Nature Cell Biology","doi":"10.1038/s41556-024-01440-9","team":"清华 俞立"},
+ {"date":"2024-12","theme":"function","title":"把炎症因子打包，随血流定点投送","text":"受细菌内毒素刺激的单核细胞释放富含 TNF-α、IL-6 的迁移体，这些迁移体会在炎症部位快速聚集。","src":"Jiao H … Yu L. Cell Discovery","doi":"10.1038/s41421-024-00749-x","team":"清华 俞立"},
+ {"date":"2025-08","theme":"discovery","title":"十年综述","text":"系统总结迁移体的形成机制、生理功能、疾病关联和研究方法，并列出尚未解决的问题。","src":"Yu J, Yu L. Cell Research","doi":"10.1038/s41422-025-01153-0","team":"清华 俞立"},
+ {"date":"2025-09","theme":"disease","title":"衰老的脑巨噬细胞经迁移体传播衰老","text":"小鼠大脑边界处的巨噬细胞衰老后产生更多迁移体，把衰老信号传给小胶质细胞。用脂质体递送 siRNA 抑制迁移体形成后，老年小鼠的认知有所改善。","src":"Hu M … Lu Z, Cai W. Nature Aging","doi":"10.1038/s43587-025-00956-5","team":"中山大学附属第三医院"},
+ {"date":"2025-11","theme":"application","title":"工程化迁移体疫苗，室温保存后仍有效","text":"用低渗冲击加破坏细胞骨架的方法批量制造类迁移体囊泡。装载新冠病毒刺突蛋白后，它在小鼠体内诱导出抗体并提供保护；室温保存后，结构和免疫效果仍然保持。","src":"Wang D … Yu L, Liu Z. eLife","doi":"10.7554/eLife.97621","team":"清华 俞立"},
+ {"date":"2026-01","theme":"disease","title":"病毒会利用迁移体扩散","text":"在细胞实验中，VSV、HSV-1 感染早期会通过调控 AMFR 和 TSPAN4 增加迁移体，借迁移体传给邻近细胞；感染后期则抑制迁移体形成。","src":"Yu L, … Jiu Y, Cheng L, Ding B. Nature Communications","doi":"10.1038/s41467-025-68220-3","team":"广州国家实验室等"},
+ {"date":"2026-04","theme":"function","title":"生殖细胞边走边借迁移体维持分裂","text":"斑马鱼原始生殖细胞产生的迁移体把生长因子 GDF3 递给相邻的原始生殖细胞，使它们在迁移途中持续增殖。","src":"Liu B … Meng A, Yu L. Nature Communications","doi":"10.1038/s41467-026-71616-4","team":"清华 俞立 × 孟安明"},
+ {"date":"2026-06","theme":"mechanism","title":"GPI 锚定蛋白先启动膨大，四跨膜蛋白负责稳定","text":"超分辨显微镜显示，GPI 锚定蛋白聚成的纳米簇负责启动迁移体膨大，也是分泌发生的位置；四跨膜蛋白聚集区负责让迁移体稳定。","src":"Li X … Yu L. Nature Communications","doi":"10.1038/s41467-026-73674-0","team":"清华 俞立"},
+ {"date":"2026-09","theme":"disease","title":"肿瘤转移时，迁移体把抗原交给免疫系统","text":"在小鼠中，血管里迁移的循环肿瘤细胞产生富含肿瘤抗原的迁移体。这些迁移体被淋巴器官中的抗原呈递细胞捕获，激活 CD8+ T 细胞，从而限制转移；抑制迁移体形成反而使转移增加。","src":"Jiang D … Yu L. Nature Immunology","doi":"10.1038/s41590-026-02641-0","team":"清华 俞立"}
+],
+"pubs": [[2015,2],[2016,0],[2017,1],[2018,2],[2019,6],[2020,3],[2021,9],[2022,24],[2023,30],[2024,48],[2025,80],[2026,98]],
+"teams": [
+ {"id":"yu","name":"俞立课题组","aff":"清华大学生命科学学院 · 膜生物学国家重点实验室","kind":"core","x":280,"y":255,"r":48,
+  "text":"2014 年发现并命名迁移体。此后的研究几乎覆盖领域的每个主要问题：形成机制（TSPAN4、SMS2、PI(4,5)P₂–Rab35、钙与 Syt1、GPI 锚定蛋白），生理功能（器官形成、血管生成、线粒体质量控制、凝血、炎症因子递送），以及应用探索（工程化迁移体疫苗、肿瘤抗原释放）。俞立也是北京迈格松生物的科学创始人。",
+  "links":[["十年综述 Cell Res 2025（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC12408842/"],["凝血 NCB 2024（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC11251984/"],["肿瘤抗原 Nat Immunol 2026","https://doi.org/10.1038/s41590-026-02641-0"],["线粒体胞吐 Cell 2021","https://doi.org/10.1016/j.cell.2021.04.027"]]},
+ {"id":"tau","name":"Sorkin / Kozlov","aff":"以色列 特拉维夫大学 · 膜生物物理","kind":"collab","x":120,"y":105,"r":34,
+  "text":"Michael Kozlov 研究膜力学理论，2019 年与俞立团队一起提出“硬膜区被拉伸后鼓泡”的模型。Raya Sorkin 实验室用光镊和仿生膜管证明，迁移体形成分两步：先由膜张力起泡，再由 TSPAN4 稳定（2023）；2025 年又发现，迁移体更倾向于在纤维的分叉处开始形成。",
+  "links":[["Nat Commun 2023（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC9950420/"],["Biophys J 2025","https://doi.org/10.1016/j.bpj.2024.12.029"]]},
+ {"id":"meng","name":"孟安明团队","aff":"清华大学 · 斑马鱼发育生物学","kind":"collab","x":440,"y":100,"r":30,
+  "text":"提供斑马鱼胚胎模型，与俞立团队合作证明：迁移体在原肠胚期为器官形成提供位置信号（2019）；原始生殖细胞借迁移体在迁移途中维持增殖（2026）。",
+  "links":[["NCB 2019","https://doi.org/10.1038/s41556-019-0358-6"],["Nat Commun 2026","https://doi.org/10.1038/s41467-026-71616-4"]]},
+ {"id":"liugh","name":"刘光慧团队","aff":"中国科学院 · 衰老研究","kind":"collab","x":500,"y":235,"r":28,
+  "text":"与俞立团队合作，在人间充质干细胞和成纤维细胞的多种衰老模型中发现迁移体增多；年轻细胞吸收衰老细胞的迁移体后，会提前出现衰老特征。",
+  "links":[["Life Medicine 2023（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC11749555/"]]},
+ {"id":"jiu","name":"酒亚明团队","aff":"中国科学院上海巴斯德研究所","kind":"collab","x":75,"y":300,"r":28,
+  "text":"研究细胞的迁移方式如何决定迁移体数量：走得越直、越快，迁移体越多（2022，独立发表）。该团队也参与了病毒利用迁移体扩散的研究（2026）。",
+  "links":[["JCB 2022（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC9195050/"],["Nat Commun 2026（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC12891724/"]]},
+ {"id":"pku","name":"Chen Y 团队","aff":"北京大学医学部 基础医学院","kind":"collab","x":205,"y":45,"r":24,
+  "text":"研究迁移体内部的小囊泡从哪里来：Rab10 和 CAV1 标记的囊泡由马达蛋白 Myosin Va 运进迁移体，并在小鼠皮肤伤口愈合中发挥作用（2024，独立发表）。早年参与过迁移体标志物的鉴定。",
+  "links":[["PNAS 2024（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC11287133/"],["标志物 Cell Discov 2019","https://doi.org/10.1038/s41421-019-0093-y"]]},
+ {"id":"tang","name":"唐本忠团队等","aff":"聚集诱导发光探针","kind":"tool","x":505,"y":360,"r":26,
+  "text":"开发能长时间标记迁移体的近红外荧光探针，不用改造基因也能观察迁移体（2025，其中一篇与俞立团队合作）。",
+  "links":[["Biomaterials 2025","https://doi.org/10.1016/j.biomaterials.2025.123213"],["JACS 2025","https://doi.org/10.1021/jacs.5c09607"]]},
+ {"id":"nj","name":"曾科 / 刘志红","aff":"南京大学 · 东部战区总医院国家肾脏病临床医学研究中心","kind":"disease","x":110,"y":445,"r":30,
+  "text":"2020 年报道受损的足细胞会释放迁移体，尿液中的这类迁移体可以作为早期足细胞损伤的指标；2024 年与中国药科大学等单位合作开发定量方法，并在患者尿液中验证。这是目前最接近临床诊断的一条研究线。",
+  "links":[["Kidney Dis 2020","https://doi.org/10.1159/000511504"],["J Extracell Vesicles 2024（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC11162892/"]]},
+ {"id":"sysu","name":"Cai W / Lu Z","aff":"中山大学附属第三医院 神经科","kind":"disease","x":280,"y":475,"r":30,
+  "text":"神经系统方向最活跃的团队之一：发现巨噬细胞迁移体参与脑血管淀粉样病的血脑屏障损伤（2023），以及衰老的脑巨噬细胞经迁移体扩散衰老、影响小鼠认知（2025）。",
+  "links":[["Nat Commun 2023（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC10319857/"],["Nat Aging 2025","https://doi.org/10.1038/s43587-025-00956-5"]]},
+ {"id":"virus","name":"病毒方向","aff":"山东第一医科大学 Zhang L · 中科院武汉病毒所 Hu Q · 广州国家实验室 Ding B 等","kind":"disease","x":450,"y":450,"r":30,
+  "text":"多个团队发现病毒会诱导或利用迁移体：基孔肯雅病毒的一种蛋白能诱导迁移体形成；痘病毒颗粒出现在迁移体内，可能借此躲避药物；HSV-2 可以经迁移体感染新细胞。目前证据主要来自培养细胞。",
+  "links":[["HSV-2 Virol Sin 2023","https://doi.org/10.1016/j.virs.2023.06.001"],["痘病毒 J Infect 2023","https://doi.org/10.1016/j.jinf.2023.05.024"],["AMFR Nat Commun 2026（免费）","https://pmc.ncbi.nlm.nih.gov/articles/PMC12891724/"]]},
+ {"id":"cancer","name":"肿瘤方向","aff":"上海交通大学医学院附属同仁医院等多家医院","kind":"disease","x":55,"y":180,"r":26,
+  "text":"研究肝癌、胰腺癌、骨肉瘤、胶质瘤等肿瘤细胞产生的迁移体如何促进侵袭或抑制免疫，多为细胞和小鼠实验，部分结合患者样本。这些研究认为迁移体帮助肿瘤，而 2026 年《自然·免疫学》的论文发现迁移体帮助免疫系统抵抗转移，说明迁移体在肿瘤中的作用可能因肿瘤类型和情境而不同。",
+  "links":[["肝癌 JECCR 2024（免费）","https://doi.org/10.1186/s13046-024-03082-z"],["胰腺癌 Cancer Lett 2024","https://doi.org/10.1016/j.canlet.2024.217289"]]}
+],
+"edges": [["yu","tau","co"],["yu","meng","co"],["yu","liugh","co"],["yu","jiu","co"],["yu","pku","co"],["yu","tang","co"],["jiu","virus","co"],["yu","virus","co"],["yu","nj","field"],["yu","sysu","field"],["yu","cancer","field"]],
+"evidence": [
+ {"name":"止血与凝血异常","note":"中性粒细胞迁移体","cells":1,"animal":1,"human":1,"hn":"人血中检出","doi":"10.1038/s41556-024-01440-9"},
+ {"name":"肾病早期提示","note":"尿液中的足细胞迁移体","cells":0,"animal":0,"human":1,"hn":"患者尿液","doi":"10.1002/jev2.12460"},
+ {"name":"脑血管淀粉样病","note":"巨噬细胞迁移体损伤血脑屏障","cells":1,"animal":1,"human":1,"hn":"患者皮肤活检","doi":"10.1038/s41467-023-39693-x"},
+ {"name":"抗肿瘤转移免疫","note":"循环肿瘤细胞释放抗原","cells":1,"animal":1,"human":0,"hn":"","doi":"10.1038/s41590-026-02641-0"},
+ {"name":"疫苗与药物递送","note":"工程化迁移体","cells":1,"animal":1,"human":0,"hn":"","doi":"10.7554/eLife.97621"},
+ {"name":"脑衰老与认知","note":"衰老巨噬细胞传播衰老","cells":1,"animal":1,"human":0,"hn":"","doi":"10.1038/s43587-025-00956-5"},
+ {"name":"病毒扩散","note":"VSV、HSV、痘病毒","cells":1,"animal":0,"human":0,"hn":"","doi":"10.1038/s41467-025-68220-3"}
+]
+};
+/*DATA_END*/
+</script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const NS="http://www.w3.org/2000/svg";
+const el=(t,a={},p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const doiUrl=d=>'https://doi.org/'+d;
+const MONO='Menlo, Consolas, monospace';
+const tip=$('#tip');
+function showTip(html,ev){tip.innerHTML=html;tip.style.opacity=1;tip.style.left=Math.min(ev.clientX+14,innerWidth-300)+'px';tip.style.top=(ev.clientY+14)+'px'}
+function hideTip(){tip.style.opacity=0}
+
+/* nav */
+const secs=$$('section');const dots=$('#dots');
+secs.forEach((s,i)=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML=`<span>${String(i).padStart(2,'0')} ${s.dataset.name}</span><i></i>`;dots.appendChild(a)});
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);$$('#dots a').forEach((a,j)=>a.classList.toggle('on',j===i));$('#curlab').textContent=String(i).padStart(2,'0')+' '+e.target.dataset.name}})},{threshold:.4});
+secs.forEach(s=>io.observe(s));
+addEventListener('scroll',()=>{const h=document.documentElement;$('#bar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
+const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);e.target.dispatchEvent(new Event('reveal'))}}),{threshold:.12});
+$$('.rv').forEach(e=>rio.observe(e));
+
+/* hero canvas: a crawling cell leaves migrasomes behind */
+(function hero(){
+  const cv=$('#hero-cv'),ctx=cv.getContext('2d');let W,H,R;const cell={x:0,y:0};let anchors=[],t=0,spawn=0,running=true;
+  function size(){const dpr=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);R=Math.max(22,Math.min(H*0.2,W*0.05));cell.y=H*0.5}
+  size();addEventListener('resize',size);cell.x=W*0.62;
+  function mk(x,y,old){const isM=Math.random()<.62;return{x,y,r:old&&isM?3+Math.random()*6:0,mr:3+Math.random()*7,isM,broken:!!old,fa:old?0:1,life:old?0.45+Math.random()*.55:1,col:Math.random()<.22?'255,79,216':'57,255,159',ph:Math.random()*6.28,link:null}}
+  for(let k=0;k<30;k++)anchors.push(mk(cell.x-R*1.3-k*24-Math.random()*10,cell.y+(Math.random()-.5)*R*1.6,true));
+  function blob(cx,cy){ctx.beginPath();const n=44;for(let i=0;i<=n;i++){const a=i/n*Math.PI*2;let rr=R*(1+.08*Math.sin(a*3+t*.03)+.05*Math.sin(a*5-t*.05));rr*=Math.cos(a)>0?1.22+.1*Math.sin(t*.04+a):0.95;const x=cx+Math.cos(a)*rr*1.15,y=cy+Math.sin(a)*rr*.8;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath()}
+  function frame(){
+    if(!running)return;t++;ctx.clearRect(0,0,W,H);
+    if(!reduce){cell.x+=.42;cell.y+=Math.sin(t*.01)*.15}
+    if(cell.x-R*3>W)cell.x=-R*2;
+    if(!reduce&&++spawn>34){spawn=0;const a=mk(cell.x-R*.95,cell.y+(Math.random()-.5)*R*1.5,false);const prev=anchors.filter(p=>!p.broken).slice(-1)[0];if(prev&&Math.random()<.45)a.link=prev;anchors.push(a)}
+    const rx=cell.x-R*.95;
+    for(const p of anchors){
+      const dx=rx-p.x;const ty=cell.y+(p.y-cell.y)*.35;
+      if(!p.broken){if(dx>R*.4&&p.isM)p.r+=(p.mr-p.r)*.02;if(dx>R*4.5+p.ph*R*.3)p.broken=true}
+      else{p.fa*=.96;p.life-=0.0009}
+      if(p.fa>.02){ctx.strokeStyle=`rgba(57,255,159,${.55*p.fa})`;ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.quadraticCurveTo((p.x+rx)/2,(p.y+ty)/2+6,rx,ty);ctx.stroke();
+        if(p.link&&!p.link.broken){ctx.strokeStyle=`rgba(57,255,159,${.3*p.fa})`;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.link.x,p.link.y);ctx.stroke()}}
+      if(p.r>.5&&p.life>0){const L=Math.max(0,Math.min(1,p.life));const rr=p.r*(1+.05*Math.sin(t*.05+p.ph));
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,rr*3.2);g.addColorStop(0,`rgba(${p.col},${.35*L})`);g.addColorStop(1,`rgba(${p.col},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,rr*3.2,0,7);ctx.fill();
+        ctx.strokeStyle=`rgba(${p.col},${.95*L})`;ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(p.x,p.y,rr,0,7);ctx.stroke();
+        if(rr>5){ctx.fillStyle=`rgba(${p.col},${.7*L})`;for(let k=0;k<3;k++){const a=p.ph+k*2.1;ctx.beginPath();ctx.arc(p.x+Math.cos(a)*rr*.45,p.y+Math.sin(a)*rr*.45,1.2,0,7);ctx.fill()}}
+      }else if(!p.broken){ctx.fillStyle='rgba(57,255,159,.6)';ctx.beginPath();ctx.arc(p.x,p.y,1.4,0,7);ctx.fill()}
+    }
+    anchors=anchors.filter(p=>p.life>0&&p.x>-40&&p.x<W+60);
+    const g=ctx.createRadialGradient(cell.x+R*.3,cell.y,R*.2,cell.x,cell.y,R*1.6);g.addColorStop(0,'rgba(57,255,159,.22)');g.addColorStop(1,'rgba(57,255,159,.03)');
+    blob(cell.x,cell.y);ctx.fillStyle=g;ctx.fill();ctx.strokeStyle='rgba(57,255,159,.85)';ctx.lineWidth=1.6;ctx.shadowColor='#39ff9f';ctx.shadowBlur=14;ctx.stroke();ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(73,214,255,.18)';ctx.strokeStyle='rgba(73,214,255,.6)';ctx.beginPath();ctx.ellipse(cell.x-R*.1,cell.y,R*.42,R*.32,0,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(232,243,239,.6)';ctx.font='11px '+MONO;ctx.fillText('细胞 · 迁移方向 →',cell.x+R*1.5,cell.y-R*.95);
+    const old=anchors.find(p=>p.broken&&p.r>6&&p.x<cell.x-R*5&&p.x>20);
+    if(old){ctx.fillStyle='rgba(232,243,239,.5)';ctx.fillText('迁移体',old.x+old.r+6,old.y-old.r-4)}
+    requestAnimationFrame(frame);
+  }
+  new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!running){running=true;requestAnimationFrame(frame)}else if(!v)running=false},{threshold:0}).observe(cv);
+  requestAnimationFrame(frame);
+})();
+
+/* size ruler (log scale) */
+(function ruler(){
+  const svg=$('#rulersvg');const x0=150,x1=505;const lo=Math.log10(20),hi=Math.log10(12000);
+  const X=v=>x0+(Math.log10(v)-lo)/(hi-lo)*(x1-x0);
+  const rows=[["外泌体",30,150,"#6f8780","来自细胞内的多泡体"],["微囊泡",100,1000,"#6f8780","从质膜直接出芽"],["迁移体",500,3000,"#39ff9f","长在回缩纤维上"],["凋亡小体",1000,5000,"#6f8780","细胞凋亡时碎裂产生"],["大癌小体",1000,10000,"#6f8780","由癌细胞释放"],["人红细胞",7000,8000,"#ff4fd8","常识参照"]];
+  [[20,'20 nm'],[100,'100 nm'],[1000,'1 μm'],[10000,'10 μm']].forEach(([v,l])=>{el('line',{x1:X(v),x2:X(v),y1:20,y2:300,stroke:'rgba(120,255,200,.12)'},svg);const t=el('text',{x:X(v),y:318,'text-anchor':'middle','font-size':11,fill:'#6f8780','font-family':MONO},svg);t.textContent=l});
+  const fmt=v=>v>=1000?(v/1000)+' μm':v+' nm';
+  rows.forEach((r,i)=>{const y=34+i*46;const g=el('g',{class:'rbar'},svg);
+    const lab=el('text',{x:0,y:y+5,class:'rowlab'},g);lab.textContent=r[0];if(r[0]==='迁移体'){lab.setAttribute('style','fill:#39ff9f;font-weight:700')}
+    const sub=el('text',{x:0,y:y+21,'font-size':10.5,fill:'#6f8780'},g);sub.textContent=r[4];
+    el('rect',{x:X(r[1]),y:y-7,width:Math.max(4,X(r[2])-X(r[1])),height:14,rx:7,fill:r[3],opacity:r[0]==='迁移体'?1:.55},g);
+    const v=el('text',{y:y+4,'font-size':10.5,fill:'#a9bdb6','font-family':MONO},g);
+    v.textContent=(r[1]>=1000&&r[2]>=1000)?`${r[1]/1000}–${r[2]/1000} μm`:`${fmt(r[1])}–${fmt(r[2])}`;
+    if(X(r[2])+80>520){v.setAttribute('x',X(r[1])-6);v.setAttribute('text-anchor','end')}else v.setAttribute('x',X(r[2])+6);
+  });
+})();
+
+/* process stepper */
+(function proc(){
+  const svg=$('#procsvg');
+  const STEPS=[
+   {k:'① 定位',cx:50,fib:0,sw:0,tsp:0,brk:0,lab:['SMS2 聚成固定点'],
+    h:'在细胞前端标出生长位置',p:'膜蛋白 SMS2（鞘磷脂合成酶 2）在细胞前端的底面聚成一个个小点，牢牢贴在基底上，不随细胞移动。它把神经酰胺转化为鞘磷脂；鞘磷脂是迁移体成形必需的膜脂。',src:['Liang et al., Nat Cell Biol 2023','10.1038/s41556-023-01188-8']},
+   {k:'② 拉丝',cx:430,fib:1,sw:0,tsp:0,brk:0,lab:['PIP5K1A → PI(4,5)P₂','Rab35 → 整合素 α5'],
+    h:'细胞前进，固定点落到尾部的回缩纤维上',p:'细胞走过之后，这些固定点就落在尾部拉出的回缩纤维上，并依次招来几种分子：激酶 PIP5K1A 生成信号脂质 PI(4,5)P₂，PI(4,5)P₂ 招来 Rab35，Rab35 再把整合素 α5 集中到这里，让位点牢牢锚在细胞外基质上。',src:['Ding et al., Cell Res 2023','10.1038/s41422-023-00811-5']},
+   {k:'③ 起泡',cx:540,fib:1,sw:1,tsp:0,brk:0,lab:['膜张力波动','Ca²⁺ + Syt1 稳住小泡'],
+    h:'膜张力让纤维局部鼓起，钙离子帮助稳住',p:'细胞继续前进，纤维上的膜张力反复波动。就像细长的水流会断成一串水珠，纤维也会局部鼓出小泡，但这些小泡很不稳定。在钙离子存在时，钙传感蛋白 Syt1 结合上去，把小泡稳定成稍大的“前体”。',src:['Dharan et al., Nat Commun 2023；Han & Yu, J Cell Biol 2024','10.1083/jcb.202402060']},
+   {k:'④ 长大',cx:660,fib:1,sw:2,tsp:1,brk:0,lab:['TSPAN4 + 胆固醇','硬膜区拼接 → 膨大'],
+    h:'四跨膜蛋白拼成较硬的膜区，泡越长越大',p:'TSPAN4 等四跨膜蛋白与胆固醇、鞘磷脂聚成微米级的膜区。这片膜比周围硬：纤维被拉伸时，硬的部分不容易变细，只能鼓起来，于是泡越长越大。2026 年的研究补充，GPI 锚定蛋白负责启动膨大，四跨膜蛋白负责稳定。与此同时，装着分泌蛋白的小囊泡被马达蛋白沿纤维运进来（图中粉色小圈）。',src:['Huang et al., Nat Cell Biol 2019；Li et al., Nat Commun 2026','10.1038/s41556-019-0367-5']},
+   {k:'⑤ 留下',cx:900,fib:1,sw:2,tsp:1,brk:1,lab:['回缩纤维断开','留在原地 / 被吞入 / 随血流漂走'],
+    h:'纤维断开，迁移体留在细胞走过的路上',p:'细胞走远后，回缩纤维断开。迁移体可能留在原地，成为局部信号源；也可能被路过的细胞吞入，或随血流漂走。它装载的分泌蛋白通过膜融合释放出去。',src:['Ma et al., Cell Res 2015；Yu & Yu, Cell Res 2025','10.1038/s41422-025-01153-0']}
+  ];
+  const SITE=200,GY=196;const FS=svg.clientWidth<600?1.9:1;
+  el('line',{x1:0,x2:800,y1:GY+8,y2:GY+8,stroke:'rgba(120,255,200,.25)','stroke-dasharray':'3 5'},svg);
+  const sl=el('text',{x:6,y:GY+30,'font-size':11*FS,fill:'#6f8780','font-family':MONO},svg);sl.textContent='基底（细胞外基质）';
+  const fib=el('path',{fill:'none',stroke:'#39ff9f','stroke-width':2},svg);
+  const fib2=el('path',{fill:'none',stroke:'#39ff9f','stroke-width':1.2},svg);
+  const glow=el('circle',{cx:SITE,cy:GY,r:0,fill:'rgba(57,255,159,.13)'},svg);
+  const ms=el('circle',{cx:SITE,cy:GY,r:5,fill:'rgba(4,7,10,.9)',stroke:'#ffc857','stroke-width':2},svg);
+  const tsp=el('g',{},svg);for(let i=0;i<10;i++)el('path',{stroke:'#39ff9f','stroke-width':4,'stroke-linecap':'round',fill:'none'},tsp);
+  const ilv=el('g',{},svg);for(let i=0;i<6;i++)el('circle',{r:3.2,fill:'none',stroke:'#ff4fd8','stroke-width':1.3},ilv);
+  const cellG=el('g',{},svg);
+  el('path',{d:'M-120,0 C-118,-60 -40,-92 40,-80 C110,-70 150,-30 160,0 Z',fill:'rgba(57,255,159,.12)',stroke:'#39ff9f','stroke-width':2},cellG);
+  el('ellipse',{cx:0,cy:-38,rx:42,ry:24,fill:'rgba(73,214,255,.15)',stroke:'#49d6ff','stroke-width':1.5},cellG);
+  const ar=el('text',{x:FS>1?-60:60,y:-96,'font-size':12*FS,fill:'#a9bdb6','font-family':MONO},cellG);ar.textContent='细胞 · 前进 →';
+  const labs=el('g',{},svg);
+  let cur={cx:50,fib:0,sw:0,tsp:0,brk:0},idx=0,timer=null,anim=null;
+  function draw(s){
+    cellG.setAttribute('transform',`translate(${s.cx},${GY+4})`);
+    const rear=s.cx-120;const R=s.sw<1?4+s.sw*6:10+(s.sw-1)*18;const cy=GY-R*.15;
+    if(s.fib>0.01&&rear>SITE){const end=s.brk>.5?SITE+R+40:rear;
+      fib.setAttribute('d',`M${SITE+R},${GY} Q${(SITE+end)/2},${GY-8} ${end},${GY-2}`);fib.setAttribute('opacity',.8*s.fib*(1-.4*s.brk));
+      fib2.setAttribute('d',`M${SITE-R},${GY} L${SITE-90},${GY+6}`);fib2.setAttribute('opacity',.45*s.fib);
+    }else{fib.setAttribute('d','');fib2.setAttribute('d','')}
+    ms.setAttribute('r',R);ms.setAttribute('cy',cy);ms.setAttribute('stroke',s.tsp>.3?'#39ff9f':'#ffc857');
+    glow.setAttribute('r',R*2.2);glow.setAttribute('cy',cy);
+    [...tsp.children].forEach((p,i)=>{const a0=i/10*Math.PI*2,a1=a0+0.38,r=R+.5;p.setAttribute('d',`M${SITE+Math.cos(a0)*r},${cy+Math.sin(a0)*r} A${r},${r} 0 0 1 ${SITE+Math.cos(a1)*r},${cy+Math.sin(a1)*r}`);p.setAttribute('opacity',s.tsp)});
+    [...ilv.children].forEach((c,i)=>{const a=i*1.05+.4;c.setAttribute('cx',SITE+Math.cos(a)*R*.5);c.setAttribute('cy',cy+Math.sin(a)*R*.45);c.setAttribute('opacity',Math.max(0,s.sw-1))});
+  }
+  function labels(st){labs.innerHTML='';el('line',{x1:SITE+46,y1:46,x2:SITE+12,y2:GY-34,stroke:'rgba(255,200,87,.4)','stroke-dasharray':'2 3'},labs);
+    st.lab.forEach((tx,i)=>{const e=el('text',{x:SITE+52,y:(FS>1?34:40)+i*22*FS,'font-size':13*FS,fill:i?'#49d6ff':'#ffc857','font-family':MONO,opacity:0},labs);e.textContent=tx;setTimeout(()=>e.setAttribute('opacity',1),reduce?0:200+i*250)})}
+  function go(i,user){idx=i;const st=STEPS[i];if(user)stop();
+    $$('#steps button[data-i]').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+    $('#stepbox').innerHTML=`<h3>${st.h}</h3><p>${st.p}</p><div class="deep"><a target="_blank" rel="noopener" href="${doiUrl(st.src[1])}">${st.src[0]}</a></div>`;
+    labels(st);
+    const from={...cur};const t0=performance.now(),D=reduce?1:1100;cancelAnimationFrame(anim);
+    const step=now=>{let k=Math.min(1,(now-t0)/D);k=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;['cx','fib','sw','tsp','brk'].forEach(p=>cur[p]=from[p]+(st[p]-from[p])*k);draw(cur);if(k<1)anim=requestAnimationFrame(step)};anim=requestAnimationFrame(step);
+  }
+  const box=$('#steps');STEPS.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.k;b.dataset.i=i;b.onclick=()=>go(i,true);box.appendChild(b)});
+  const pb=document.createElement('button');pb.className='play';pb.textContent='▶ 自动播放';box.appendChild(pb);
+  function stop(){clearInterval(timer);timer=null;pb.textContent='▶ 自动播放'}
+  pb.onclick=()=>{if(timer){stop();return}pb.textContent='❚❚ 暂停';go(0);timer=setInterval(()=>{if(idx>=STEPS.length-1){stop();return}go(idx+1)},4800)};
+  draw(cur);go(0);
+  let auto=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!reduce&&!auto){auto=true;pb.click()}},{threshold:.6}).observe(svg);
+})();
+
+/* function cards */
+(function cards(){
+  const C=[
+   {ic:'embryo',col:'#ffc857',t:'胚胎里的路标',p:'斑马鱼胚胎发育早期，迁移体富含趋化因子 Cxcl12，聚集在胚盾下方的空腔里，把一群“背侧先驱细胞”吸引到正确位置；这群细胞随后形成一个对器官发育很关键的临时结构。去掉迁移体后，器官形态发生出错。',why:'说明迁移体能在活体内提供定点信号。',ev:'斑马鱼 · Nat Cell Biol 2019',doi:'10.1038/s41556-019-0358-6'},
+   {ic:'vessel',col:'#ff4fd8',t:'给新血管指路',p:'在鸡胚的绒毛尿囊膜上，单核细胞来回巡游，把富含促血管生长因子 VEGFA 的迁移体留在路径上；新血管的尖端细胞沿着这条迁移体路径生长。减少单核细胞或 TSPAN4，血管形成都会受损。',why:'说明迁移体留下的位置本身就携带信息。',ev:'鸡胚 · Nat Cell Biol 2022',doi:'10.1038/s41556-022-01026-3'},
+   {ic:'mito',col:'#49d6ff',t:'把受损线粒体排出',p:'线粒体为细胞提供能量。轻度受损的线粒体会被运到细胞边缘，装进迁移体排出，研究者称之为“线粒体胞吐”。阻断这个过程，细胞的线粒体功能下降；小鼠血液中的中性粒细胞需要它来保持活力。',why:'说明迁移体也承担清理功能。',ev:'细胞 + 小鼠 · Cell 2021',doi:'10.1016/j.cell.2021.04.027'},
+   {ic:'clot',col:'#ff6b6b',t:'血液里的凝血“预装包”',p:'中性粒细胞是数量最多的白细胞，它们在血管里爬行时留下大量迁移体。这些迁移体表面吸附并浓缩了肝脏分泌的凝血因子，又带有黏附分子，会优先聚集到伤口，激活血小板，形成血凝块。减少这类迁移体，小鼠止血变差；注射纯化的迁移体可以挽救。',why:'说明迁移体是正常生理系统的必要组成部分。',ev:'小鼠 + 人血样本 · Nat Cell Biol 2024',doi:'10.1038/s41556-024-01440-9'},
+   {ic:'storm',col:'#ff8a5c',t:'炎症因子定点投送',p:'在血流这样快速流动的环境里，信号分子很难在局部保持高浓度。受细菌内毒素刺激的单核细胞把 TNF-α、IL-6 等炎症因子装进迁移体；迁移体随血流到达发炎部位并在那里聚集，形成局部高浓度。',why:'说明迁移体能在血液中定向投递信号。',ev:'小鼠 · Cell Discov 2024',doi:'10.1038/s41421-024-00749-x'},
+   {ic:'rna',col:'#39ff9f',t:'把 mRNA 传给邻近细胞',p:'迁移体被附近细胞吞入后，里面的 mRNA 和蛋白进入新细胞，改变它的行为。迁移体装载的 mRNA 是有选择的：细胞里有几千种 mRNA，迁移体只富集其中约 200 种，挑选机制还不清楚。',why:'说明迁移体能在细胞之间传递遗传信息。',ev:'培养细胞 · Cell Res 2020',doi:'10.1038/s41422-020-00415-3'}
+  ];
+  const icons={
+   embryo:'<circle cx="22" cy="22" r="18" fill="none" stroke="C" stroke-width="1.6"/><circle cx="22" cy="30" r="5" fill="C" opacity=".5"/><circle cx="13" cy="16" r="2.5" fill="C"/><circle cx="20" cy="12" r="2" fill="C"/><circle cx="29" cy="15" r="2.5" fill="C"/>',
+   vessel:'<path d="M4 34 C14 30 18 22 24 18 S36 10 40 6" stroke="C" stroke-width="3" fill="none"/><circle cx="10" cy="14" r="2.5" fill="C"/><circle cx="18" cy="9" r="2.5" fill="C"/><circle cx="27" cy="6" r="2.5" fill="C"/>',
+   mito:'<rect x="4" y="14" width="22" height="14" rx="7" fill="none" stroke="C" stroke-width="1.6"/><path d="M8 21 q3 -5 6 0 t6 0" stroke="C" fill="none"/><circle cx="34" cy="21" r="7" fill="none" stroke="C" stroke-width="1.6" stroke-dasharray="3 2"/>',
+   clot:'<path d="M22 6 C30 16 34 22 34 28 a12 12 0 0 1 -24 0 C10 22 14 16 22 6Z" fill="none" stroke="C" stroke-width="1.6"/><circle cx="18" cy="27" r="3" fill="C"/><circle cx="26" cy="30" r="2.4" fill="C"/>',
+   storm:'<circle cx="22" cy="22" r="9" fill="none" stroke="C" stroke-width="1.6"/><g fill="C"><circle cx="22" cy="6" r="2"/><circle cx="36" cy="16" r="2"/><circle cx="34" cy="33" r="2"/><circle cx="10" cy="33" r="2"/><circle cx="8" cy="16" r="2"/></g>',
+   rna:'<path d="M6 32 q4 -10 8 0 t8 0 t8 0 t8 0" stroke="C" stroke-width="1.8" fill="none"/><circle cx="12" cy="14" r="7" fill="none" stroke="C" stroke-width="1.6"/><path d="M19 14 h12" stroke="C" stroke-dasharray="2 2"/><circle cx="34" cy="14" r="4" fill="C" opacity=".6"/>'
+  };
+  const box=$('#cards');
+  C.forEach(c=>{const d=document.createElement('div');d.className='card rv';d.style.setProperty('--glow',c.col+'33');
+    d.innerHTML=`<svg class="ic" viewBox="0 0 44 44" aria-hidden="true">${icons[c.ic].replaceAll('"C"','"'+c.col+'"')}</svg><h3>${c.t}</h3><p>${c.p}</p><p class="why">${c.why}</p><div class="ev">${c.ev} · <a href="${doiUrl(c.doi)}" target="_blank" rel="noopener">原文 ↗</a></div>`;
+    box.appendChild(d);rio.observe(d)});
+})();
+
+/* timeline */
+(function timeline(){
+  const T=DATA.timeline,TH=DATA.themes;const svg=$('#tlsvg'),list=$('#tllist'),chips=$('#chips');
+  const on=new Set(Object.keys(TH));
+  const X=d=>{const [y,m]=d.split('-').map(Number);return 40+((y+(m-1)/12)-2014)/(2027-2014)*920};
+  for(let y=2014;y<=2026;y++){el('line',{x1:X(y+'-01'),x2:X(y+'-01'),y1:14,y2:96,stroke:'rgba(120,255,200,.08)'},svg);const t=el('text',{x:X(y+'-01')+2,y:116,'font-size':13,fill:'#6f8780','font-family':MONO},svg);t.textContent=y}
+  el('line',{x1:30,x2:970,y1:96,y2:96,stroke:'rgba(120,255,200,.3)'},svg);
+  const stack={};const dotEls=[];
+  T.forEach((it,i)=>{const yr=it.date.slice(0,4);stack[yr]=(stack[yr]||0)+1;const cy=96-stack[yr]*15;
+    const c=el('circle',{cx:X(it.date)+6,cy,r:6,fill:TH[it.theme][1],style:'cursor:pointer'},svg);c.dataset.i=i;dotEls.push(c);
+    c.addEventListener('mousemove',e=>showTip(`<b>${it.date}</b> ${it.title}`,e));c.addEventListener('mouseleave',hideTip);
+    c.addEventListener('click',()=>{const r=$('#tl'+i);r.scrollIntoView({block:'nearest',behavior:'smooth'});r.classList.add('hl');setTimeout(()=>r.classList.remove('hl'),1800)});
+  });
+  T.map((it,i)=>[it,i]).reverse().forEach(([it,i])=>{const d=document.createElement('div');d.className='tl-item';d.id='tl'+i;d.dataset.t=it.theme;
+    d.innerHTML=`<div class="d">${it.date}</div><div><h4><i style="background:${TH[it.theme][1]}"></i>${it.title}</h4><p>${it.text}</p><div class="src">${it.src} · ${it.team} · <a href="${doiUrl(it.doi)}" target="_blank" rel="noopener">DOI ↗</a></div></div>`;list.appendChild(d)});
+  Object.entries(TH).forEach(([k,[n,c]])=>{const b=document.createElement('button');b.className='chip';b.dataset.k=k;b.innerHTML=`<i style="background:${c}"></i>${n} <span class="muted">${T.filter(t=>t.theme===k).length}</span>`;
+    b.onclick=()=>{if(on.size===Object.keys(TH).length){on.clear();on.add(k)}else if(on.has(k)){on.delete(k)}else on.add(k);if(!on.size)Object.keys(TH).forEach(x=>on.add(x));upd()};chips.appendChild(b)});
+  const all=document.createElement('button');all.className='chip';all.textContent='全部';all.onclick=()=>{Object.keys(TH).forEach(x=>on.add(x));upd()};chips.appendChild(all);
+  function upd(){$$('#chips .chip[data-k]').forEach(b=>b.classList.toggle('off',!on.has(b.dataset.k)));dotEls.forEach(c=>c.setAttribute('opacity',on.has(T[c.dataset.i].theme)?1:.12));$$('.tl-item').forEach(r=>r.classList.toggle('hide',!on.has(r.dataset.t)))}
+})();
+
+/* growth chart */
+(function growth(){
+  const svg=$('#growsvg');const P=DATA.pubs;const x0=50,x1=620,y0=290,y1=40,max=100;
+  const bw=(x1-x0)/P.length;const Y=v=>y0-(v/max)*(y0-y1);
+  const defs=el('defs',{},svg);const pat=el('pattern',{id:'hatch',width:6,height:6,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);el('rect',{width:6,height:6,fill:'rgba(57,255,159,.35)'},pat);el('line',{x1:0,y1:0,x2:0,y2:6,stroke:'#39ff9f','stroke-width':2},pat);
+  [0,25,50,75,100].forEach(v=>{el('line',{x1:x0,x2:x1,y1:Y(v),y2:Y(v),stroke:'rgba(120,255,200,.08)'},svg);const t=el('text',{x:x0-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:'#6f8780','font-family':MONO},svg);t.textContent=v});
+  const bars=[];
+  P.forEach(([y,n],i)=>{const x=x0+i*bw+bw*.18,w=bw*.64;const partial=y===2026;
+    const r=el('rect',{class:'bar',x,y:y0,width:w,height:0,rx:3,fill:partial?'url(#hatch)':(y>=2022?'#39ff9f':'#49d6ff'),opacity:.92},svg);bars.push([r,n]);
+    r.addEventListener('mousemove',e=>showTip(`<b>${y}</b>：${n} 篇${partial?'（截至 10 月 12 日）':''}`,e));r.addEventListener('mouseleave',hideTip);
+    const t=el('text',{x:x+w/2,y:y0+16,'text-anchor':'middle','font-size':11,fill:'#6f8780','font-family':MONO},svg);t.textContent="'"+String(y).slice(2);
+    const v=el('text',{x:x+w/2,y:Y(n)-6,'text-anchor':'middle','font-size':11.5,fill:'#e8f3ef','font-family':MONO,opacity:0,class:'bv'},svg);v.textContent=n;
+  });
+  const xi=y=>x0+(y-2015)*bw+bw/2;
+  [[2019,6,'2019 首次进入活体动物',150],[2021,9,'2021 线粒体胞吐（Cell）',120],[2024,48,'2024 参与凝血',95]].forEach(([y,n,t,ly],k)=>{const g=el('g',{opacity:0,class:'ann'},svg);
+    el('line',{x1:xi(y),x2:xi(y),y1:Y(n)-20,y2:ly+4,stroke:'rgba(255,200,87,.5)','stroke-dasharray':'2 3'},g);
+    const tx=el('text',{x:xi(y)+(k===2?-4:-4),y:ly,'font-size':11.5,fill:'#ffc857','text-anchor':k===2?'end':'start'},g);tx.textContent=t});
+  const t2=el('text',{x:x0,y:18,'font-size':12,fill:'#a9bdb6','font-family':MONO},svg);t2.textContent='每年发表的迁移体相关文献（篇）';
+  const t3=el('text',{x:x0,y:34,'font-size':11,fill:'#6f8780','font-family':MONO},svg);t3.textContent='蓝 = 2015–2021 · 绿 = 2022 起 · 斜纹 = 2026 年尚未结束';
+  svg.closest('.rv').addEventListener('reveal',()=>{bars.forEach(([r,n],i)=>setTimeout(()=>{r.setAttribute('y',Y(n));r.setAttribute('height',y0-Y(n))},reduce?0:i*70));setTimeout(()=>$$('#growsvg .bv,#growsvg .ann').forEach(e=>e.setAttribute('opacity',1)),reduce?0:1100)});
+})();
+
+/* team network */
+(function net(){
+  const svg=$('#netsvg');const FS=svg.clientWidth<500?1.35:1;const Tm=DATA.teams;const by=Object.fromEntries(Tm.map(t=>[t.id,t]));
+  const col={core:'#39ff9f',collab:'#49d6ff',disease:'#ff4fd8',tool:'#ffc857'};
+  const eg=el('g',{},svg);
+  DATA.edges.forEach(([a,b,k])=>{const A=by[a],B=by[b];
+    const e=el('line',{x1:A.x,y1:A.y,x2:B.x,y2:B.y,stroke:col[B.kind],'stroke-width':1.4,'stroke-dasharray':k==='field'?'3 5':'',opacity:.55,class:'edge'},eg);e.dataset.a=a;e.dataset.b=b});
+  const ng=el('g',{},svg);
+  Tm.forEach(t=>{const g=el('g',{class:'node',tabindex:0,role:'button','aria-label':t.name},ng);g.dataset.id=t.id;
+    el('circle',{cx:t.x,cy:t.y,r:t.r*1.5,fill:col[t.kind],opacity:.08},g);
+    el('circle',{cx:t.x,cy:t.y,r:t.r,fill:'rgba(4,7,10,.92)',stroke:col[t.kind],'stroke-width':t.kind==='core'?3:1.8},g);
+    const lines=t.name.includes(' / ')?t.name.split(' / '):[t.name];
+    lines.forEach((l,i)=>{const tx=el('text',{x:t.x,y:t.y+4*FS+(i-(lines.length-1)/2)*15*FS,'text-anchor':'middle','font-size':(t.kind==='core'?15:12)*FS,'font-weight':t.kind==='core'?700:500,stroke:'#04070a','stroke-width':3,'paint-order':'stroke'},g);tx.textContent=l});
+    g.addEventListener('click',()=>pick(t.id));g.addEventListener('keydown',e=>{if(e.key==='Enter')pick(t.id)});
+  });
+  const note=el('text',{x:280,y:524,'text-anchor':'middle','font-size':11.5*Math.min(FS,1.2),fill:'#6f8780'},svg);note.textContent='实线：与俞立团队合作发表过论文 · 虚线：研究方向相关';
+  function pick(id){const t=by[id];$('#net').classList.add('focus');
+    const nb=new Set([id]);DATA.edges.forEach(([a,b])=>{if(a===id)nb.add(b);if(b===id)nb.add(a)});
+    $$('#net .node').forEach(n=>n.classList.toggle('on',nb.has(n.dataset.id)));
+    $$('#net .edge').forEach(e=>e.classList.toggle('on',e.dataset.a===id||e.dataset.b===id));
+    $('#teaminfo').innerHTML=`<p class="kicker" style="color:${col[t.kind]}">${{core:'发现者',collab:'合作者',disease:'疾病方向',tool:'工具方向'}[t.kind]}</p><h3>${t.name}</h3><div class="aff">${t.aff}</div><p class="small" style="color:var(--ink2)">${t.text}</p><div class="deep">${t.links.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join('')}</div>`;
+  }
+  pick('yu');
+})();
+
+/* evidence matrix */
+(function mtx(){
+  const t=$('#mtx');t.innerHTML=`<thead><tr><th>研究方向</th><th>细胞实验</th><th>动物实验</th><th>人体样本</th><th>临床试验</th><th>论文</th></tr></thead>`;
+  const tb=document.createElement('tbody');
+  DATA.evidence.forEach(r=>{const tr=document.createElement('tr');
+    tr.innerHTML=`<td><b>${r.name}</b><small>${r.note}${r.hn?' · '+r.hn:''}</small></td>${['cells','animal','human'].map(k=>`<td><span class="dot ${r[k]?'y':''}" title="${r[k]?'已有':'摘要中未见'}"></span></td>`).join('')}<td><span class="dot no" title="无登记试验"></span></td><td><a class="mono small" style="border:0" href="${doiUrl(r.doi)}" target="_blank" rel="noopener">↗</a></td>`;tb.appendChild(tr)});
+  t.appendChild(tb);
+})();
+
+/* library */
+(function lib(){
+  const L=[
+   ['入门 · 中文',[
+    ['迁移体的研究进展（中文综述）','杜万清、俞立 · 中国科学：生命科学 2024','https://www.sciengine.com/doi/pdfView/A1A37CE15F6749369D5119F5E576E270'],
+    ['俞立团队发表迁移体研究十年综述','澎湃新闻 · 2025-08','https://m.thepaper.cn/newsDetail_forward_31481781'],
+    ['Cell：迁移体介导的线粒体质量控制','清华大学新闻网','https://www.tsinghua.edu.cn/info/1175/84592.htm'],
+    ['“快递小哥”与迈格松生物','中国科学报（清华新闻转载）· 2025-01','https://www.tsinghua.edu.cn/info/1182/116486.htm'],
+    ['俞立访谈（中文）','Novus Biologicals','https://www.novusbio.com/faculty/li-yu-interview-mandarin-version']]],
+   ['综述 · 英文',[
+    ['A decade of migrasome research（免费）','Yu J & Yu L · Cell Research 2025','https://pmc.ncbi.nlm.nih.gov/articles/PMC12408842/'],
+    ['Migrasomes（短篇入门）','Jiao H & Yu L · Current Biology 2026','https://doi.org/10.1016/j.cub.2025.12.018'],
+    ['Migrasomes: biogenesis, physiological roles, and therapeutic potentials','Jiao H & Yu L · J Cell Biol 2024','https://doi.org/10.1083/jcb.202403051'],
+    ['The migrasome, an organelle for cell–cell communication','Jiang D, He J, Yu L · Trends Cell Biol 2024','https://doi.org/10.1016/j.tcb.2024.05.003'],
+    ['The Role of Migrasomes in Health and Disease','Jiang D & Yu L · Physiology 2025','https://doi.org/10.1152/physiol.00025.2025']]],
+   ['原始论文 · 数据',[
+    ['发现论文 Discovery of the migrasome（免费）','Ma L … Yu L · Cell Res 2015','https://pmc.ncbi.nlm.nih.gov/articles/PMC4650581/'],
+    ['凝血 Neutrophil-derived migrasomes（免费）','Jiang D … Yu L · Nat Cell Biol 2024','https://pmc.ncbi.nlm.nih.gov/articles/PMC11251984/'],
+    ['工程化迁移体疫苗（免费）','Wang D … Yu L, Liu Z · eLife 2025','https://doi.org/10.7554/eLife.97621'],
+    ['肿瘤转移与抗原释放','Jiang D … Yu L · Nat Immunol 2026','https://doi.org/10.1038/s41590-026-02641-0'],
+    ['Europe PMC：全部迁移体文献（实时）','检索式与本页统计相同','https://europepmc.org/search?query=%28TITLE_ABS%3Amigrasome%20OR%20TITLE_ABS%3Amigrasomes%29%20NOT%20SRC%3APPR'],
+    ['ClinicalTrials.gov：检索 migrasome','临床试验登记','https://clinicaltrials.gov/search?term=migrasome']]]
+  ];
+  $('#lib').innerHTML=L.map(([h,items])=>`<div><h3>${h}</h3><ul>${items.map(([t,s,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a><span>${s}</span></li>`).join('')}</ul></div>`).join('');
+})();
+})();
+</script>
+</body>
+</html>
+<script>window.addEventListener("load",()=>{document.title="06-迁移体-黑底荧光交互图解-run-63-opus55";});</script>

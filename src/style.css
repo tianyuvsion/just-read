@@ -2377,9 +2377,13 @@ button,a {
 
 @media(max-width: 640px) {
 
-  .main-nav > a, .new-research {
+  .new-research {
     font-size: 14px;
   }
+
+  .main-nav > a { min-width: 0; padding: 10px 4px; gap: 4px; font-size: 12px; white-space: nowrap; }
+  .main-nav > a > svg { flex-shrink: 0; }
+  .main-nav .nav-count { display: none; }
 
   .hero p {
     font-size: 14px;

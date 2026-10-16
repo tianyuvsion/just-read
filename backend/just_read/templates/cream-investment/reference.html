@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10-贻如生物-米白绿色投资速读-run-31</title>
+<meta name="description" content="面向早期投资人的贻如生物（SynMetabio）公开资料研究：在做什么、为什么可能成立、走到哪一步、该追问什么。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="../共享素材/ad3f0d566b66636c.css">
+<style>
+:root{
+  --bg:#0d100e; --bg2:#141914; --panel:#1a201b; --line:#2c352d;
+  --ink:#efe8d6; --ink2:#b9b3a3; --mute:#7f8578;
+  --lime:#c8f43a; --spore:#ff8a3d; --teal:#41d1c6; --rose:#ff5d8f;
+  --A:#41d1c6; --B:#c8f43a; --C:#ff8a3d;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --disp:"Space Grotesk","PingFang SC","Noto Sans SC",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ --bg:#f3eee2; --bg2:#ebe4d4; --panel:#fffaf0; --line:#d8cfba; --ink:#1b1f1a; --ink2:#4a4f45; --mute:#7a7a6c; --lime:#5c8a00; --spore:#d9561b; --teal:#0f8f86; --A:#0f8f86; --B:#5c8a00; --C:#d9561b; }
+}
+:root[data-theme="light"]{ --bg:#f3eee2; --bg2:#ebe4d4; --panel:#fffaf0; --line:#d8cfba; --ink:#1b1f1a; --ink2:#4a4f45; --mute:#7a7a6c; --lime:#5c8a00; --spore:#d9561b; --teal:#0f8f86; --A:#0f8f86; --B:#5c8a00; --C:#d9561b; }
+:root[data-theme="dark"]{ --bg:#0d100e; --bg2:#141914; --panel:#1a201b; --line:#2c352d; --ink:#efe8d6; --ink2:#b9b3a3; --mute:#7f8578; --lime:#c8f43a; --spore:#ff8a3d; --teal:#41d1c6; --A:#41d1c6; --B:#c8f43a; --C:#ff8a3d; }
+
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+@media (max-width:860px), (max-height:640px){ html{scroll-snap-type:y proximity} }
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none!important;transition:none!important} }
+a{color:var(--lime)}
+button{font:inherit;color:inherit}
+sup a,.src{font-family:var(--mono);font-size:.72em;text-decoration:none;color:var(--teal);padding:0 .15em}
+.src:hover{text-decoration:underline}
+
+/* top bar */
+.bar{position:fixed;inset:0 0 auto 0;height:52px;display:flex;align-items:center;gap:12px;padding:0 16px;z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--disp);font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.brand i{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--lime),var(--teal));box-shadow:0 0 12px var(--lime)}
+.bar nav{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.bar nav::-webkit-scrollbar{display:none}
+.bar nav a{font-size:13px;color:var(--ink2);text-decoration:none;padding:6px 9px;border-radius:99px;white-space:nowrap}
+.bar nav a.on{background:var(--ink);color:var(--bg)}
+.themebtn{border:1px solid var(--line);background:transparent;border-radius:99px;width:32px;height:32px;cursor:pointer;flex:none}
+.prog{position:fixed;top:52px;left:0;height:2px;background:var(--lime);width:0;z-index:41}
+@media (max-width:860px){ .bar nav{display:none} }
+
+/* screens */
+section.screen{scroll-snap-align:start;min-height:100vh;min-height:100svh;padding:76px 16px 40px;position:relative;display:flex;align-items:center;overflow:hidden}
+.wrap{width:100%;max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:center}
+@media (max-width:960px){ .wrap{grid-template-columns:1fr;gap:22px} }
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);display:flex;gap:10px;align-items:center}
+.kicker b{color:var(--bg);background:var(--lime);padding:2px 7px;border-radius:4px}
+h1,h2{font-family:var(--disp);margin:.35em 0 .4em;line-height:1.18;letter-spacing:-.01em;text-wrap:balance;overflow-wrap:anywhere}
+h1{font-size:clamp(38px,6.4vw,84px)}
+h2{font-size:clamp(26px,3.3vw,42px)}
+.lede{font-size:clamp(15px,1.25vw,17px);line-height:1.75;color:var(--ink2);max-width:36em}
+.deep{margin-top:18px;display:inline-flex;align-items:center;gap:10px;border:1px solid var(--ink);background:transparent;padding:10px 16px;border-radius:99px;cursor:pointer;font-size:14px;transition:.2s}
+.deep:hover{background:var(--ink);color:var(--bg)}
+.deep span{font-family:var(--mono)}
+.tag{font-family:var(--mono);font-size:11px;padding:2px 6px;border-radius:4px;border:1px solid currentColor;white-space:nowrap}
+.t-co{color:var(--spore)} .t-pub{color:var(--teal)} .t-multi{color:var(--lime)}
+.muted{color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.hint{font-size:12px;color:var(--mute);font-family:var(--mono);margin-top:10px}
+
+/* hero */
+#hero .wrap{grid-template-columns:1fr;gap:26px}
+#myc{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+#hero .wrap{position:relative;z-index:1}
+.oneliner{font-size:clamp(16px,1.6vw,21px);line-height:1.65;max-width:46em;color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:960px){ .tiles{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:520px){ .tiles{grid-template-columns:1fr} }
+.tile{all:unset;cursor:pointer;display:block;padding:16px;border-radius:16px;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line);transition:.25s;position:relative}
+.tile:hover,.tile:focus-visible{border-color:var(--lime);transform:translateY(-3px)}
+.tile .q{font-family:var(--disp);font-weight:700;font-size:17px;margin-bottom:6px;display:flex;justify-content:space-between}
+.tile .q:after{content:"↓";color:var(--lime)}
+.tile .a{font-size:14px;line-height:1.6;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:960px){ .stats{grid-template-columns:repeat(2,1fr)} }
+.stat{border-top:1px solid var(--line);padding-top:10px}
+.stat .v{font-family:var(--disp);font-weight:700;font-size:clamp(28px,3.4vw,44px);color:var(--lime)}
+.stat .v small{font-size:.45em;margin-left:3px;color:var(--ink)}
+.stat .l{font-size:13px;color:var(--ink2);line-height:1.5;margin:4px 0}
+.verdict{border-left:3px solid var(--lime);padding:12px 16px;background:color-mix(in srgb,var(--lime) 8%,transparent);border-radius:0 12px 12px 0;font-size:15px;line-height:1.75;max-width:62em}
+.verdict b{color:var(--lime)}
+
+/* process */
+.flow{position:relative;display:flex;justify-content:space-between;gap:4px;margin:6px 0 16px}
+.flow svg.line{position:absolute;left:0;right:0;top:24px;width:100%;height:4px;overflow:visible}
+.flow .dash{stroke:var(--lime);stroke-width:2;stroke-dasharray:6 8;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-28}}
+.step{all:unset;cursor:pointer;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:0}
+.step .dot{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--bg2);border:2px solid var(--line);font-family:var(--mono);font-size:13px;transition:.25s}
+.step .nm{font-size:12px;color:var(--ink2);text-align:center;line-height:1.3}
+.step.on .dot{background:var(--lime);color:#111;border-color:var(--lime);box-shadow:0 0 0 6px color-mix(in srgb,var(--lime) 22%,transparent)}
+.step.on .nm{color:var(--ink)}
+@media (max-width:600px){ .step .dot{width:36px;height:36px;font-size:11px} .flow svg.line{top:18px} .step .nm{font-size:10.5px} }
+.stage{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center;min-height:210px}
+@media (max-width:600px){ .stage{grid-template-columns:1fr} .stage svg{max-width:150px;margin:0 auto} }
+.stage h3{margin:0 0 4px;font-family:var(--disp);font-size:20px}
+.stage .short{color:var(--lime);font-size:14px;margin-bottom:8px}
+.stage p{margin:0;line-height:1.7;font-size:14.5px;color:var(--ink2)}
+.prods{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.prod{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px}
+.prod b{font-family:var(--disp)}
+.prod.on{border-color:var(--spore);background:color-mix(in srgb,var(--spore) 12%,transparent)}
+.prodinfo{font-size:14px;color:var(--ink2);margin-top:8px;min-height:2.6em;line-height:1.6}
+
+/* routes */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:3px;margin-bottom:12px;flex-wrap:wrap}
+.seg button{all:unset;cursor:pointer;padding:7px 14px;border-radius:99px;font-size:13px}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.routeviz{width:100%;height:auto;display:block;border-radius:14px;background:var(--bg2)}
+.facts{margin:10px 0 0;padding-left:1.1em;color:var(--ink2);font-size:14px;line-height:1.7}
+.why4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+@media (max-width:520px){ .why4{grid-template-columns:1fr} }
+.why4 button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+.why4 button b{display:block;font-family:var(--disp);color:var(--lime)}
+.why4 button .d{display:none;color:var(--ink2);font-size:13px;line-height:1.6;margin-top:6px}
+.why4 button.open .d{display:block}
+.price{margin-top:12px}
+.price .row{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;margin:8px 0;font-size:13px}
+.price .track{position:relative;height:18px;background:var(--bg2);border-radius:9px}
+.price .rng{position:absolute;top:0;bottom:0;border-radius:9px;transition:width 1s cubic-bezier(.2,.8,.2,1),left 1s}
+.price .lab{position:absolute;top:-1px;font-family:var(--mono);font-size:11px;white-space:nowrap;padding:0 6px;line-height:20px}
+.axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--mute);margin-left:130px}
+
+/* timeline */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{all:unset;cursor:pointer;font-size:13px;padding:6px 12px;border-radius:99px;border:1px solid var(--line)}
+.tabs button.on{border-color:var(--lime);color:var(--lime)}
+.tl{display:flex;gap:0;overflow-x:auto;position:relative;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding:6px 2px 12px;scroll-snap-type:x proximity}
+.tl button{all:unset;cursor:pointer;flex:none;width:96px;scroll-snap-align:start;text-align:center;position:relative;padding-top:26px}
+.tl button:before{content:"";position:absolute;top:10px;left:0;right:0;height:2px;background:var(--line)}
+.tl button:after{content:"";position:absolute;top:4px;left:calc(50% - 7px);width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--mute);transition:.2s}
+.tl button.on:after{background:var(--lime);border-color:var(--lime);transform:scale(1.25)}
+.tl .d{font-family:var(--mono);font-size:11px;color:var(--mute)}
+.tl .t{font-size:12.5px;line-height:1.35;margin-top:2px}
+.tldetail{min-height:150px}
+.tldetail h3{font-family:var(--disp);margin:0 0 6px;font-size:19px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tldetail p{margin:0;line-height:1.75;color:var(--ink2);font-size:14.5px}
+.lvl{font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;color:#111}
+.lvl.A{background:var(--A)} .lvl.B{background:var(--B)} .lvl.C{background:var(--C)}
+.cap svg{width:100%;height:auto;display:block}
+.fund{display:grid;gap:8px}
+.fund .f{display:grid;grid-template-columns:70px 1fr;gap:10px;align-items:center;font-size:13.5px}
+.fund .f .r{font-family:var(--disp);font-weight:700}
+.fund .f .b{border-radius:8px;padding:8px 10px;background:var(--bg2);transform-origin:left;animation:grow .8s both}
+@keyframes grow{from{transform:scaleX(.2);opacity:0}}
+
+/* evidence */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chips button{all:unset;cursor:pointer;font-size:12.5px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.chips button.on{background:var(--ink);color:var(--bg)}
+.ladder{display:flex;height:16px;border-radius:8px;overflow:hidden;margin-bottom:12px}
+.ladder div{transition:flex 0.6s}
+.claims{max-height:min(56vh,520px);overflow:auto;display:grid;gap:6px;padding-right:4px}
+.claim{all:unset;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-size:14px;line-height:1.55}
+.claim .n{display:none;grid-column:2;font-size:13px;color:var(--ink2)}
+.claim.open .n{display:block}
+.claim.hide{display:none}
+
+/* peers */
+.peers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:520px){ .peers{grid-template-columns:1fr} }
+.flip{all:unset;cursor:pointer;display:block;min-height:200px}
+.flip .in{position:relative;width:100%;height:100%;min-height:200px}
+.flip .fa,.flip .fb{position:absolute;inset:0;border-radius:16px;padding:16px;border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:8px;overflow:auto;transition:opacity .45s,transform .45s}
+.flip .fb{opacity:0;transform:scale(.96) rotate(-1deg);pointer-events:none;background:var(--bg2);font-size:13.5px;line-height:1.65;color:var(--ink2);border-color:var(--spore)}
+.flip.on .fa{opacity:0;transform:scale(.96) rotate(1deg)}
+.flip.on .fb{opacity:1;transform:none;pointer-events:auto}
+.flip:hover .fa{border-color:var(--ink2)}
+.flip .nm{font-family:var(--disp);font-weight:700;font-size:18px}
+.flip .st{font-family:var(--mono);font-size:12px;color:var(--spore)}
+.flip.me .st{color:var(--lime)}
+.flip .fr{font-size:13.5px;color:var(--ink2);line-height:1.6}
+.flip .more{margin-top:auto;font-family:var(--mono);font-size:11px;color:var(--mute)}
+
+/* questions */
+.qtools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.qtools .cnt{font-family:var(--mono);font-size:12px;color:var(--mute);margin-left:auto}
+.copy{all:unset;cursor:pointer;background:var(--lime);color:#111;font-size:13px;font-weight:600;padding:7px 14px;border-radius:99px}
+.qs{max-height:min(58vh,540px);overflow:auto;display:grid;gap:8px;padding-right:4px}
+.qc{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:12px 14px}
+.qc.hide{display:none}
+.qc label{display:flex;gap:10px;cursor:pointer;font-size:14.5px;line-height:1.55}
+.qc input{accent-color:var(--lime);width:18px;height:18px;flex:none;margin-top:2px}
+.qc .cat{font-family:var(--mono);font-size:11px;color:var(--spore)}
+.qc details{margin:6px 0 0 28px;font-size:13px;color:var(--ink2);line-height:1.6}
+.qc summary{cursor:pointer;color:var(--mute);font-size:12px}
+.qc.done{opacity:.6}
+
+/* sources */
+.srcs{max-height:min(62vh,560px);overflow:auto;display:grid;gap:6px}
+.srow{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:baseline;padding:8px 10px;border-radius:10px;border:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.srow:target{border-color:var(--lime);background:color-mix(in srgb,var(--lime) 10%,transparent)}
+.srow .id{font-family:var(--mono);color:var(--teal)}
+.srow a{color:var(--ink);text-decoration:none}
+.srow a:hover{color:var(--lime)}
+.srow .meta{font-family:var(--mono);font-size:11px;color:var(--mute);white-space:nowrap}
+.files a{display:inline-block;margin:4px 8px 0 0;font-family:var(--mono);font-size:12px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.25s;z-index:60}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(620px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:61;transform:translateX(102%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+body.dopen .scrim{opacity:1;pointer-events:auto}
+body.dopen .drawer{transform:none}
+.drawer header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.drawer header h3{margin:0;font-family:var(--disp);font-size:18px;line-height:1.35;flex:1}
+.drawer .x{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);flex:none}
+.drawer .body{overflow:auto;padding:6px 20px 40px;font-size:15px;line-height:1.85}
+.drawer .body ul,.drawer .body ol{padding-left:1.2em}
+.drawer .body li{margin:4px 0}
+.drawer .body sup{font-size:.7em}
+
+.skip{position:absolute;left:-999px}
+.skip:focus{left:16px;top:60px;z-index:99;background:var(--lime);color:#111;padding:6px 10px}
+:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+footer{padding:28px 16px 40px;text-align:center;font-size:12px;color:var(--mute)}
+</style>
+</head>
+<body>
+<a class="skip" href="#what">跳到正文</a>
+<div class="bar">
+  <a class="brand" href="#hero"><i></i>SynMetabio · 速读</a>
+  <nav id="nav"></nav>
+  <button class="themebtn" id="themebtn" aria-label="切换深浅色">◐</button>
+</div>
+<div class="prog" id="prog"></div>
+
+<main>
+<!-- 0 HERO -->
+<section class="screen" id="hero" data-label="总览">
+  <canvas id="myc" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <div class="kicker" id="h-kicker"></div>
+      <h1 id="h-title"></h1>
+      <div class="oneliner" id="h-one"></div>
+    </div>
+    <div class="tiles" id="h-tiles"></div>
+    <div class="stats" id="h-stats"></div>
+    <div>
+      <div class="verdict" id="h-verdict"></div>
+      <button class="deep" data-deep="hero">深读：一页读懂判断依据 <span>→</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- 1 WHAT -->
+<section class="screen" id="what" data-label="做什么">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>01</b>它在做什么</div>
+      <h2>把农业废料发酵成“皮革浆料”，再涂成一卷卷材料</h2>
+      <p class="lede">原料是秸秆、玉米芯一类的剩余物，主角是一株经过筛选和基因编辑的真菌。真菌在发酵罐里长出菌丝体，菌丝体被配成浆料，送上人造革涂布线。点右侧每一步看细节。</p>
+      <button class="deep" data-deep="what">深读：工艺与路线变化 <span>→</span></button>
+    </div>
+    <div class="card">
+      <div class="flow" id="flow"><svg class="line" preserveAspectRatio="none" viewBox="0 0 100 4"><line class="dash" x1="2" y1="2" x2="98" y2="2"/></svg></div>
+      <div class="stage" id="pstage"></div>
+      <div class="hint">▶ 自动播放中 · 点任意一步可暂停</div>
+      <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">
+        <div style="font-size:13px;color:var(--mute)">最后卖出去的是什么：Mulkol® 产品线 <a class="src" href="#src-S6">[S6]</a></div>
+        <div class="prods" id="prods"></div>
+        <div class="prodinfo" id="prodinfo"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 WHY -->
+<section class="screen" id="why" data-label="为何成立">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>02</b>为什么可能成立</div>
+      <h2>不“长”整张菌皮，改接现成的人造革产线</h2>
+      <p class="lede">同行 Bolt Threads 和 MycoWorks 都在规模化这一关退了下来，原因是规模和成本。贻如换了做法：液体发酵按天计，产物做成浆料，借用人造革行业现成的设备连续生产。切换右侧两条路线对比。</p>
+      <button class="deep" data-deep="why">深读：成立的条件 <span>→</span></button>
+    </div>
+    <div class="card">
+      <div class="seg" id="routeseg"><button data-r="a">路线A · 长整张</button><button data-r="b" class="on">路线B · 浆料上产线</button></div>
+      <svg class="routeviz" id="routeviz" viewBox="0 0 600 200" role="img" aria-label="两条工艺路线示意"></svg>
+      <div id="routetext"></div>
+      <div class="why4" id="why4"></div>
+      <div class="price" id="price"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 STAGE -->
+<section class="screen" id="stage" data-label="进展">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>03</b>现在走到哪一步</div>
+      <h2>从 iGEM 队伍到 A 轮：五年换过一次工艺，产能开始落地</h2>
+      <p class="lede">2024 年转向“浆料”路线后，进展明显加快：2025 年合资建线、给安踏联名供货，2026 年 7 月拿到产业资本领投的 A 轮。但计划数字和实际数字之间还没有公开对账。</p>
+      <button class="deep" data-deep="stage">深读：前后对不上的数字 <span>→</span></button>
+    </div>
+    <div class="card">
+      <div class="tabs" id="stabs"><button data-t="tl" class="on">时间线</button><button data-t="cap">产能口径</button><button data-t="fund">融资与团队</button></div>
+      <div id="p-tl">
+        <div class="tl" id="tl"></div>
+        <div class="tldetail" id="tldetail"></div>
+      </div>
+      <div id="p-cap" hidden><div class="cap" id="cap"></div><div class="hint">实心柱 = 计划；斜纹柱 = 公司自称已达到，单位存疑</div></div>
+      <div id="p-fund" hidden><div class="fund" id="fund"></div><div id="team" style="margin-top:14px;font-size:13.5px;color:var(--ink2);line-height:1.7"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 EVIDENCE -->
+<section class="screen" id="evidence" data-label="证据">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>04</b>哪些说法站得住</div>
+      <h2>有工厂、有客户：证据较硬；规模和环保：多靠自述</h2>
+      <p class="lede">13 条关键说法按“谁能为它作证”分级。A：工商或独立第三方可查；B：合作方、高校或多家媒体披露；C：公司自述。按级别筛选，点开看理由。</p>
+      <button class="deep" data-deep="evidence">深读：分级方法与“100% 生物基” <span>→</span></button>
+    </div>
+    <div class="card">
+      <div class="ladder" id="ladder"></div>
+      <div class="chips" id="evchips"></div>
+      <div class="claims" id="claims"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 PEERS -->
+<section class="screen" id="peers" data-label="同行">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>05</b>同行的教训</div>
+      <h2>长得出来不等于卖得起：先行者卡在规模和成本</h2>
+      <p class="lede">两家美国明星公司的经历说明，菌丝体皮革最难的不是做出样品，而是在钱烧完之前把单位成本降下来。翻开卡片看它们怎么退场，以及这对贻如意味着什么。</p>
+      <button class="deep" data-deep="peers">深读：对贻如的含义 <span>→</span></button>
+    </div>
+    <div class="peers" id="peerbox"></div>
+  </div>
+</section>
+
+<!-- 6 ASK -->
+<section class="screen" id="ask" data-label="追问">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>06</b>约谈时追问什么</div>
+      <h2>12 个问题，先问“生物占多少”和“真卖了多少”</h2>
+      <p class="lede">问题按主题分组，每题附“为什么问”和“好的回答应包含什么”。勾选后可一键复制，贴进会议纪要。</p>
+      <button class="deep" data-deep="ask">深读：约谈前自己能查的三件事 <span>→</span></button>
+    </div>
+    <div class="card">
+      <div class="qtools"><div class="chips" id="qchips" style="margin:0"></div><button class="copy" id="copyq">复制问题清单</button><span class="cnt" id="qcnt"></span></div>
+      <div class="qs" id="qs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 SOURCES -->
+<section class="screen" id="sources" data-label="来源">
+  <div class="wrap">
+    <div>
+      <div class="kicker"><b>07</b>来源与扩展</div>
+      <h2>所有说法都能点回原文</h2>
+      <p class="lede">共 18 条公开来源，检索于 2026-10-11。“实读”表示本次打开原页核对过；“摘要”表示只见到检索摘要，未能打开原页。本报告没有使用任何内部材料。</p>
+      <div class="files">同目录文件：<a href="sources.md">sources.md</a><a href="data/sources.json">sources.json</a><a href="data/charts.json">charts.json</a><a href="data/content.json">content.json</a><a href="src/data_src.py">src/</a></div>
+    </div>
+    <div class="card">
+      <div class="chips" id="srcchips"></div>
+      <div class="srcs" id="srcs"></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>贻如生物（SynMetabio）公开资料速读 · 非投资建议 · 资料截至 2026-10-11</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-labelledby="dtitle">
+  <header><h3 id="dtitle"></h3><button class="x" id="dclose" aria-label="关闭">✕</button></header>
+  <div class="body" id="dbody"></div>
+</aside>
+
+<script>
+const DATA = {"hero": {"kicker": "早期投资人速读 · 公开资料研究 · 检索于 2026-10-11", "title": "贻如生物 SynMetabio", "one_liner": "用真菌发酵，把秸秆、玉米芯一类农业废料做成皮革“浆料”，再放到现成的人造革涂布线上生产成卷材料。品牌名 Mulkol®，已用于安踏联名服装。", "tiles": [{"to": "what", "q": "它在做什么", "a": "真菌发酵 → 皮革浆料 → 人造革产线涂布，卖给服装、鞋、家具和包装客户。"}, {"to": "why", "q": "为什么可能成立", "a": "它不像同行那样一张张“长”菌皮，而是做成浆料接进现有产线，正对着同行失败的两个原因：规模和成本。"}, {"to": "stage", "q": "现在走到哪", "a": "2026年7月A轮超亿元；与上市公司聚杰微纤合资建线；公司称年产能1600万、欧洲订单近1亿元。"}, {"to": "ask", "q": "先追问什么", "a": "成品里“生物”的部分到底占多少；产能和订单的真实口径；合资产线的利润怎么分。"}], "stats": [{"v": "2021", "u": "", "l": "成立；源自上科大 iGEM 队", "tag": "公开", "src": "S8"}, {"v": ">1", "u": "亿元", "l": "A轮（2026.07）鄂尔多斯集团、和达金服领投", "tag": "多方报道", "src": "S7"}, {"v": "1600", "u": "万", "l": "年产能，单位“米”与“平方米”说法不一", "tag": "公司口径", "src": "S6"}, {"v": "≈1", "u": "亿元", "l": "法国子公司累计订单，称几乎全来自奢侈品牌", "tag": "公司口径", "src": "S6"}], "verdict": "本报告判断：值得约谈。它选的工艺路线针对了同行退场的主要原因，并且已有能在工商信息里查到的合资产线、合作方自己披露的品牌产品和产业资本领投。但几乎所有经营数字都来自公司自述。最大的未知是：成品里来自发酵的材料占多少——这决定它是一种新材料，还是一种部分生物基的人造革。两种都能做成生意，估值逻辑却不同。"}, "process": [{"k": "feed", "name": "非粮原料", "short": "玉米芯、秸秆、咖啡渣、酒糟、棕榈油废料", "detail": "官网列出的营养来源都是农业或食品加工剩余物，不用玉米淀粉这类粮食原料。公司的理由是两点：便宜、量大；真菌本来就能分解木质纤维素。", "src": ["S1", "S2"]}, {"k": "strain", "name": "菌株筛选", "short": "从自然界挑耐极端环境、长得快的真菌", "detail": "筛选目标是能高效吃掉上述生物质、生长快、代谢稳定的菌株。公司称耐极端环境的菌株可以省掉部分灭菌和降温成本（2024年报道同样提到“省去后续灭菌及降温成本”）。", "src": ["S1", "S5"]}, {"k": "edit", "name": "基因编辑", "short": "让菌株更适合工业化快速生长", "detail": "官网只说用基因编辑提高菌株的工业适应性和生长速度，没有公开改了什么、用什么工具。36氪报道称 AI 用于菌株筛选、基因编辑设计和发酵参数寻优。", "src": ["S1", "S6"]}, {"k": "ferment", "name": "液体发酵", "short": "20吨罐，几天内长出大量菌丝体", "detail": "种子液接种进20吨发酵罐，搅拌并通入无菌空气保证溶氧，控制温度和pH，菌丝体在几天内大量增殖。官网称有4台20吨罐（首页数字“80吨”即4×20）。2024年报道称整个生产环节最快8小时内完成，与“几天”的说法口径不同。", "src": ["S1", "S5"]}, {"k": "slurry", "name": "做成浆料", "short": "发酵产物配成能上人造革产线的“浆料”", "detail": "这是路线的关键一步：发酵得到的生物材料被配制成浆料，与现有人造革生产线兼容。36氪的说法是“微生物发酵直接生产生物基树脂原料”，形成“原料—浆料—皮革”体系。浆料里还有什么成分、发酵产物占多少，公开资料没有交代。", "src": ["S1", "S6"]}, {"k": "coat", "name": "涂布成卷", "short": "在150米自动化涂布线上连续生产", "detail": "浆料在150米长的涂布线上规模化生产，与成熟人造革工艺对接。产线由贻如与深交所上市公司聚杰微纤合资的安徽聚贻科技承担，36氪称为“轻资产合作模式”。", "src": ["S1", "S6", "S9"]}, {"k": "algae", "name": "微藻处理废水", "short": "吸收CO₂、净化培养液、产出液肥", "detail": "公司称用微藻循环系统处理生产废水，同时吸收二氧化碳、释放氧气，把培养基转成液体肥料，实现“零废水、零固废”和“碳负排放”。这些是公司表述，未见公开的第三方核查报告。", "src": ["S1", "S2"]}], "products": [{"name": "Mulkol-3", "pos": "替代平价人造革（对标 PU）", "use": "家具、装饰等", "note": "偏硬质树脂", "src": "S6"}, {"name": "Mulkol-5", "pos": "替代高级真皮", "use": "手袋、服装等中高端", "note": "弹性体材料", "src": "S6"}, {"name": "HORA", "pos": "面向海外奢侈品客户的高端品牌", "use": "奢侈品", "note": "公开细节很少", "src": "S6"}], "routes": {"a": {"name": "路线A：把菌丝体“长”成整张材料", "who": "MycoWorks、Bolt Threads (Mylo) 等", "how": "菌丝在固体基质或托盘表面生长成片，再做增塑、交联、涂层。", "facts": ["专利综述记录的一个案例：模具内2–4天，再在22–25℃下再生长约2周", "单张尺寸受生长设备限制，综述中报告的最大单件约 60米×4米", "多数商业产品仍要加聚氨酯（PU）涂层，影响可降解性"], "src": ["S14"]}, "b": {"name": "路线B：液体发酵 → 浆料 → 人造革涂布线", "who": "贻如（公司描述）", "how": "菌丝体在发酵罐里液体培养，产物配成浆料，用现成的人造革设备连续涂布成卷。", "facts": ["发酵按“几天”计（公司称）", "成卷连续生产，宽幅和长度由涂布线决定，而不是由托盘决定", "可借用人造革行业现有设备和工人，资本开支更低（合资“轻资产”）"], "src": ["S1", "S6"]}}, "why": [{"t": "接现成产线", "d": "浆料能上人造革涂布线，扩产主要靠合作方的设备，不必自建整套新工厂。这正是美国同行 MycoWorks 关掉自建工厂时点出的痛点：工厂资本成本太高。", "src": ["S1", "S12"]}, {"t": "原料便宜", "d": "用秸秆、玉米芯等农业废料而非粮食淀粉，原料成本低且供应量大。", "src": ["S1"]}, {"t": "周期短", "d": "液体发酵按天计，表面固态生长按周计。周期短意味着同样设备一年能出更多批。", "src": ["S1", "S14"]}, {"t": "价格进入采购区间", "d": "公司称多数产品 80–150 元/米，最高约 200 元/米；欧洲品牌用真皮约 300–400 元/米。部分产品成本低于传统油性 PU。", "src": ["S6"]}], "price": [{"label": "欧洲品牌所用真皮", "lo": 300, "hi": 400, "who": "公司引述的行业价格"}, {"label": "贻如 · 多数产品", "lo": 80, "hi": 150, "who": "公司口径"}, {"label": "贻如 · 最高售价", "lo": 200, "hi": 200, "who": "公司口径"}], "timeline": [{"d": "2021", "t": "iGEM 起点", "x": "苏睿任组长的上科大队以“基于贻贝的柔性压感可控降解释药型骨胶水”项目获 iGEM 金奖、全球季军。公司名“贻”即来自贻贝。最初方向是医用粘合材料，不是皮革。", "src": ["S3", "S8"], "lvl": "B"}, {"d": "2021-12", "t": "公司成立", "x": "上海贻如生物科技有限公司成立（工商信息，2021-12-16）。早期业务页面还列有生物基医美材料、重组蛋白材料。", "src": ["S17"], "lvl": "A"}, {"d": "2023-03", "t": "种子轮 + 天使轮", "x": "奇绩创坛领投种子轮，线性资本领投天使轮，合计数千万元。当时的产品叫 Naro：外层是“生物纳米纤维膜”的四层皮革，已完成数百升中试，计划当年四季度达250万㎡/年。", "src": ["S3", "S4"], "lvl": "B"}, {"d": "2024-04", "t": "Pre-A；路线转向浆料", "x": "星空资本领投数千万元。报道称公司“摒弃以往发酵工艺，转为生产皮革浆料”，2023年完成适配人造革产线的全套工艺；规划常州工厂约1000万㎡/年、三期投资；与旷达汽车饰件签战略合作。", "src": ["S5"], "lvl": "C"}, {"d": "2025-04", "t": "合资产线 · 安踏首款", "x": "安徽聚贻科技成立，法定代表人为贻如联合创始人薛睿轩，聚杰微纤参股（工商可查）。公司称同月安踏“骜杰”联名鞋款首发。", "src": ["S9", "S6"], "lvl": "A"}, {"d": "2025-11", "t": "巴黎 Dover Street Market", "x": "ANTAZERO × Kris Van Assche 首发。安踏新闻稿写明秋冬套装用菌丝体皮革（派克大衣、运动夹克等），但没有写供应商名；贻如官网称该材料是 Mulkol®。", "src": ["S10", "S2"], "lvl": "B"}, {"d": "2026-01", "t": "渠道合作", "x": "与进口高端面料商益彩时尚（深圳）签市场合作协议，推广菌丝体蘑菇革。", "src": ["S11"], "lvl": "C"}, {"d": "2026-04→07", "t": "展会与出海", "x": "LUXE PACK 上海展出；布鲁塞尔 Future Fabrics Expo 首次海外参展；加入新中法研究所（NIFC）。法国全资子公司 SynMetabio SAS 设在里昂。", "src": ["S1", "S2"], "lvl": "C"}, {"d": "2026-07", "t": "A轮超亿元", "x": "鄂尔多斯集团、和达金服共同领投，巢生资本跟投，易凯资本任财务顾问。资金用于商业化、产能建设和 AI 驱动的材料迭代。融资主体写作“贻如科技（杭州）有限公司”。", "src": ["S6", "S7", "S8"], "lvl": "B"}], "capacity": [{"label": "2023 计划", "v": 250, "unit": "万㎡/年", "note": "当年四季度目标（Naro 时期）", "src": "S3", "kind": "计划"}, {"label": "2024 规划", "v": 1000, "unit": "万㎡/年", "note": "常州工厂三期合计", "src": "S5", "kind": "计划"}, {"label": "2026Q1 公司称", "v": 1600, "unit": "万㎡/年 或 万米/年", "note": "36氪写“平方米”，官网写“米”；产线在安徽合资公司", "src": "S6", "kind": "公司口径"}], "funding": [{"r": "种子轮", "y": "2023", "amt": "合计数千万元", "lead": "奇绩创坛", "src": "S3"}, {"r": "天使轮", "y": "2023", "amt": "（与种子轮合计）", "lead": "线性资本；奇绩、旦恩资本、险峰K2VC跟投", "src": "S3"}, {"r": "Pre-A", "y": "2024", "amt": "数千万元", "lead": "星空资本；线性、旦恩、奇绩跟投", "src": "S5"}, {"r": "A轮", "y": "2026", "amt": "超1亿元", "lead": "鄂尔多斯集团、和达金服；巢生资本跟投", "src": "S7"}], "team": [{"y": "2023", "n": "约20人", "src": "S4"}, {"y": "2024", "n": "约30人，计划扩至60", "src": "S5"}, {"y": "2026", "n": "“近半年从约20人扩至近70人”", "src": "S6"}], "claims": [{"c": "安徽聚贻科技存在，法定代表人薛睿轩，聚杰微纤参股", "lvl": "A", "note": "证券时报引企查查。持股比例未在原报道中给出；有数据库显示49%，本次未能在原页核实。", "src": ["S9"]}, {"c": "2021 年 iGEM 金奖、全球季军", "lvl": "B", "note": "上科大中英文新闻一致。项目是医用骨胶水，与今天的皮革业务不同。", "src": ["S3", "S8"]}, {"c": "A轮超1亿元，鄂尔多斯集团、和达金服领投", "lvl": "B", "note": "36氪、新浪、上科大均有报道；精确金额和估值未披露。", "src": ["S6", "S7", "S8"]}, {"c": "安踏联名系列使用菌丝体皮革", "lvl": "B", "note": "安踏新闻稿写明“mycelium leather”，但没有写供应商。", "src": ["S10"]}, {"c": "该菌丝体皮革就是贻如的 Mulkol®", "lvl": "C", "note": "来自贻如官网和融资报道。需要安踏或其面料商的确认。", "src": ["S2", "S6"]}, {"c": "年产能 1600 万", "lvl": "C", "note": "单位不一致：官网“米”，36氪“平方米”。未说明是设计产能还是实际产量。", "src": ["S1", "S6"]}, {"c": "欧洲累计订单近 1 亿元，几乎全部来自奢侈品牌；海外约占总业务量三分之二", "lvl": "C", "note": "未区分已交付、已回款与意向。", "src": ["S6"]}, {"c": "100% 生物基碳含量（Beta Analytic 检测）", "lvl": "C", "note": "官网展示的检测报告，原件未公开。ASTM D6866 只测有机碳里来自生物的比例，不测质量占比；且只对送检样品有效。", "src": ["S1", "S15"]}, {"c": "每千克菌丝体全生命周期排放 −17.1659 kg CO₂e", "lvl": "C", "note": "对象是“菌丝体原料”，不是成品皮革；英文页另写作 −17.1650。核算边界与核查机构未公开。", "src": ["S1", "S2"]}, {"c": "多数售价 80–150 元/米，部分产品成本低于油性 PU", "lvl": "C", "note": "创始人在融资报道中的说法。", "src": ["S6"]}, {"c": "与亚朵、凯宾斯基、上海南站、大宁公园等合作", "lvl": "C", "note": "官网有家具应用照片；未见合作方公开说明。", "src": ["S1", "S6"]}, {"c": "与益彩时尚签署市场合作协议", "lvl": "C", "note": "行业平台转发的合作新闻，未见益彩方公告。", "src": ["S11"]}, {"c": "2024 年与旷达汽车饰件签战略合作", "lvl": "C", "note": "Pre-A 报道中提及，之后的资料未再出现汽车内饰进展。", "src": ["S5"]}], "peers": [{"n": "Bolt Threads · Mylo", "s": "2023年7月暂停生产", "front": "融资超3亿美元，CEO称离商业规模“近在咫尺”", "back": "暂停原因是拿不到所需融资。教训：材料做出来、品牌也愿意试，但在规模化之前现金先耗尽。", "src": ["S13"]}, {"n": "MycoWorks", "s": "2025年10月停止自己种菌丝体", "front": "曾被视为最领先的菌丝体皮革公司，在南卡罗来纳建厂", "back": "CEO 称采用率低是因为“规模和成本”，工厂资本成本太高，关闭工厂，改为从其他地区采购菌丝体，只做鞣制增强（拉伸强度约4→18 MPa）。教训：自建专用工厂是最大负担。", "src": ["S12"]}, {"n": "行业整体", "s": "多停在小批量", "front": "36氪报道把 MycoWorks、Modern Meadow、Ecovative 列为海外同行", "back": "报道称这些项目多因成本高、难以量产停在概念或小批量阶段。专利综述另指出：公开定量数据少，很多产品依赖 PU 涂层。", "src": ["S6", "S14", "S18"]}, {"n": "贻如的位置", "s": "押注“接现成产线”", "front": "路线避开了自建专用工厂和逐张生长", "back": "代价是：浆料、涂层和基布用了多少常规化工材料，直接影响“生物基”卖点的含金量。这一点需要在约谈中拿到数据。", "src": ["S1", "S6"]}], "questions": [{"cat": "材料本体", "q": "一米 Mulkol 成品分几层？每层是什么材料、各占多少质量？基布是什么？", "why": "官网说浆料“兼容人造革产线”。人造革通常是基布加涂层；“100%生物基碳”测的是哪一层、哪一个样品，公开资料没说。", "good": "给出层结构和质量占比，以及成品整体（含基布）的 ASTM D6866 报告原件。"}, {"cat": "材料本体", "q": "发酵产物在浆料里是成膜的主体，还是填料？是否用了交联剂、增塑剂或石油基 PU？", "why": "36氪写“发酵直接生产生物基树脂”，官网写“菌丝体生物质配成浆料”。这两种说法对应的化学很不一样，也决定技术壁垒高低。", "good": "说清浆料配方的组分类别与比例区间，以及哪一部分是自有发酵产物。"}, {"cat": "材料本体", "q": "能否提供按 ISO / ASTM 标准的第三方物性报告：拉伸、撕裂、耐屈挠、耐磨、水解老化，并与 PU、超纤、头层牛皮对比？", "why": "公司只说“对标真皮”。同行 MycoWorks 公开谈的是拉伸强度从约 4 MPa 提到 18 MPa。", "good": "Mulkol-3、Mulkol-5 各自的检测报告，含检测机构与日期。"}, {"cat": "材料本体", "q": "基因编辑菌株的知识产权在哪个主体名下？有没有自由实施分析？欧洲客户对基因编辑来源有无限制条款？", "why": "公开检索未找到公司专利清单；海外订单占比高，合规风险需提前排查。", "good": "专利清单与主体、FTO 结论、主要客户的材料合规要求。"}, {"cat": "产能与成本", "q": "“1600 万”是米还是平方米？是设计产能还是实际产量？2025 年实际出货多少，良率多少？", "why": "官网与报道单位不一致；2023 年计划 250 万㎡、2024 年规划 1000 万㎡，实际达成情况未公开。", "good": "按月出货量、产线开工率与良率数据。"}, {"cat": "产能与成本", "q": "安徽聚贻里贻如持股多少？设备归谁？每米利润怎么分？", "why": "“轻资产”让扩产快，但毛利要与合资方分；聚杰微纤是上市公司，其披露可以交叉核对。", "good": "合资协议核心条款、近两期财务数据。"}, {"cat": "产能与成本", "q": "每米成本由哪些部分构成？哪些产品真的比油性 PU 便宜，规模翻倍后成本怎么变？", "why": "公司称“部分产品”低于 PU，但没说是哪些、在什么规模下。", "good": "分产品的成本拆解（原料、发酵、能耗、涂布加工）和规模曲线。"}, {"cat": "客户与订单", "q": "欧洲“近 1 亿元订单”里，已交付、已回款、框架意向各多少？前五大客户占多少？", "why": "这是目前最强的商业化证据，也完全是公司自述。", "good": "合同清单与回款记录，可抽查客户。"}, {"cat": "客户与订单", "q": "安踏合作是一次性联名，还是已进入常规供应链？每期用量多少米？谁下的单？", "why": "安踏新闻稿未写供应商名；三期联名的总用量公开资料里没有。", "good": "采购订单与发货记录，最好有安踏或其成衣厂的确认。"}, {"cat": "客户与订单", "q": "2024 年预计 2025 年收入数千万元，实际 2025 年收入和毛利是多少？", "why": "检验管理层预测的准确度。", "good": "2025 年审计或管理报表。"}, {"cat": "碳与合规", "q": "−17.17 kg CO₂e/kg 的核算边界、方法和核查机构是谁？成品皮革每平方米的碳足迹是多少？", "why": "官网数字针对“菌丝体原料”，不是成品；欧洲品牌越来越要求可核查的环保声明。", "good": "完整 LCA 报告（含边界、方法标准、第三方核查）和成品层面的数据。"}, {"cat": "公司与团队", "q": "上海贻如生物、贻如科技（杭州）、法国 SynMetabio SAS、安徽聚贻之间是什么股权关系？联合创始人构成如何变化？", "why": "2023 年报道的联合创始人是文昱杰，2026 年资料中的联合创始人兼 COO 是薛睿轩；A 轮主体写作杭州公司。", "good": "完整股权结构图、创始团队分工与持股、核心技术人员名单。"}], "deep": {"hero": {"title": "一页读懂：为什么说值得约谈，又为什么要带着问题去", "html": "\n<p><b>公司是谁。<\/b>贻如生物（英文 SynMetabio / SynMetaBio）2021 年由上海科技大学本科生创办，创始人、董事长兼 CEO 为苏睿，联合创始人兼 COO 为薛睿轩<sup>[S8]<\/sup>。2023 年的报道把文昱杰列为联合创始人<sup>[S3]<\/sup>。公司主体在不同资料中写作上海贻如生物科技、贻如科技（杭州），法国子公司 SynMetabio SAS 位于里昂<sup>[S1][S7]<\/sup>。<\/p>\n<p><b>卖什么。<\/b>品牌为 Mulkol® 的“菌丝体蘑菇革”，按 36氪报道分 Mulkol-3（替代平价人造革）、Mulkol-5（替代高级真皮）和面向海外奢侈品的高端品牌 HORA<sup>[S6]<\/sup>。官网提供服装、鞋、家具三本产品目录下载<sup>[S1]<\/sup>。<\/p>\n<p><b>判断依据。<\/b>值得约谈的理由有三：①工艺选择直指同行退场的原因——MycoWorks 关闭自建工厂时称采用率低源于“规模和成本”<sup>[S12]<\/sup>，而贻如把发酵产物做成浆料，借用现成人造革线生产<sup>[S1]<\/sup>；②有能独立核对的进展：与上市公司聚杰微纤合资的安徽聚贻科技已在工商登记<sup>[S9]<\/sup>，安踏新闻稿确认其联名系列用了菌丝体皮革<sup>[S10]<\/sup>；③产业资本鄂尔多斯集团领投 A 轮<sup>[S7]<\/sup>，它既是服装企业又有化工与能源业务。<\/p>\n<p><b>为什么要带着问题去。<\/b>年产能、订单额、售价、碳排放等关键数字都来自公司或转述公司的报道。更根本的是，“兼容人造革产线”意味着成品很可能仍含基布和涂层，公开资料没有说明发酵产物在成品中占多少质量。官网的“100%生物基”依据的是 ASTM D6866 检测，而该方法只测有机碳中生物来源的比例，不测质量占比<sup>[S15]<\/sup>。<\/p>\n<p class=\"muted\">注：本报告未获得任何内部材料，所有内容来自公开网页，检索日期 2026-10-11。<\/p>\n"}, "what": {"title": "深读：从一根秸秆到一卷皮革", "html": "\n<p><b>原料。<\/b>官网中文版列出的营养来源是玉米芯、秸秆、咖啡渣、酒糟和油脂；英文版配图另有棕榈油废料和作物秸秆<sup>[S1][S2]<\/sup>。公司强调不用玉米淀粉等粮食原料，理由是成本和不与粮争地。<\/p>\n<p><b>菌种与基因编辑。<\/b>先从自然界筛选耐受极端环境、生长快的真菌，再用基因编辑提高工业适应性<sup>[S1]<\/sup>。具体编辑了什么，公开资料没有说明。A 轮报道称 AI 用于菌株筛选、基因编辑设计、液体发酵参数寻优和良率控制<sup>[S6]<\/sup>。<\/p>\n<p><b>发酵。<\/b>在 20 吨发酵罐中液体培养，菌丝体“几天内”大量增殖；官网称有 4 台 20 吨罐<sup>[S1]<\/sup>。2024 年报道另称“整个生产环节最快 8 小时内完成”<sup>[S5]<\/sup>，两种说法的时间口径不同，可在约谈时确认。<\/p>\n<p><b>浆料与涂布。<\/b>发酵产物被配成“浆料”，在 150 米涂布线上连续生产，“与成熟人造革工艺无缝对接”<sup>[S1]<\/sup>。这条线由合资公司安徽聚贻承担<sup>[S6][S9]<\/sup>。<\/p>\n<p><b>路线曾经变过。<\/b>2023 年的产品 Naro 是四层结构：最外层为“生物纳米纤维膜”，第二层是天然橡胶加农业废料，第三层模拟真皮纤维，底层为生物基纤维布或纳米纤维膜<sup>[S3]<\/sup>；另有报道描述当时是先培养出几厘米厚的凝胶态纤维膜再提高结晶度<sup>[S16]<\/sup>。2024 年报道明确说公司“摒弃以往发酵工艺，转为生产皮革浆料”<sup>[S5]<\/sup>。也就是说，今天的 Mulkol 与 2023 年的 Naro 不是同一套工艺。<\/p>\n<p><b>产品线。<\/b>Mulkol-3 偏硬质树脂，替代人造革，主打家具、装饰；Mulkol-5 为弹性体材料，替代高级真皮，面向手袋、服装；HORA 面向海外奢侈品客户<sup>[S6]<\/sup>。<\/p>\n<p><b>延伸阅读：<\/b><a href=\"https://synmetabio.com/desktop/?lang=zh\" target=\"_blank\" rel=\"noopener\">官网“技术路径”<\/a> · <a href=\"https://www.shanghaitech.edu.cn/2023/0313/c1001a1075772/page.htm\" target=\"_blank\" rel=\"noopener\">2023 年 Naro 四层结构报道<\/a> · <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC10441217/\" target=\"_blank\" rel=\"noopener\">菌丝体皮革专利综述（2023）<\/a><\/p>\n"}, "why": {"title": "深读：这条路线为什么可能成立，以及它要满足什么条件", "html": "\n<p><b>同行卡在哪里。<\/b>菌丝体皮革过去十年最受关注的两家公司都在规模化前后退场或收缩：Bolt Threads 融资超 3 亿美元，2023 年 7 月因融资不到位暂停 Mylo 生产<sup>[S13]<\/sup>；MycoWorks 2025 年 10 月宣布不再自己种菌丝体，关闭南卡罗来纳工厂，原因是采用率受“规模和成本”限制、工厂资本成本过高<sup>[S12]<\/sup>。<\/p>\n<p><b>主流做法的瓶颈。<\/b>专利综述显示，主流工艺是让菌丝在固体基质或液面上长成一整片，再增塑、交联、上涂层。一个案例是模具内 2–4 天、之后约 2 周再生长；单件尺寸受设备限制，报告的最大单件约 60 米×4 米；多数商业产品还要加 PU 涂层<sup>[S14]<\/sup>。<\/p>\n<p><b>贻如的做法。<\/b>把菌丝体放在发酵罐里液体培养，产物做成浆料，在现成人造革涂布线上连续生产<sup>[S1]<\/sup>。这样做直接回应了上面两个瓶颈：①生长周期从“周”缩到“天”；②不需要建专用的生长车间，扩产主要依靠合资方的产线和人造革行业的现成设备<sup>[S6]<\/sup>。<\/p>\n<p><b>价格是否进得了采购区间。<\/b>创始人在 A 轮报道中称：欧洲品牌用真皮约 300–400 元/米，贻如最高售价约 200 元/米，多数 80–150 元/米，部分产品成本低于传统油性 PU<sup>[S6]<\/sup>。这些数字未经第三方核实，但如果属实，产品已进入品牌可以日常采购的区间，而不只是联名款的“营销材料”。<\/p>\n<p><b>它要成立还需满足的条件（本报告推论）。<\/b>①物性达标：耐屈挠、耐磨、水解老化等要能过鞋服品牌的验货标准，公开资料只有“对标真皮”的描述；②“生物基”说法经得起追问：越像人造革工艺，成品里非生物来源材料可能越多，卖点就越依赖检测口径；③合资分利：轻资产扩产快，但毛利要与合资方分。<\/p>\n<p><b>延伸阅读：<\/b><a href=\"https://www.just-style.com/news/mycoworks-leathers-business-model-restructuring/\" target=\"_blank\" rel=\"noopener\">MycoWorks 转型<\/a> · <a href=\"https://internationalleathermaker.com/mycelium-materials-company-bolt-threads-stops-production/\" target=\"_blank\" rel=\"noopener\">Bolt Threads 停产<\/a> · <a href=\"https://www.businessoffashion.com/opinions/sustainability/next-generation-materials-innovation-mylo-bolt-threads-mushroom-leather/\" target=\"_blank\" rel=\"noopener\">BoF：新材料为什么难规模化<\/a><\/p>\n"}, "stage": {"title": "深读：五年里发生了什么，哪些数字前后对不上", "html": "\n<p><b>方向变化。<\/b>2021 年 iGEM 项目是基于贻贝蛋白的医用骨胶水<sup>[S3]<\/sup>；早期工商项目页列有医美材料和重组蛋白<sup>[S17]<\/sup>；2023 年主打生物纳米纤维膜皮革 Naro<sup>[S3]<\/sup>；2024 年转为发酵产浆料、适配人造革线<sup>[S5]<\/sup>；2025 年起以菌丝体蘑菇革 Mulkol® 进入安踏联名<sup>[S2]<\/sup>。方向收敛到皮革用了约三年，期间换过一次核心工艺。<\/p>\n<p><b>计划与兑现。<\/b>2023 年计划当年四季度量产规模 250 万㎡/年<sup>[S3]<\/sup>；2024 年规划常州工厂约 1000 万㎡/年、年产值约 2 亿元，并预计 2025 年迎来商业化拐点、收入数千万元<sup>[S5]<\/sup>。实际产线落在安徽合资公司，而不是常州<sup>[S6][S9]<\/sup>；2025 年收入未公开。<\/p>\n<p><b>口径不一致之处。<\/b><\/p>\n<ul>\n<li>年产能 1600 万：官网写“米”，36氪写“平方米”<sup>[S1][S6]<\/sup>。<\/li>\n<li>发酵罐：官网首页数字写“80吨发酵罐”，正文是 4 台 20 吨罐<sup>[S1]<\/sup>。<\/li>\n<li>碳排放：中文页 −17.1659，英文页另一处写 −17.1650 kg CO₂e/kg<sup>[S1][S2]<\/sup>。<\/li>\n<li>团队：2024 年已约 30 人<sup>[S5]<\/sup>，2026 年报道却称“近半年从约 20 人扩至近 70 人”<sup>[S6]<\/sup>。<\/li>\n<li>联合创始人：2023 年为文昱杰<sup>[S3]<\/sup>，2026 年为薛睿轩<sup>[S8]<\/sup>。<\/li>\n<\/ul>\n<p>这些不一致单独看都可能有合理解释，但合在一起说明公开数字不宜直接进估值模型。<\/p>\n<p><b>下一步。<\/b>创始人称 2026 年是“筹备上市的第一年”，并计划向上游弹性体原料、膜材料、橡胶材料扩展，目标是成为材料平台公司<sup>[S6]<\/sup>。股东鄂尔多斯集团旗下有合成生物产业平台，报道称可与贻如上下游互补<sup>[S6]<\/sup>。<\/p>\n"}, "evidence": {"title": "深读：证据分级是怎么做的", "html": "\n<p>每一条说法按“谁能为它作证”分三级：<\/p>\n<ul>\n<li><b>A 级<\/b>：工商登记、独立第三方可以查到，不依赖公司表述。<\/li>\n<li><b>B 级<\/b>：合作方自己披露、高校官方新闻或多家媒体一致报道；仍可能源自同一份公司通稿。<\/li>\n<li><b>C 级<\/b>：公司官网、公司新闻稿，或媒体转述创始人的说法。<\/li>\n<\/ul>\n<p>结果：13 条关键说法中，A 级 1 条、B 级 3 条、C 级 9 条。<b>证明“有这家公司、有产线合资、有品牌产品”的证据较硬；证明“规模多大、卖了多少、多环保”的证据较软。<\/b>这正是约谈应该补的部分。<\/p>\n<p><b>关于“100% 生物基”。<\/b>官网称材料经 Beta Analytic（ISO/IEC 17025 认可实验室）检测为 100% 生物基碳含量<sup>[S1]<\/sup>。ASTM D6866 用碳-14 测定有机碳中来自近期生物的比例；它报告的是碳的比例，不是质量比例，也只对送检样品有效<sup>[S15]<\/sup>。因此需要确认送检的是浆料、涂层还是含基布的成品。<\/p>\n<p><b>关于安踏。<\/b>安踏新闻稿明确写了联名系列的秋冬套装由菌丝体皮革制成，但没有点名供应商<sup>[S10]<\/sup>；把它对应到贻如的 Mulkol® 依据的是贻如自己的官网与融资报道<sup>[S2][S6]<\/sup>。<\/p>\n"}, "peers": {"title": "深读：同行的经验对贻如意味着什么", "html": "\n<p><b>Bolt Threads（美国）。<\/b>融资超 3 亿美元，2023 年 7 月暂停 Mylo 菌丝体材料生产，CEO 称离商业规模“近在咫尺”，原因是拿不到需要的融资<sup>[S13]<\/sup>。<\/p>\n<p><b>MycoWorks（美国）。<\/b>2025 年 10 月宣布停止自己种植菌丝体、关闭南卡罗来纳工厂，改为采购菌丝体并用升级的 Rei-Tan 工艺增强，称拉伸强度从约 4 MPa 提升到 18 MPa；理由是“规模和成本”导致采用率低，工厂资本成本太高<sup>[S12]<\/sup>。<\/p>\n<p><b>对贻如的含义（本报告推论）。<\/b><\/p>\n<ol>\n<li>贻如的“接现成产线 + 合资”模式，恰好绕开了 MycoWorks 承认的最大负担——专用工厂。<\/li>\n<li>MycoWorks 把业务收缩到“采购菌丝体 + 增强处理”，说明市场上开始出现较便宜的菌丝体来源。如果贻如是低成本来源之一，它可能成为同行的供应商，而不只是竞争者。<\/li>\n<li>反过来，Bolt Threads 的例子提醒：品牌联名和样品阶段的热度，不等于能持续融资到规模化。贻如需要用复购订单和毛利证明自己已经过了这一关。<\/li>\n<\/ol>\n<p><b>本报告的空白。<\/b>未能系统检索国内其他生物基皮革公司和传统超纤/PU 厂商的生物基产品，竞争格局只覆盖了公开资料中被点名的海外同行。<\/p>\n"}, "ask": {"title": "深读：约谈前可以先自己查的三件事", "html": "\n<ol>\n<li><b>聚杰微纤（300819）的公告与年报。<\/b>作为上市公司，它对安徽聚贻的投资金额、持股比例和经营情况会有披露，可以独立核对产线规模与收入<sup>[S9]<\/sup>。<\/li>\n<li><b>专利检索。<\/b>在国家知识产权局或 Google Patents 以“上海贻如生物科技有限公司”“贻如科技（杭州）有限公司”“安徽聚贻科技有限公司”为申请人检索。本次公开检索未找到可确认的专利清单。<\/li>\n<li><b>产品实物。<\/b>ANTAZERO × Kris Van Assche 纯素皮革系列、上海自然博物馆联名手机包<sup>[S2]<\/sup>都可以买到，可以送检做成分与物性测试。<\/li>\n<\/ol>\n<p>右侧问题可以勾选，点“复制问题清单”会把已选问题（未选则全部）复制成纯文本，便于贴进会议纪要。<\/p>\n"}}, "sources": [{"id": "S1", "kind": "官网", "read": "实读", "title": "SynMetabio 官网（英文版，页面版本标记 2026-09-21）", "date": "2026-09", "url": "https://synmetabio.com/desktop/?lang=en"}, {"id": "S2", "kind": "官网", "read": "实读", "title": "SynMetabio 官网（中文版，含新闻：安踏联名上市、FFE、NIFC、LUXE PACK、上海自然博物馆）", "date": "2026-09", "url": "https://synmetabio.com/desktop/?lang=zh"}, {"id": "S3", "kind": "高校", "read": "实读", "title": "上海科技大学：上科大本科生创业公司获数千万融资", "date": "2023-03-12", "url": "https://www.shanghaitech.edu.cn/2023/0313/c1001a1075772/page.htm"}, {"id": "S4", "kind": "媒体", "read": "实读", "title": "澎湃新闻：公司估值3亿的大四创业生：上海是科创热土", "date": "2023-05", "url": "https://www.thepaper.cn/newsDetail_forward_23010622"}, {"id": "S5", "kind": "媒体", "read": "实读", "title": "医药魔方 ByDrug：贻如生物获数千万元 Pre-A 轮融资，生物基皮革制造前沿公司", "date": "2024-04-01", "url": "https://bydrug.pharmcube.com/news/detail/7440e6c4d172889f76179e18bd9f45f7"}, {"id": "S6", "kind": "媒体", "read": "实读", "title": "36氪：鄂尔多斯、和达金服共同领投，「贻如科技」完成超亿元A轮融资（经 eu.36kr.com 镜像读取）", "date": "2026-07", "url": "https://eu.36kr.com/zh/p/3880060701388809"}, {"id": "S7", "kind": "媒体", "read": "实读", "title": "新浪财经：贻如科技完成超亿元A轮融资，AI驱动生物基皮革加速产业化", "date": "2026-07-06", "url": "https://finance.sina.com.cn/wm/2026-07-06/doc-inifwfpy8657922.shtml"}, {"id": "S8", "kind": "高校", "read": "实读", "title": "ShanghaiTech: SynMetabio secures over RMB 100 million in Series A funding", "date": "2026-07-08", "url": "https://www.shanghaitech.edu.cn/en/2026/0708/c1260a1125186/page.htm"}, {"id": "S9", "kind": "工商与上市公司", "read": "实读", "title": "证券时报：聚杰微纤等成立新公司 含生物基材料业务（安徽聚贻科技，引企查查）", "date": "2025-04-22", "url": "https://www.stcn.com/article/detail/1682939.html"}, {"id": "S10", "kind": "合作方", "read": "实读", "title": "ANTA / PR Newswire：ANTAZERO X KRIS VAN ASSCHE Debuts Globally at Dover Street Market Paris", "date": "2025-11-23", "url": "https://tools.prnewswire.com/en-us/live/20823/release/20251123EN31613"}, {"id": "S11", "kind": "媒体", "read": "实读", "title": "生物基和生物制造产业服务平台：贻如生物与知名时尚企业战略合作（益彩时尚）", "date": "2026-01-21", "url": "https://www.bio-basedlink.net/index/news/news_show/article_id/1536.html"}, {"id": "S12", "kind": "行业与研究", "read": "实读", "title": "just-style：MycoWorks restructures business model amidst industry changes", "date": "2025-10-23", "url": "https://www.just-style.com/news/mycoworks-leathers-business-model-restructuring/"}, {"id": "S13", "kind": "行业与研究", "read": "实读", "title": "International Leather Maker：Bolt Threads stops mycelium material production", "date": "2023-07-03", "url": "https://internationalleathermaker.com/mycelium-materials-company-bolt-threads-stops-production/"}, {"id": "S14", "kind": "行业与研究", "read": "实读", "title": "Elsacker, Vandelook, Peeters (2023). Recent technological innovations in mycelium materials as leather substitutes: a patent review. Front. Bioeng. Biotechnol. 11:1204861", "date": "2023", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10441217/"}, {"id": "S15", "kind": "行业与研究", "read": "摘要", "title": "Beta Analytic：What is ASTM D6866?（生物基碳含量检测方法说明）", "date": "—", "url": "https://www.betalabservices.com/astm-d6866/"}, {"id": "S16", "kind": "媒体", "read": "摘要", "title": "36氪首发：「贻如生物」获数千万元融资，用合成生物技术培育100%生物基皮革（原页被安全检测拦截，仅见检索摘要）", "date": "2023", "url": "https://36kr.com/p/2160874848690688"}, {"id": "S17", "kind": "工商与上市公司", "read": "摘要", "title": "36氪 PitchHub 项目页：贻如生物（工商信息：2021-12-16 成立；早期业务含医美材料、重组蛋白）", "date": "—", "url": "https://pitchhub.36kr.com/project/2011455084627204"}, {"id": "S18", "kind": "行业与研究", "read": "摘要", "title": "Business of Fashion：Why Mushroom Leather (and Other New Materials) Are Struggling to Scale", "date": "—", "url": "https://www.businessoffashion.com/opinions/sustainability/next-generation-materials-innovation-mylo-bolt-threads-mushroom-leather/"}]};
+const $ = (s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const srcs = ids => (Array.isArray(ids)?ids:[ids]).map(i=>`<a class="src" href="#src-${i}">[${i}]</a>`).join('');
+const store = { get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* theme */
+(function(){const t=store.get('ymb-theme'); if(t) document.documentElement.dataset.theme=t;
+$('#themebtn').onclick=()=>{const cur=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');const n=cur==='light'?'dark':'light';document.documentElement.dataset.theme=n;store.set('ymb-theme',n);};})();
+
+/* nav + progress */
+const screens=$$('section.screen');
+$('#nav').innerHTML=screens.map(s=>`<a href="#${s.id}" data-id="${s.id}">${s.dataset.label}</a>`).join('');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){$$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.id===e.target.id));}}),{threshold:.5});
+screens.forEach(s=>io.observe(s));
+addEventListener('scroll',()=>{const h=document.documentElement;$('#prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+/* source links: links to sources section rows */
+document.addEventListener('click',e=>{const a=e.target.closest('a.src');if(!a)return;e.preventDefault();closeDrawer();const id=a.getAttribute('href').slice(1);const row=document.getElementById(id);$('#sources').scrollIntoView({behavior:reduce?'auto':'smooth'});setTimeout(()=>{if(row){row.scrollIntoView({block:'center'});history.replaceState(null,'','#'+id);$$('.srow').forEach(r=>r.style.outline='');row.style.outline='2px solid var(--lime)';}},reduce?0:600);});
+
+/* HERO */
+const H=DATA.hero;
+$('#h-kicker').textContent=H.kicker;
+$('#h-title').innerHTML=`<span style="white-space:nowrap">贻如生物</span> <span style="color:var(--lime);white-space:nowrap">SynMetabio</span>`;
+$('#h-one').textContent=H.one_liner;
+$('#h-tiles').innerHTML=H.tiles.map(t=>`<button class="tile" data-to="${t.to}"><div class="q">${esc(t.q)}</div><div class="a">${esc(t.a)}</div></button>`).join('');
+$$('#h-tiles .tile').forEach(b=>b.onclick=()=>{const map={what:'what',why:'why',stage:'stage',ask:'ask'};document.getElementById(map[b.dataset.to]).scrollIntoView({behavior:reduce?'auto':'smooth'})});
+const tagcls={'公司口径':'t-co','公开':'t-pub','多方报道':'t-multi'};
+$('#h-stats').innerHTML=H.stats.map(s=>`<div class="stat"><div class="v" data-count="${esc(s.v)}">${esc(s.v)}<small>${esc(s.u)}</small></div><div class="l">${esc(s.l)}</div><span class="tag ${tagcls[s.tag]||''}">${esc(s.tag)}</span> ${srcs(s.src)}</div>`).join('');
+$('#h-verdict').innerHTML=esc(H.verdict).replace('本报告判断：值得约谈。','<b>本报告判断：值得约谈。</b>');
+
+/* mycelium canvas */
+(function(){const cv=$('#myc'),cx=cv.getContext('2d');let W,Hh,tips=[],frame=0;
+function size(){const r=devicePixelRatio||1;W=cv.clientWidth;Hh=cv.clientHeight;cv.width=W*r;cv.height=Hh*r;cx.setTransform(r,0,0,r,0,0);reset();}
+function col(){return getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#efe8d6'}
+function reset(){cx.clearRect(0,0,W,Hh);tips=[];frame=0;for(let i=0;i<7;i++){const x=Math.random()*W,y=Math.random()*Hh;for(let k=0;k<3;k++)tips.push({x,y,a:Math.random()*6.28,w:1.6,life:0});}}
+function step(){const c=col();cx.strokeStyle=c;cx.lineCap='round';const nt=[];for(const t of tips){const nx=t.x+Math.cos(t.a)*1.6,ny=t.y+Math.sin(t.a)*1.6;cx.globalAlpha=.35;cx.lineWidth=t.w;cx.beginPath();cx.moveTo(t.x,t.y);cx.lineTo(nx,ny);cx.stroke();t.x=nx;t.y=ny;t.a+=(Math.random()-.5)*.35;t.w=Math.max(.3,t.w*.997);t.life++;if(Math.random()<.012&&tips.length+nt.length<520)nt.push({x:t.x,y:t.y,a:t.a+(Math.random()<.5?-1:1)*(.5+Math.random()*.6),w:t.w*.8,life:0});if(Math.random()<.004){cx.globalAlpha=.8;cx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--lime');cx.beginPath();cx.arc(t.x,t.y,1.8,0,6.28);cx.fill();}}
+tips=tips.filter(t=>t.x>-20&&t.x<W+20&&t.y>-20&&t.y<Hh+20&&t.w>.32).concat(nt);frame++;if(frame>1400||tips.length===0){cx.globalAlpha=1;reset();}}
+size();addEventListener('resize',size);
+if(reduce){for(let i=0;i<600;i++)step();return;}
+let vis=true;new IntersectionObserver(e=>vis=e[0].isIntersecting).observe($('#hero'));
+(function loop(){if(vis&&!document.hidden){step();step();}requestAnimationFrame(loop)})();})();
+
+/* WHAT: process */
+const P=DATA.process;
+const icons={
+ feed:`<g stroke="currentColor" fill="none" stroke-width="3"><path d="M30 120 C40 70 50 50 70 30"/><path d="M50 120 C55 80 70 60 95 45"/><path d="M75 120 C78 90 90 75 115 65"/><ellipse cx="72" cy="30" rx="8" ry="16" transform="rotate(35 72 30)"/><ellipse cx="97" cy="45" rx="7" ry="14" transform="rotate(50 97 45)"/></g>`,
+ strain:`<g fill="none" stroke="currentColor" stroke-width="3"><circle cx="75" cy="75" r="50"/></g><g fill="currentColor">${Array.from({length:14},(_,i)=>`<circle cx="${75+Math.cos(i*2.3)*(10+i*2.5)}" cy="${75+Math.sin(i*2.3)*(10+i*2.5)}" r="${3+(i%3)}"><animate attributeName="r" values="${3+(i%3)};${5+(i%3)};${3+(i%3)}" dur="${1.5+i%4*.4}s" repeatCount="indefinite"/></circle>`).join('')}</g>`,
+ edit:`<g fill="none" stroke="currentColor" stroke-width="3"><path d="M40 20 C110 50 40 100 110 130"/><path d="M110 20 C40 50 110 100 40 130"/></g><g stroke="currentColor" stroke-width="2">${[35,55,75,95,115].map(y=>`<line x1="55" x2="95" y1="${y}" y2="${y}"/>`).join('')}</g><rect x="50" y="68" width="50" height="14" rx="4" fill="var(--spore)"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></rect>`,
+ ferment:`<g fill="none" stroke="currentColor" stroke-width="3"><rect x="40" y="20" width="70" height="110" rx="20"/><line x1="75" y1="5" x2="75" y2="95"/><line x1="58" y1="95" x2="92" y2="95"><animateTransform attributeName="transform" type="rotate" values="0 75 95;360 75 95" dur="1.2s" repeatCount="indefinite"/></line></g>${[0,1,2,3,4].map(i=>`<circle cx="${55+i*10}" cy="120" r="3" fill="currentColor"><animate attributeName="cy" values="120;35" dur="${1.6+i*.3}s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="${1.6+i*.3}s" repeatCount="indefinite"/></circle>`).join('')}`,
+ slurry:`<path d="M30 60 h90 l-12 70 h-66z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M36 85 Q55 75 75 85 T114 85 L108 125 H42z" fill="currentColor" opacity=".35"><animate attributeName="d" values="M36 85 Q55 75 75 85 T114 85 L108 125 H42z;M36 85 Q55 95 75 85 T114 85 L108 125 H42z;M36 85 Q55 75 75 85 T114 85 L108 125 H42z" dur="2s" repeatCount="indefinite"/></path><path d="M75 20 v30" stroke="var(--spore)" stroke-width="4" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-20" dur=".8s" repeatCount="indefinite"/></path>`,
+ coat:`<g fill="none" stroke="currentColor" stroke-width="3"><circle cx="30" cy="100" r="18"/><circle cx="120" cy="100" r="18"/><line x1="30" y1="82" x2="120" y2="82"/></g><rect x="62" y="40" width="26" height="30" fill="currentColor" opacity=".5"/><line x1="30" y1="82" x2="120" y2="82" stroke="var(--spore)" stroke-width="6" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1s" repeatCount="indefinite"/></line>`,
+ algae:`${Array.from({length:12},(_,i)=>`<circle cx="${30+(i%4)*30}" cy="${40+Math.floor(i/4)*35}" r="9" fill="none" stroke="currentColor" stroke-width="2.5"><animate attributeName="r" values="7;11;7" dur="${2+i%3*.5}s" repeatCount="indefinite"/></circle>`).join('')}<text x="75" y="145" text-anchor="middle" font-size="14" fill="currentColor" font-family="monospace">CO₂ → O₂</text>`
+};
+let pi=0,ptimer=null;
+$('#flow').insertAdjacentHTML('beforeend',P.map((s,i)=>`<button class="step" data-i="${i}" aria-label="${esc(s.name)}"><span class="dot">${String(i+1).padStart(2,'0')}</span><span class="nm">${esc(s.name)}</span></button>`).join(''));
+function showStep(i){pi=i;$$('.step').forEach((b,j)=>b.classList.toggle('on',j===i));const s=P[i];$('#pstage').innerHTML=`<svg viewBox="0 0 150 150" style="color:var(--lime);width:100%;max-width:150px">${icons[s.k]}</svg><div><h3>${esc(s.name)}</h3><div class="short">${esc(s.short)}</div><p>${esc(s.detail)} ${srcs(s.src)}</p></div>`;}
+$$('.step').forEach(b=>b.onclick=()=>{clearInterval(ptimer);ptimer=null;$('#what .hint').textContent='⏸ 已暂停 · 点其他步骤继续浏览';showStep(+b.dataset.i)});
+showStep(0);
+if(!reduce){let whatVis=false;new IntersectionObserver(e=>{whatVis=e[0].isIntersecting}).observe($('#what'));ptimer=setInterval(()=>{if(whatVis)showStep((pi+1)%P.length)},3800);}
+$('#prods').innerHTML=DATA.products.map((p,i)=>`<button class="prod${i===0?' on':''}" data-i="${i}"><b>${esc(p.name)}</b> · ${esc(p.note)}</button>`).join('');
+function showProd(i){const p=DATA.products[i];$$('.prod').forEach((b,j)=>b.classList.toggle('on',j===i));$('#prodinfo').innerHTML=`<b style="color:var(--spore)">${esc(p.pos)}</b>；用途：${esc(p.use)}。`;}
+$$('.prod').forEach(b=>b.onclick=()=>showProd(+b.dataset.i));showProd(0);
+
+/* WHY: routes */
+const R=DATA.routes;
+const routeSVG={
+ a:`<text x="20" y="28" fill="var(--mute)" font-size="12" font-family="monospace">托盘 / 模具里逐张生长</text>
+ ${[0,1,2].map(i=>`<g transform="translate(${30+i*190},55)"><rect width="160" height="90" rx="8" fill="none" stroke="var(--line)" stroke-width="2"/><rect x="6" y="6" width="148" height="78" rx="6" fill="var(--ink)" opacity=".85" transform-origin="80 45"><animate attributeName="opacity" values="0;.85" dur="${4+i}s" repeatCount="indefinite"/></rect>${Array.from({length:10},(_,k)=>`<path d="M${15+k*14} 80 q 5 -${20+k%3*10} 0 -${40+k%4*8}" stroke="var(--bg)" fill="none" stroke-width="1.2" opacity=".6"/>`).join('')}</g>`).join('')}
+ <text x="20" y="175" fill="var(--spore)" font-size="13" font-family="monospace">≈ 周级生长 · 单张尺寸受设备限制 · 再做增塑/交联/涂层</text>`,
+ b:`<text x="20" y="28" fill="var(--mute)" font-size="12" font-family="monospace">发酵罐 → 浆料 → 人造革涂布线</text>
+ <g transform="translate(30,45)"><rect width="70" height="100" rx="18" fill="none" stroke="var(--ink)" stroke-width="2.5"/>${[0,1,2,3].map(i=>`<circle cx="${18+i*12}" cy="90" r="3" fill="var(--lime)"><animate attributeName="cy" values="90;15" dur="${1.4+i*.3}s" repeatCount="indefinite"/></circle>`).join('')}<text x="35" y="120" text-anchor="middle" fill="var(--mute)" font-size="11" font-family="monospace">20t ×4</text></g>
+ <path d="M100 95 H170" stroke="var(--lime)" stroke-width="4" stroke-dasharray="6 6"><animate attributeName="stroke-dashoffset" values="0;-24" dur=".8s" repeatCount="indefinite"/></path>
+ <g transform="translate(170,70)"><path d="M0 0 h50 l-8 50 h-34z" fill="var(--spore)" opacity=".5"/><text x="25" y="70" text-anchor="middle" fill="var(--mute)" font-size="11" font-family="monospace">浆料</text></g>
+ <path d="M220 95 H260" stroke="var(--lime)" stroke-width="4" stroke-dasharray="6 6"><animate attributeName="stroke-dashoffset" values="0;-24" dur=".8s" repeatCount="indefinite"/></path>
+ <g transform="translate(260,60)"><circle cx="20" cy="60" r="18" fill="none" stroke="var(--ink)" stroke-width="2.5"/><circle cx="290" cy="60" r="28" fill="none" stroke="var(--ink)" stroke-width="2.5"/><circle cx="290" cy="60" r="16" fill="var(--spore)" opacity=".7"><animate attributeName="r" values="12;24;12" dur="6s" repeatCount="indefinite"/></circle><line x1="20" y1="42" x2="290" y2="34" stroke="var(--spore)" stroke-width="7" stroke-dasharray="14 6"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1s" repeatCount="indefinite"/></line><rect x="110" y="0" width="50" height="34" fill="var(--ink)" opacity=".35"/><text x="135" y="22" text-anchor="middle" fill="var(--bg)" font-size="11" font-family="monospace">涂布</text></g>
+ <text x="20" y="175" fill="var(--lime)" font-size="13" font-family="monospace">≈ 天级发酵 · 连续成卷 · 150m 线 · 借用现成设备</text>`
+};
+function showRoute(k){$$('#routeseg button').forEach(b=>b.classList.toggle('on',b.dataset.r===k));$('#routeviz').innerHTML=routeSVG[k];const r=R[k];$('#routetext').innerHTML=`<div style="margin-top:10px;font-weight:600">${esc(r.name)} <span class="muted" style="font-weight:400;font-size:13px">· ${esc(r.who)}</span></div><ul class="facts">${r.facts.map(f=>`<li>${esc(f)}</li>`).join('')}</ul><div style="font-size:12px">${srcs(r.src)}</div>`;}
+$$('#routeseg button').forEach(b=>b.onclick=()=>showRoute(b.dataset.r));showRoute('b');
+$('#why4').innerHTML=DATA.why.map(w=>`<button><b>${esc(w.t)} +</b><span class="d">${esc(w.d)} ${srcs(w.src)}</span></button>`).join('');
+$$('#why4 button').forEach(b=>b.onclick=e=>{if(e.target.closest('a'))return;b.classList.toggle('open')});
+(function(){const max=420;const rows=DATA.price.map((p,i)=>{const col=i===0?'var(--mute)':'var(--lime)';return `<div class="row"><div>${esc(p.label)}<div class="muted" style="font-size:11px">${esc(p.who)}</div></div><div class="track"><div class="rng" data-l="${p.lo/max*100}" data-w="${Math.max(1.2,(p.hi-p.lo)/max*100)}" style="left:0;width:0;background:${col}"></div><span class="lab" data-l="${p.hi/max*100}" style="left:0;color:var(--ink)">${p.lo===p.hi?'≈'+p.lo:p.lo+'–'+p.hi} 元/米</span></div></div>`}).join('');
+$('#price').innerHTML=`<div style="font-size:13px;color:var(--mute);margin-bottom:4px">每米售价对比（全部为公司口径） <a class="src" href="#src-S6">[S6]</a></div>${rows}<div class="axis"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span></div>`;
+const anim=()=>$$('#price .rng').forEach(r=>{r.style.left=r.dataset.l+'%';r.style.width=r.dataset.w+'%';const lab=r.nextElementSibling;const L=+lab.dataset.l;lab.style.left=(L>70?'auto':L+'%');if(L>70){lab.style.right=(100-+r.dataset.l)+'%';}});
+new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){anim();o.disconnect();}},{threshold:.4}).observe($('#price'));})();
+
+/* STAGE */
+$$('#stabs button').forEach(b=>b.onclick=()=>{$$('#stabs button').forEach(x=>x.classList.toggle('on',x===b));['tl','cap','fund'].forEach(t=>$('#p-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='fund')renderFund();if(b.dataset.t==='cap')renderCap();});
+const T=DATA.timeline;
+$('#tl').innerHTML=T.map((t,i)=>`<button data-i="${i}"><div class="d">${esc(t.d)}</div><div class="t">${esc(t.t)}</div></button>`).join('');
+function showT(i){$$('#tl button').forEach((b,j)=>b.classList.toggle('on',j===i));const t=T[i];$('#tldetail').innerHTML=`<h3><span style="font-family:var(--mono);color:var(--lime)">${esc(t.d)}</span>${esc(t.t)}<span class="lvl ${t.lvl}" title="证据等级">${t.lvl}</span></h3><p>${esc(t.x)} ${srcs(t.src)}</p><div class="hint">← → 键或点击节点切换 · ${i+1}/${T.length}</div>`;{const tl=$('#tl'),bt=$$('#tl button')[i];tl.scrollTo({left:bt.offsetLeft-tl.clientWidth/2+bt.clientWidth/2,behavior:reduce?'auto':'smooth'});}}
+$$('#tl button').forEach(b=>b.onclick=()=>showT(+b.dataset.i));
+let ti=T.length-1;showT(ti);
+document.addEventListener('keydown',e=>{if(document.body.classList.contains('dopen')){if(e.key==='Escape')closeDrawer();return;}const r=$('#stage').getBoundingClientRect();if(r.top<innerHeight/2&&r.bottom>innerHeight/2&&!$('#p-tl').hidden){if(e.key==='ArrowRight'){ti=Math.min(T.length-1,ti+1);showT(ti)}if(e.key==='ArrowLeft'){ti=Math.max(0,ti-1);showT(ti)}}});
+$$('#tl button').forEach(b=>b.addEventListener('click',()=>ti=+b.dataset.i));
+function renderCap(){const C=DATA.capacity,W=560,Hh=260,max=1800,bw=110;let s=`<svg viewBox="0 0 ${W} ${Hh+50}" role="img" aria-label="产能口径对比"><defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="var(--spore)" opacity=".25"/><line x1="0" y1="0" x2="0" y2="8" stroke="var(--spore)" stroke-width="4"/></pattern></defs>`;
+[0,500,1000,1500].forEach(v=>{const y=Hh-v/max*Hh+10;s+=`<line x1="40" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="34" y="${y+4}" text-anchor="end" font-size="11" fill="var(--mute)" font-family="monospace">${v}</text>`});
+C.forEach((c,i)=>{const x=80+i*165,h=c.v/max*Hh,y=Hh-h+10;s+=`<rect x="${x}" y="${Hh+10}" width="${bw}" height="0" fill="${c.kind==='计划'?'var(--teal)':'url(#hatch)'}" stroke="${c.kind==='计划'?'none':'var(--spore)'}" rx="4"><animate attributeName="height" from="0" to="${h}" dur=".9s" begin="${i*.15}s" fill="freeze"/><animate attributeName="y" from="${Hh+10}" to="${y}" dur=".9s" begin="${i*.15}s" fill="freeze"/></rect><text x="${x+bw/2}" y="${y-8}" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)" font-family="Space Grotesk,sans-serif">${c.v}万</text><text x="${x+bw/2}" y="${Hh+30}" text-anchor="middle" font-size="12.5" fill="var(--ink)">${esc(c.label)}</text><text x="${x+bw/2}" y="${Hh+46}" text-anchor="middle" font-size="10.5" fill="var(--mute)">${esc(c.unit)}</text>`});
+s+='</svg>';$('#cap').innerHTML=s+`<div style="font-size:13px;color:var(--ink2);line-height:1.7;margin-top:6px">${C.map(c=>`<div>· <b>${esc(c.label)}</b>：${esc(c.note)} ${srcs(c.src)}</div>`).join('')}</div>`;}
+function renderFund(){$('#fund').innerHTML=DATA.funding.map((f,i)=>`<div class="f"><div class="r">${esc(f.r)}<div class="muted" style="font-family:var(--mono);font-size:11px;font-weight:400">${esc(f.y)}</div></div><div class="b" style="width:${40+i*20}%;animation-delay:${i*.12}s;border-left:3px solid var(--lime)"><b>${esc(f.amt)}</b><div class="muted" style="font-size:12px">${esc(f.lead)} ${srcs(f.src)}</div></div></div>`).join('');
+$('#team').innerHTML='<b>团队规模（各报道口径）</b><br>'+DATA.team.map(t=>`${esc(t.y)}：${esc(t.n)} ${srcs(t.src)}`).join('<br>')+'<br><span class="muted">2024 年已约 30 人，与 2026 年“从约 20 人扩至近 70 人”的说法不一致。</span>';}
+
+/* EVIDENCE */
+const CL=DATA.claims, lvName={A:'A · 工商/第三方',B:'B · 合作方/多方',C:'C · 公司自述'};
+const cnt=l=>CL.filter(c=>c.lvl===l).length;
+$('#ladder').innerHTML=['A','B','C'].map(l=>`<div style="flex:${cnt(l)};background:var(--${l})" title="${lvName[l]}：${cnt(l)} 条"></div>`).join('');
+$('#evchips').innerHTML=`<button data-f="all" class="on">全部 ${CL.length}</button>`+['A','B','C'].map(l=>`<button data-f="${l}"><span class="lvl ${l}">${l}</span>${lvName[l].slice(4)} ${cnt(l)}</button>`).join('');
+$('#claims').innerHTML=CL.map(c=>`<button class="claim" data-l="${c.lvl}"><span class="lvl ${c.lvl}">${c.lvl}</span><span>${esc(c.c)}</span><span class="n">${esc(c.note)} ${srcs(c.src)}</span></button>`).join('');
+$$('#evchips button').forEach(b=>b.onclick=()=>{$$('#evchips button').forEach(x=>x.classList.toggle('on',x===b));$$('.claim').forEach(c=>c.classList.toggle('hide',b.dataset.f!=='all'&&c.dataset.l!==b.dataset.f));});
+$$('.claim').forEach(c=>c.onclick=e=>{if(e.target.closest('a'))return;c.classList.toggle('open')});
+
+/* PEERS */
+$('#peerbox').innerHTML=DATA.peers.map((p,i)=>`<button class="flip${i===3?' me':''}" aria-label="${esc(p.n)}，点击翻面"><div class="in"><div class="fa"><div class="nm">${esc(p.n)}</div><div class="st">${esc(p.s)}</div><div class="fr">${esc(p.front)}</div><div class="more">点击翻面 ↻</div></div><div class="fb"><div>${esc(p.back)}</div><div>${srcs(p.src)}</div><div class="more">再点翻回 ↻</div></div></div></button>`).join('');
+$$('.flip').forEach(f=>f.onclick=e=>{if(e.target.closest('a'))return;f.classList.toggle('on')});
+
+/* ASK */
+const Q=DATA.questions,cats=[...new Set(Q.map(q=>q.cat))];let qdone=store.get('ymb-q')||[];
+$('#qchips').innerHTML=`<button data-c="all" class="on">全部</button>`+cats.map(c=>`<button data-c="${esc(c)}">${esc(c)}</button>`).join('');
+$('#qs').innerHTML=Q.map((q,i)=>`<div class="qc${qdone.includes(i)?' done':''}" data-c="${esc(q.cat)}" data-i="${i}"><label><input type="checkbox" ${qdone.includes(i)?'checked':''}><span><span class="cat">${String(i+1).padStart(2,'0')} · ${esc(q.cat)}</span><br>${esc(q.q)}</span></label><details><summary>为什么问 · 好的回答</summary><p><b>为什么问：</b>${esc(q.why)}</p><p><b>好的回答应包含：</b>${esc(q.good)}</p></details></div>`).join('');
+const upd=()=>{$('#qcnt').textContent=`已勾选 ${qdone.length}/${Q.length}`;store.set('ymb-q',qdone)};upd();
+$$('.qc input').forEach(cb=>cb.onchange=()=>{const el=cb.closest('.qc'),i=+el.dataset.i;qdone=cb.checked?[...new Set([...qdone,i])]:qdone.filter(x=>x!==i);el.classList.toggle('done',cb.checked);upd();});
+$$('#qchips button').forEach(b=>b.onclick=()=>{$$('#qchips button').forEach(x=>x.classList.toggle('on',x===b));$$('.qc').forEach(q=>q.classList.toggle('hide',b.dataset.c!=='all'&&q.dataset.c!==b.dataset.c))});
+$('#copyq').onclick=async()=>{const pick=qdone.length?qdone.slice().sort((a,b)=>a-b):Q.map((_,i)=>i);const txt='贻如生物（SynMetabio）约谈问题清单\n\n'+pick.map((i,k)=>`${k+1}. [${Q[i].cat}] ${Q[i].q}\n   好的回答应包含：${Q[i].good}`).join('\n');try{await navigator.clipboard.writeText(txt);$('#copyq').textContent='已复制 ✓'}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');$('#copyq').textContent='已复制 ✓'}catch(_){$('#copyq').textContent='复制失败'}ta.remove();}setTimeout(()=>$('#copyq').textContent='复制问题清单',1800);};
+
+/* SOURCES */
+const S=DATA.sources,kinds=[...new Set(S.map(s=>s.kind))];
+$('#srcchips').innerHTML=`<button data-k="all" class="on">全部 ${S.length}</button>`+kinds.map(k=>`<button data-k="${esc(k)}">${esc(k)} ${S.filter(s=>s.kind===k).length}</button>`).join('');
+$('#srcs').innerHTML=S.map(s=>`<div class="srow" id="src-${s.id}" data-k="${esc(s.kind)}"><span class="id">${s.id}</span><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)} ↗</a><span class="meta">${esc(s.kind)} · ${esc(s.date)} · ${esc(s.read)}</span></div>`).join('');
+$$('#srcchips button').forEach(b=>b.onclick=()=>{$$('#srcchips button').forEach(x=>x.classList.toggle('on',x===b));$$('.srow').forEach(r=>r.style.display=(b.dataset.k==='all'||r.dataset.k===b.dataset.k)?'':'none')});
+$$('.srow').forEach(r=>{r.style.gridTemplateColumns='';});
+if(innerWidth<600)$$('.srow').forEach(r=>{r.style.gridTemplateColumns='40px 1fr';r.querySelector('.meta').style.gridColumn='2';});
+
+/* DRAWER */
+let lastFocus=null;
+function openDrawer(k){const d=DATA.deep[k];if(!d)return;lastFocus=document.activeElement;$('#dtitle').textContent=d.title;$('#dbody').innerHTML=d.html.replace(/<sup>\[(S\d+)\]<\/sup>/g,(m,id)=>`<sup>${srcs(id)}</sup>`);$('#dbody').scrollTop=0;document.body.classList.add('dopen');$('#drawer').setAttribute('aria-hidden','false');$('#dclose').focus();}
+function closeDrawer(){if(!document.body.classList.contains('dopen'))return;document.body.classList.remove('dopen');$('#drawer').setAttribute('aria-hidden','true');if(lastFocus)lastFocus.focus();}
+$$('[data-deep]').forEach(b=>b.onclick=()=>openDrawer(b.dataset.deep));
+$('#dclose').onclick=closeDrawer;$('#scrim').onclick=closeDrawer;
+</script>
+</body>
+</html>
+<script>window.addEventListener("load",()=>{document.title="10-贻如生物-米白绿色投资速读-run-31";});</script>

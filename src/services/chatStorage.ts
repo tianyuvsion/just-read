@@ -6,6 +6,9 @@ export interface ChatSession {
   createdAt: number
   updatedAt: number
   messages: ChatMessage[]
+  templateId?: string
+  templatePrompt?: string
+  templateReference?: boolean
 }
 
 let database: Promise<IDBDatabase> | undefined

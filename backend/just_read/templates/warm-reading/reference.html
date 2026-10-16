@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>认识迁移体</title>
+<style>
+:root{
+  --bg:#f7f5f0; --surface:#ffffff; --surface-2:#efece4; --ink:#1f2328; --ink-2:#4b525c; --ink-3:#7a828c;
+  --line:#d9d4c8; --accent:#2f6f8f; --accent-soft:#d8e8ef;
+  --cell:#f2c9a0; --cell-edge:#c98c55; --nucleus:#b5754a;
+  --migra:#3c8f6e; --migra-soft:#cfe8dc; --fiber:#8f6a4a;
+  --warn:#9a5b00; --warn-bg:#fff2d6; --open:#6a4c93; --open-bg:#ece4f6;
+  --exo:#c0567a; --apo:#7d7d7d;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15181c; --surface:#1d2127; --surface-2:#262b33; --ink:#e8e6e1; --ink-2:#b9bcc2; --ink-3:#8b9099;
+    --line:#363c45; --accent:#7fb7d3; --accent-soft:#1f3743;
+    --cell:#8a6545; --cell-edge:#d6a173; --nucleus:#d9a27a;
+    --migra:#6cc9a0; --migra-soft:#1f3a2f; --fiber:#c9a07a;
+    --warn:#f0b75a; --warn-bg:#3a2c12; --open:#bfa3e6; --open-bg:#2d2440;
+    --exo:#e889a9; --apo:#a8a8a8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181c; --surface:#1d2127; --surface-2:#262b33; --ink:#e8e6e1; --ink-2:#b9bcc2; --ink-3:#8b9099;
+  --line:#363c45; --accent:#7fb7d3; --accent-soft:#1f3743;
+  --cell:#8a6545; --cell-edge:#d6a173; --nucleus:#d9a27a;
+  --migra:#6cc9a0; --migra-soft:#1f3a2f; --fiber:#c9a07a;
+  --warn:#f0b75a; --warn-bg:#3a2c12; --open:#bfa3e6; --open-bg:#2d2440;
+  --exo:#e889a9; --apo:#a8a8a8;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+  line-height:1.8;font-size:17px}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+header.hero{padding:64px 0 32px}
+.kicker{color:var(--accent);font-weight:600;letter-spacing:.08em;font-size:14px}
+h1{font-size:clamp(30px,6vw,46px);line-height:1.25;margin:8px 0 16px}
+h2{font-size:clamp(22px,4.2vw,28px);line-height:1.4;margin:0 0 12px}
+h3{font-size:19px;margin:20px 0 6px}
+p{margin:0 0 14px}
+.lead{font-size:19px;color:var(--ink-2)}
+section{padding:40px 0;border-top:1px solid var(--line)}
+.secno{color:var(--ink-3);font-size:14px;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:18px 0}
+figure{margin:20px 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+figcaption{font-size:14px;color:var(--ink-3);margin-top:8px;line-height:1.6}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:inherit}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.toc a{font-size:14px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--surface)}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+/* uncertainty tags */
+.tag{display:inline-block;font-size:12.5px;line-height:1.5;padding:1px 8px;border-radius:6px;margin:0 2px;font-weight:600;white-space:nowrap;vertical-align:1px}
+.tag.check{background:var(--warn-bg);color:var(--warn)}
+.tag.open{background:var(--open-bg);color:var(--open)}
+.legend{display:grid;gap:10px}
+.legend div{display:flex;gap:10px;align-items:flex-start}
+.legend .tag{flex:none;margin-top:3px}
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:10px}
+button{font:inherit;font-size:15px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);border-radius:8px;padding:6px 16px;cursor:pointer}
+button.ghost{background:transparent;color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+input[type=range]{flex:1;min-width:160px;accent-color:var(--accent)}
+.stage{min-height:3.6em;margin-top:10px;padding:10px 14px;border-left:3px solid var(--migra);background:var(--surface-2);border-radius:0 8px 8px 0;font-size:16px}
+.stage b{color:var(--migra)}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+/* grid cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
+.fn{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.fn svg{width:64px;height:64px;margin-bottom:6px}
+.fn h3{margin:0 0 6px;font-size:17.5px}
+.fn p{font-size:15.5px;color:var(--ink-2);margin:0 0 8px}
+.fn .proves{font-size:14.5px;color:var(--ink);background:var(--surface-2);border-radius:8px;padding:6px 10px}
+/* table */
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--surface-2);font-weight:600}
+tr:last-child td{border-bottom:none}
+td:first-child{font-weight:600;white-space:nowrap}
+.hl{background:var(--migra-soft)}
+/* timeline */
+.tl{position:relative;margin:16px 0 0;padding-left:26px}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl li{list-style:none;position:relative;margin-bottom:16px}
+.tl li::before{content:"";position:absolute;left:-23px;top:9px;width:12px;height:12px;border-radius:50%;background:var(--migra);border:2px solid var(--bg)}
+.tl .yr{font-weight:700;color:var(--migra);margin-right:6px;font-variant-numeric:tabular-nums}
+.tl{padding-inline-start:26px}
+.q{font-weight:600}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{padding:40px 0 64px;color:var(--ink-3);font-size:14px;border-top:1px solid var(--line)}
+.theme-toggle{position:fixed;top:12px;right:12px;font-size:13px;padding:4px 10px;z-index:5}
+@media (max-width:560px){
+  body{font-size:16px}
+  header.hero{padding-top:52px}
+  .card,figure{padding:12px}
+}
+</style>
+</head>
+<body>
+<button class="ghost theme-toggle" id="themeBtn" type="button">切换深浅色</button>
+
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">细胞生物学科普 · 写给没有生物学背景的读者</div>
+  <h1>迁移体：细胞走路时留下的“小包裹”</h1>
+  <p class="lead">细胞会移动。2015 年，清华大学的研究团队报告：一些细胞在移动时，会从身后拉出细长的“丝”，丝上鼓起一个个小泡，细胞走远后，这些小泡留在原地。研究者给它起名为“迁移体”。这一页从最基础的概念讲起，用图和动画说明迁移体是什么、怎样形成、可能有什么用，以及哪些地方科学界还没弄清。</p>
+  <nav class="toc" aria-label="目录">
+    <a href="#read">先看标注</a><a href="#basics">细胞为什么会走路</a><a href="#what">迁移体是什么</a><a href="#anim">形成过程动画</a>
+    <a href="#scale">它有多大</a><a href="#mech">怎么鼓起来的</a><a href="#func">有什么用</a>
+    <a href="#compare">和其他“小泡”的区别</a><a href="#history">发现历程</a><a href="#open">未解之谜</a><a href="#faq">常见疑问</a>
+  </nav>
+</header>
+
+<!-- 0 -->
+<section id="read">
+  <div class="secno">00</div>
+  <h2>阅读前：这页内容的可靠程度</h2>
+  <p>这页内容根据作者已掌握的科学知识写成，写作时没有逐条查阅原始论文。为了不让读者把记忆中的细节当成确定事实，正文用两种标签区分不确定性：</p>
+  <div class="card legend">
+    <div><span class="tag check">待核实</span><span>具体年份、数字、蛋白名称或论文出处可能记错，引用前应查阅原始论文。</span></div>
+    <div><span class="tag open">尚无定论</span><span>这是科学界本身还没有回答的问题，或者目前只有少数研究、只在实验动物或培养皿中观察到，不能直接推到人体。</span></div>
+  </div>
+  <p>没有标签的内容，是迁移体研究中被反复描述、相对稳定的基本事实。图和动画都是示意图，比例和形状经过简化，不是真实显微照片。</p>
+</section>
+
+<!-- 1 -->
+<section id="basics">
+  <div class="secno">01</div>
+  <h2>先补背景：细胞会“走路”，而且很常见</h2>
+  <p>人体由几十万亿个细胞组成。很多细胞一辈子待在原地，比如大部分肝细胞；也有不少细胞需要移动，这种移动在生物学里叫<strong>细胞迁移</strong>。例子包括：</p>
+  <ul>
+    <li><b>免疫细胞</b>（例如中性粒细胞）赶往感染或伤口的位置；</li>
+    <li><b>胚胎里的细胞</b>在发育时挪到该去的地方，搭出器官；</li>
+    <li><b>伤口边缘的细胞</b>爬过去把缺口补上；</li>
+    <li>坏的例子：<b>癌细胞</b>离开原来的肿瘤，扩散到别处。</li>
+  </ul>
+  <p>细胞迁移的方式可以粗略理解成“前面伸、后面收”：细胞的前端向前铺展，并用表面的“抓手”分子粘在周围的支撑物上；后端则松开、收回。和迁移体有关的关键细节在<strong>后端</strong>：后端有些粘着点一时松不开，细胞继续往前走，就把细胞膜从这些点上拉出了细长的管子。这些管子叫<strong>回缩丝</strong>（也有人译作“收缩纤维”，英文 retraction fiber）。迁移体就长在回缩丝上。</p>
+  <figure>
+    <svg viewBox="0 0 720 220" role="img" aria-label="示意图：细胞向右移动，前端伸展，后端留下被拉长的回缩丝">
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+      </defs>
+      <rect x="0" y="180" width="720" height="10" fill="var(--surface-2)"/>
+      <text x="12" y="208" font-size="13" fill="var(--ink-3)">细胞底下的支撑物（例如细胞外基质）</text>
+      <g stroke="var(--fiber)" stroke-width="2" fill="none">
+        <path d="M120,150 C200,145 260,140 330,128"/>
+        <path d="M90,120 C180,118 250,115 330,112"/>
+        <path d="M140,95 C210,98 270,98 335,100"/>
+      </g>
+      <g fill="var(--fiber)"><circle cx="120" cy="150" r="4"/><circle cx="90" cy="120" r="4"/><circle cx="140" cy="95" r="4"/></g>
+      <path d="M330,95 C350,60 460,55 540,70 C600,80 640,100 650,125 C640,150 600,165 540,170 C450,178 360,170 330,140 C320,125 320,110 330,95 Z" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+      <ellipse cx="455" cy="120" rx="42" ry="30" fill="var(--nucleus)" opacity=".7"/>
+      <line x1="560" y1="35" x2="680" y2="35" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arr)"/>
+      <text x="560" y="26" font-size="14" fill="var(--accent)">移动方向</text>
+      <text x="610" y="200" font-size="14" fill="var(--ink-2)" text-anchor="middle">前端：伸展、粘附</text>
+      <text x="200" y="70" font-size="14" fill="var(--ink-2)" text-anchor="middle">后端：回缩丝</text>
+      <text x="455" y="125" font-size="13" fill="var(--bg)" text-anchor="middle">细胞核</text>
+    </svg>
+    <figcaption>图 1　细胞迁移示意。后端的粘着点没有及时松开，细胞前进时把细胞膜拉成细长的回缩丝（棕色线）。</figcaption>
+  </figure>
+</section>
+
+<!-- 2 -->
+<section id="what">
+  <div class="secno">02</div>
+  <h2>迁移体是什么：回缩丝上鼓起、被留在原地的膜泡</h2>
+  <p>先解释一个词：<strong>细胞器</strong>是细胞内部分工负责某件事的结构，比如负责产生能量的线粒体。最早描述迁移体的研究团队（清华大学俞立实验室）把迁移体归为一种<strong>新的细胞器</strong>。它有几个特点：</p>
+  <div class="grid">
+    <div class="fn"><h3>① 长在回缩丝上</h3><p>迁移体出现在回缩丝的末端或几根丝交叉的地方，像绳子上鼓起的气球。</p></div>
+    <div class="fn"><h3>② 有一层膜包着</h3><p>外面是和细胞膜相连的膜，里面装着更小的泡和各种分子。电镜下看起来像剖开的石榴，所以最初被称为“石榴样结构”。</p></div>
+    <div class="fn"><h3>③ 依赖移动才会出现</h3><p>细胞不动，就没有回缩丝，也就基本不长迁移体。研究中常见的规律是：细胞走得越多，留下的迁移体越多。</p></div>
+    <div class="fn"><h3>④ 会被“丢下”</h3><p>细胞走远后，回缩丝断开，迁移体脱离细胞留在原地。之后它可能破裂、释放内容物，也可能被别的细胞吞进去。</p></div>
+  </div>
+  <p style="margin-top:16px">把这四点连起来，就是迁移体这个名字的由来：它是<strong>随着细胞迁移而产生</strong>的结构，并把一部分细胞里的东西留在细胞经过的路上。中文“迁移体”对应英文 migrasome，由 migration（迁移）加 -some（“体”，生物学里常用来命名小结构）构成。</p>
+</section>
+
+<!-- 3 -->
+<section id="anim">
+  <div class="secno">03</div>
+  <h2>形成过程：拖动滑块，看一个迁移体从无到有</h2>
+  <p>下面的动画把整个过程分成五个阶段。可以点“播放”，也可以拖动滑块停在某一步仔细看。</p>
+  <figure>
+    <svg id="animSvg" viewBox="0 0 720 320" role="img" aria-label="动画：细胞向右移动，在身后拉出回缩丝，丝上鼓起迁移体，丝断开后迁移体留在原地并被邻近细胞摄取">
+      <rect x="0" y="0" width="720" height="320" fill="var(--surface)"/>
+      <g id="fibers" stroke="var(--fiber)" stroke-width="2" fill="none" stroke-linecap="round"></g>
+      <g id="anchors" fill="var(--fiber)"></g>
+      <g id="neighbor"></g>
+      <g id="migras"></g>
+      <g id="released"></g>
+      <g id="cellG">
+        <path id="cellBody" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+        <ellipse id="cellNuc" rx="34" ry="25" fill="var(--nucleus)" opacity=".7"/>
+      </g>
+      <text id="scaleTxt" x="12" y="308" font-size="12" fill="var(--ink-3)">示意图，非真实比例</text>
+    </svg>
+    <div class="controls">
+      <button id="playBtn" type="button">播放</button>
+      <input id="tSlider" type="range" min="0" max="1000" value="0" aria-label="动画进度">
+    </div>
+    <div class="stage" id="stageTxt"></div>
+    <figcaption>图 2　迁移体形成过程示意。棕色线为回缩丝，绿色圆为迁移体，圆内小点代表其中装载的小泡和分子。</figcaption>
+  </figure>
+  <p>动画最后一步画的是迁移体被另一个细胞摄取。这一步在培养皿实验中有观察报道，但在人体内发生得多普遍，目前还不清楚 <span class="tag open">尚无定论</span>。</p>
+</section>
+
+<!-- 4 -->
+<section id="scale">
+  <div class="secno">04</div>
+  <h2>它有多大：比病毒大得多，接近一个细菌</h2>
+  <p>迁移体的直径通常被描述为约 <strong>0.5～3 微米</strong> <span class="tag check">待核实</span>（不同细胞、不同研究报告的范围有出入）。1 微米是 1 毫米的千分之一。光看数字不直观，下图把它和几样熟悉的东西放在同一把尺子上比较。尺子是“对数刻度”：每往右一大格，长度就乘以 10。</p>
+  <figure>
+    <svg id="scaleSvg" viewBox="0 0 720 330" role="img" aria-label="对数刻度大小比较图"></svg>
+    <figcaption>图 3　大小比较（对数刻度）。各项数值均为常见的大致范围，用于建立量级感，不是精确测量值。</figcaption>
+  </figure>
+  <p>这张图支持两个判断：第一，迁移体比后面会提到的“外泌体”大约大 10 倍以上，所以二者在普通光学显微镜下的可见程度很不一样；第二，迁移体仍远小于产生它的细胞，一个细胞可以沿途留下许多个。</p>
+</section>
+
+<!-- 5 -->
+<section id="mech">
+  <div class="secno">05</div>
+  <h2>怎么鼓起来的：膜上的“加固片”聚到一起</h2>
+  <p>回缩丝本质上是细胞膜拉成的细管。要在细管上某一点鼓出一个泡，需要解决两个问题：在哪里鼓、靠什么撑住。研究者目前提出的解释如下，分三步看：</p>
+  <figure>
+    <div class="steps" role="tablist">
+      <button class="ghost stepBtn" data-s="0" aria-pressed="true" type="button">第 1 步</button>
+      <button class="ghost stepBtn" data-s="1" aria-pressed="false" type="button">第 2 步</button>
+      <button class="ghost stepBtn" data-s="2" aria-pressed="false" type="button">第 3 步</button>
+    </div>
+    <svg id="mechSvg" viewBox="0 0 720 240" role="img" aria-label="迁移体形成机制三步示意图">
+      <path id="tubeTop" fill="none" stroke="var(--fiber)" stroke-width="2.5"/>
+      <path id="tubeBot" fill="none" stroke="var(--fiber)" stroke-width="2.5"/>
+      <g id="tspans"></g>
+      <g id="chol"></g>
+      <text x="20" y="225" font-size="13" fill="var(--ink-3)">● 四跨膜蛋白（如 TSPAN4）　▲ 胆固醇</text>
+    </svg>
+    <div class="stage" id="mechTxt"></div>
+    <figcaption>图 4　机制示意。圆点代表膜上的四跨膜蛋白，三角代表胆固醇；数量和位置为示意。</figcaption>
+  </figure>
+  <h3>这三步里涉及的名词</h3>
+  <p><b>四跨膜蛋白</b>：一类嵌在细胞膜里的蛋白，因为它在膜上来回穿过四次而得名。研究发现其中的 <b>TSPAN4</b> 在迁移体上特别多；人为让细胞多产生 TSPAN4，迁移体会变多，去掉它，迁移体明显减少。这说明 TSPAN4 不只是“碰巧在那里”，而是参与形成过程。</p>
+  <p><b>胆固醇</b>：细胞膜的常见成分，能让膜变得更紧密。研究报告，四跨膜蛋白与胆固醇一起聚成较大的“富集区”，让这块膜更硬，从而有利于泡鼓起并保持形状 <span class="tag check">待核实</span>（具体物理机制的细节以原始论文为准）。</p>
+  <p><b>整合素和细胞外基质</b>：整合素是细胞表面的“抓手”蛋白，细胞外基质是细胞周围的支撑网（如纤连蛋白）。有研究报告，只有特定的抓手和特定的支撑物配对时，迁移体才容易在相应位置形成，这解释了“在哪里鼓”的一部分问题 <span class="tag check">待核实</span>。</p>
+  <p>此外，还有研究涉及鞘磷脂合成酶、PI(4,5)P<sub>2</sub>（一种膜脂）和 Rab35 等分子在决定形成位置上的作用 <span class="tag check">待核实</span>。这些分子之间如何配合、哪一个最先起作用，仍在研究 <span class="tag open">尚无定论</span>。</p>
+</section>
+
+<!-- 6 -->
+<section id="func">
+  <div class="secno">06</div>
+  <h2>有什么用：目前提出的几种功能</h2>
+  <p>迁移体被发现的时间不长，它的功能多数来自细胞培养或斑马鱼、小鼠等实验动物的研究。每张卡片最后一行写明这项研究能支持什么结论。</p>
+  <div class="grid">
+    <div class="fn">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="18" fill="var(--migra-soft)" stroke="var(--migra)" stroke-width="2"/><g fill="var(--migra)"><circle cx="26" cy="28" r="3"/><circle cx="36" cy="26" r="3"/><circle cx="32" cy="37" r="3"/></g><path d="M50 14 L58 6 M52 32 L62 32 M50 50 L58 58" stroke="var(--migra)" stroke-width="2"/></svg>
+      <h3>1. 把细胞里的东西“带出去”</h3>
+      <p>细胞内的物质可以通过迁移体被释放到细胞外。最初的论文把这种依赖迁移的释放方式称为“迁移性胞吐”（migracytosis）。</p>
+      <div class="proves">支持的结论：细胞除了已知的分泌方式，还可以边走边释放物质。</div>
+    </div>
+    <div class="fn">
+      <svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="22" ry="16" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/><circle cx="22" cy="20" r="7" fill="var(--migra-soft)" stroke="var(--migra)" stroke-width="2"/><path d="M28 24 Q34 28 34 32" stroke="var(--migra)" stroke-width="2" fill="none"/><circle cx="36" cy="36" r="3" fill="var(--migra)"/></svg>
+      <h3>2. 给其他细胞“送信”</h3>
+      <p>迁移体里可以装蛋白质和 mRNA（细胞用来制造蛋白质的“图纸”）。有研究报告，别的细胞吞下迁移体后，会用其中的 mRNA 造出相应蛋白，自身行为随之改变 <span class="tag check">待核实</span>。</p>
+      <div class="proves">支持的结论：迁移体可能是细胞之间传递信息的一种途径。</div>
+    </div>
+    <div class="fn">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3"/><circle cx="20" cy="40" r="5" fill="var(--migra)"/><circle cx="44" cy="22" r="5" fill="var(--migra)"/><circle cx="32" cy="32" r="6" fill="var(--accent)"/></svg>
+      <h3>3. 在胚胎发育中“标位置”</h3>
+      <p>在斑马鱼胚胎里，研究者观察到迁移体在特定区域聚集，并携带信号分子（如趋化因子 CXCL12），影响器官的正常形成；干扰迁移体形成后，发育出现异常 <span class="tag check">待核实</span>。</p>
+      <div class="proves">支持的结论：迁移体至少在斑马鱼中可以为发育提供“区域信号”。</div>
+    </div>
+    <div class="fn">
+      <svg viewBox="0 0 64 64"><ellipse cx="30" cy="34" rx="14" ry="8" fill="none" stroke="var(--exo)" stroke-width="2"/><path d="M20 34 q4 -6 8 0 t8 0" stroke="var(--exo)" stroke-width="1.5" fill="none"/><path d="M46 20 L56 10" stroke="var(--ink-3)" stroke-width="2"/><circle cx="50" cy="16" r="9" fill="none" stroke="var(--migra)" stroke-width="2"/></svg>
+      <h3>4. 清理受损的线粒体</h3>
+      <p>线粒体是细胞的“发电站”。有研究报告，免疫细胞在轻度受损时，会把坏掉的线粒体运进迁移体再丢出细胞，研究者称之为“线粒体胞吐”（mitocytosis）<span class="tag check">待核实</span>。</p>
+      <div class="proves">支持的结论：迁移体可能参与细胞的“质量控制”，帮细胞丢掉有问题的部件。</div>
+    </div>
+    <div class="fn">
+      <svg viewBox="0 0 64 64"><path d="M8 50 C20 40 24 30 32 20 M32 20 C38 30 46 38 58 44 M32 20 L32 6" stroke="var(--exo)" stroke-width="3" fill="none"/><circle cx="20" cy="30" r="5" fill="var(--migra)"/><circle cx="46" cy="28" r="5" fill="var(--migra)"/></svg>
+      <h3>5. 促进血管生长</h3>
+      <p>有研究报告，单核细胞（一类免疫细胞）留下的迁移体携带促血管生长的信号分子，在鸡胚等模型中促进新血管形成 <span class="tag check">待核实</span>。</p>
+      <div class="proves">支持的结论：迁移体留在组织中，可能影响周围组织的结构建设。</div>
+    </div>
+    <div class="fn">
+      <svg viewBox="0 0 64 64"><path d="M32 8 C44 24 50 32 50 42 a18 18 0 0 1 -36 0 C14 32 20 24 32 8 Z" fill="none" stroke="var(--exo)" stroke-width="2"/><circle cx="28" cy="40" r="4" fill="var(--migra)"/><circle cx="38" cy="44" r="4" fill="var(--migra)"/></svg>
+      <h3>6. 与凝血有关</h3>
+      <p>有研究报告，血液中的中性粒细胞会产生迁移体，其中富含与凝血相关的分子，在小鼠中影响凝血过程 <span class="tag check">待核实</span>。</p>
+      <div class="proves">支持的结论：迁移体可能不仅存在于培养皿，也存在于体内血液中，并参与生理过程。</div>
+    </div>
+  </div>
+  <h3>与疾病的联系</h3>
+  <p>研究者也在探索迁移体与疾病的关系，例如：肾脏中的足细胞受损时，尿液中可能检测到其产生的迁移体，有人提出这可以作为肾损伤的早期信号 <span class="tag check">待核实</span>；癌细胞迁移能力强，迁移体是否参与肿瘤扩散，也有研究在关注。这些方向大多处于实验室或早期临床研究阶段，<strong>目前没有基于迁移体的已获批诊断或治疗方法</strong> <span class="tag open">尚无定论</span>。</p>
+</section>
+
+<!-- 7 -->
+<section id="compare">
+  <div class="secno">07</div>
+  <h2>和其他“小泡”有什么不同</h2>
+  <p>细胞会向外释放多种膜包裹的小泡，统称<strong>细胞外囊泡</strong>。普通读者最常听说的是“外泌体”。下表比较迁移体和另外三种常被提到的小泡。分类依据主要是两点：<b>它从哪里来</b>，以及<b>在什么情况下产生</b>。</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>名称</th><th>大致大小</th><th>从哪里产生</th><th>产生条件</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>迁移体</td><td>约 0.5～3 微米</td><td>回缩丝的末端或交叉点</td><td>依赖细胞迁移</td></tr>
+        <tr><td>外泌体</td><td>约 30～150 纳米</td><td>细胞内部的“多囊泡体”与细胞膜融合后释放</td><td>细胞不移动也能持续产生</td></tr>
+        <tr><td>微囊泡</td><td>约 0.1～1 微米</td><td>细胞膜直接向外出芽</td><td>多种刺激下产生</td></tr>
+        <tr><td>凋亡小体</td><td>约 1～5 微米</td><td>细胞程序性死亡时碎裂</td><td>细胞正在死亡</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>大小范围是文献中常见的大致数值，不同来源说法不完全一致 <span class="tag check">待核实</span>。从表中可以看出，迁移体和凋亡小体大小相近，但凋亡小体来自正在死亡的细胞，迁移体来自活着、正在移动的细胞，所以二者是不同的东西。在早期，研究者可能把一部分迁移体误认作其他囊泡；迁移体与其他囊泡的分类边界在多大程度上清晰，仍有讨论空间 <span class="tag open">尚无定论</span>。</p>
+  <figure>
+    <svg viewBox="0 0 720 200" role="img" aria-label="四种囊泡产生方式示意">
+      <g font-size="13" fill="var(--ink-2)" text-anchor="middle">
+        <!-- migrasome -->
+        <ellipse cx="110" cy="90" rx="55" ry="38" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+        <path d="M55 92 L20 110 M58 80 L22 64" stroke="var(--fiber)" stroke-width="2"/>
+        <circle cx="22" cy="110" r="9" fill="var(--migra-soft)" stroke="var(--migra)" stroke-width="2"/>
+        <circle cx="24" cy="64" r="7" fill="var(--migra-soft)" stroke="var(--migra)" stroke-width="2"/>
+        <text x="100" y="160">迁移体</text><text x="100" y="180" font-size="12" fill="var(--ink-3)">长在身后的丝上</text>
+        <!-- exosome -->
+        <ellipse cx="290" cy="90" rx="55" ry="38" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+        <circle cx="285" cy="90" r="16" fill="none" stroke="var(--exo)" stroke-width="2"/>
+        <g fill="var(--exo)"><circle cx="280" cy="86" r="3"/><circle cx="290" cy="95" r="3"/><circle cx="355" cy="70" r="3"/><circle cx="362" cy="84" r="3"/></g>
+        <text x="290" y="160">外泌体</text><text x="290" y="180" font-size="12" fill="var(--ink-3)">先在细胞内装好再释放</text>
+        <!-- microvesicle -->
+        <ellipse cx="470" cy="90" rx="55" ry="38" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+        <circle cx="470" cy="46" r="9" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+        <circle cx="520" cy="56" r="7" fill="var(--cell)" stroke="var(--cell-edge)" stroke-width="2"/>
+        <text x="470" y="160">微囊泡</text><text x="470" y="180" font-size="12" fill="var(--ink-3)">从细胞膜直接鼓出</text>
+        <!-- apoptotic -->
+        <g fill="var(--cell)" stroke="var(--apo)" stroke-width="2" stroke-dasharray="3 2">
+          <circle cx="630" cy="80" r="18"/><circle cx="662" cy="100" r="14"/><circle cx="610" cy="108" r="12"/><circle cx="650" cy="62" r="10"/>
+        </g>
+        <text x="640" y="160">凋亡小体</text><text x="640" y="180" font-size="12" fill="var(--ink-3)">细胞死亡时碎裂</text>
+      </g>
+    </svg>
+    <figcaption>图 5　四类细胞外囊泡的来源示意，不按比例绘制。</figcaption>
+  </figure>
+</section>
+
+<!-- 8 -->
+<section id="history">
+  <div class="secno">08</div>
+  <h2>发现历程：一个由中国团队命名的细胞器</h2>
+  <p>下面按时间列出几项代表性进展。年份和期刊依据作者记忆整理，整条时间线标为 <span class="tag check">待核实</span>，引用前请查对原文。</p>
+  <ul class="tl">
+    <li><span class="yr">2010 年代初</span>俞立实验室在电子显微镜下观察培养的大鼠肾细胞，发现细胞外有内含许多小泡的“石榴样结构”，起初不清楚它是什么。</li>
+    <li><span class="yr">2015</span>该团队在《细胞研究》（Cell Research）发表论文，证明这种结构随细胞迁移在回缩丝上形成，命名为迁移体，并提出“迁移性胞吐”。</li>
+    <li><span class="yr">2017</span>报告整合素与特定细胞外基质的配对决定迁移体在哪里形成。</li>
+    <li><span class="yr">2019</span>报告四跨膜蛋白 TSPAN4 与胆固醇共同组装、促进迁移体形成；同年提出可用于识别迁移体的标志蛋白（如 NDST1 等），并报告迁移体在斑马鱼胚胎发育中的作用。</li>
+    <li><span class="yr">2021</span>报告免疫细胞通过迁移体丢弃受损线粒体；报告迁移体可把 mRNA 和蛋白质转移给其他细胞。</li>
+    <li><span class="yr">2022 年起</span>陆续报告迁移体与血管生成、凝血、肾损伤等相关；国内外更多实验室开始研究迁移体。</li>
+  </ul>
+  <p>“标志蛋白”值得单独解释：科学家要在样本里找到迁移体并和其他小泡区分开，需要一种主要出现在迁移体上的分子，给它染上荧光就能“认出”迁移体。标志蛋白的发现，使后续在组织、血液、尿液中寻找迁移体成为可能。</p>
+</section>
+
+<!-- 9 -->
+<section id="open">
+  <div class="secno">09</div>
+  <h2>还没弄清楚的问题</h2>
+  <p>迁移体研究只有十年左右，下面这些问题目前没有公认答案，全部属于 <span class="tag open">尚无定论</span>：</p>
+  <div class="card">
+    <p><span class="q">在人体中有多普遍？</span>大部分证据来自培养的细胞和斑马鱼、小鼠等动物。人体各组织里每天产生多少迁移体、哪些细胞产生得最多，数据还很有限。</p>
+    <p><span class="q">“装什么货”由谁决定？</span>细胞是有选择地往迁移体里装特定物质，还是大致随机地装入，不同物质可能情况不同，机制尚不完整。</p>
+    <p><span class="q">被谁接收、怎样起作用？</span>迁移体被其他细胞摄取后，其中的分子如何发挥作用、作用持续多久，仍在研究。</p>
+    <p><span class="q">能否用于医疗？</span>例如用尿液或血液中的迁移体判断疾病，或者利用迁移体运送药物。这些设想有研究价值，但距离临床应用还远，效果和安全性都未得到证明。</p>
+    <p style="margin:0"><span class="q">与其他囊泡的边界：</span>部分早期关于“细胞外囊泡”的研究可能混入了迁移体，如何在实验中把各类囊泡干净地区分开，仍是这个领域的技术难点。</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="faq">
+  <div class="secno">10</div>
+  <h2>常见疑问</h2>
+  <details><summary>迁移体对人有害吗？</summary><p>迁移体本身是细胞正常活动的产物，目前的研究大多描述它在发育、免疫、血管生长中的作用。它也可能在某些疾病中被“借用”，例如被癌细胞利用，但这方面证据还不充分。说它“有益”或“有害”都过于简单。</p></details>
+  <details><summary>我能用普通显微镜看到迁移体吗？</summary><p>迁移体有微米级大小，在实验室的荧光显微镜下给它染色后可以看到；最早描述它的结构细节则依靠电子显微镜。学校常见的普通光学显微镜在不染色的情况下很难分辨它 <span class="tag check">待核实</span>。</p></details>
+  <details><summary>所有细胞都会产生迁移体吗？</summary><p>前提是细胞会迁移。研究报告过多种会迁移的细胞能产生迁移体，包括多种培养细胞、免疫细胞和胚胎细胞。是否所有迁移的细胞都会产生，以及产生量差别有多大，还没有系统答案 <span class="tag open">尚无定论</span>。</p></details>
+  <details><summary>“发现了一个新细胞器”为什么重要？</summary><p>细胞器是细胞分工的基本单位。教科书里的主要细胞器大多在几十年前就已发现，因此报告一种新的细胞器，意味着细胞中还有一条此前没被注意的物质运输和信息传递途径。迁移体被视为“新细胞器”，主要依据是它有特定的形成机制、特定的标志蛋白和可以验证的功能。也有学者认为它更适合被归为一类特殊的细胞外囊泡，这属于命名与分类上的讨论 <span class="tag check">待核实</span>。</p></details>
+</section>
+
+<section>
+  <h2>一句话总结</h2>
+  <p>迁移体是细胞在移动时，在身后拉出的回缩丝上鼓起的微米级膜泡；细胞离开后它留在原地，把细胞里的物质和信号留给周围环境或其他细胞。它的形成依赖细胞迁移和膜上四跨膜蛋白、胆固醇等成分；目前提出的功能包括释放物质、细胞间传信、指导胚胎发育和清理受损线粒体。它在人体中的普遍程度和医疗用途，仍有待研究。</p>
+</section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>说明：本页为科普示意，所有插图与动画均为简化绘制。内容依据作者已有知识撰写，未在写作时逐条核对原始文献；标有“待核实”的年份、数值和研究细节，正式引用前请查阅原始论文。可作为检索起点的关键词：migrasome、retraction fiber、TSPAN4、migracytosis、mitocytosis。</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // theme toggle
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  btn.addEventListener('click',function(){
+    var dark = root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+  });
+
+  var NS='http://www.w3.org/2000/svg';
+  function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+  function clamp(x){return Math.max(0,Math.min(1,x));}
+  function seg(t,a,b){return clamp((t-a)/(b-a));}
+  function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+  function lerp(a,b,x){return a+(b-a)*x;}
+
+  /* ---------- formation animation ---------- */
+  var fibersG=document.getElementById('fibers'), anchorsG=document.getElementById('anchors'),
+      migrasG=document.getElementById('migras'), relG=document.getElementById('released'),
+      nbG=document.getElementById('neighbor'),
+      body=document.getElementById('cellBody'), nuc=document.getElementById('cellNuc'),
+      slider=document.getElementById('tSlider'), stageTxt=document.getElementById('stageTxt'),
+      playBtn=document.getElementById('playBtn');
+  var CY=150;
+  // anchor points (adhesions left behind); attach offset on cell rear
+  var anchors=[{x:110,y:95,o:-28,m:.85},{x:85,y:150,o:0,m:.9},{x:120,y:205,o:26,m:.8},{x:175,y:120,o:-12,m:.55},{x:165,y:185,o:14,m:.6}];
+  var fiberEls=[],migEls=[];
+  anchors.forEach(function(a,i){
+    fiberEls.push(el('path',{},fibersG));
+    el('circle',{cx:a.x,cy:a.y,r:3},anchorsG);
+    var g=el('g',{},migrasG);
+    var c=el('circle',{cx:a.x,cy:a.y,r:0,fill:'var(--migra-soft)',stroke:'var(--migra)','stroke-width':2},g);
+    var dots=[];
+    for(var k=0;k<4;k++){dots.push(el('circle',{r:0,fill:'var(--migra)'},g));}
+    migEls.push({g:g,c:c,dots:dots});
+  });
+  // neighbor cell (bottom-left), appears late
+  var nb=el('ellipse',{cx:140,cy:290,rx:70,ry:30,fill:'var(--cell)',stroke:'var(--cell-edge)','stroke-width':2,opacity:0},nbG);
+  var relDots=[];
+  for(var r=0;r<8;r++){relDots.push(el('circle',{r:2.5,fill:'var(--migra)',opacity:0},relG));}
+
+  var stages=[
+    [0,.12,'<b>阶段 1　细胞粘在原地。</b>细胞底部有许多粘着点（棕色小点），把它固定在支撑物上。'],
+    [.12,.38,'<b>阶段 2　细胞向前走，后端被拉出回缩丝。</b>后部的粘着点没有及时松开，细胞膜被拉成细长的管子。'],
+    [.38,.62,'<b>阶段 3　回缩丝上鼓起迁移体。</b>在丝的末端或交叉处，膜泡逐渐膨大，细胞里的小泡和分子被装进去。'],
+    [.62,.8,'<b>阶段 4　回缩丝断开，迁移体被留下。</b>细胞继续前进，丝断裂，迁移体脱离细胞，停在细胞经过的路上。'],
+    [.8,1.01,'<b>阶段 5　迁移体的去向。</b>有的破裂，把内容物释放到周围；有的被邻近细胞吞入，把其中的物质交给对方。']
+  ];
+
+  function draw(t){
+    var move=ease(seg(t,.1,.75));
+    var cx=lerp(230,590,move);
+    var rx=78, ry=52;
+    // cell shape: slightly flattened front (lamellipodium)
+    var stretch=1+.12*Math.sin(Math.PI*seg(t,.1,.75));
+    var R=rx*stretch;
+    body.setAttribute('d','M'+(cx-R)+','+CY+
+      ' C'+(cx-R)+','+(CY-ry)+' '+(cx+R*.4)+','+(CY-ry-12)+' '+(cx+R+8)+','+(CY-18)+
+      ' C'+(cx+R+16)+','+(CY-4)+' '+(cx+R+16)+','+(CY+4)+' '+(cx+R+8)+','+(CY+18)+
+      ' C'+(cx+R*.4)+','+(CY+ry+12)+' '+(cx-R)+','+(CY+ry)+' '+(cx-R)+','+CY+' Z');
+    nuc.setAttribute('cx',cx+8); nuc.setAttribute('cy',CY);
+    var rear=cx-R;
+    var fiberShow=seg(t,.14,.22);
+    var breakP=seg(t,.64,.74);
+    anchors.forEach(function(a,i){
+      var f=fiberEls[i];
+      var ex=rear+6, ey=CY+a.o;
+      // after break, fiber retracts toward the migrasome
+      var bx=lerp(ex,a.x,breakP), by=lerp(ey,a.y,breakP);
+      var midx=(a.x+bx)/2, midy=(a.y+by)/2+ (a.o*.15);
+      f.setAttribute('d','M'+a.x+','+a.y+' Q'+midx+','+midy+' '+bx+','+by);
+      f.setAttribute('opacity',fiberShow*(1-breakP*.95));
+      // migrasome growth
+      var grow=ease(seg(t,.38+i*.02,.6));
+      var rr=14*a.m*grow;
+      var m=migEls[i];
+      var mx=a.x+ (bx-a.x)*.06, my=a.y+(by-a.y)*.06;
+      // stage 5 fate: index 0 is taken up by neighbor, index 1 ruptures
+      var fate=seg(t,.82,.97);
+      var opacity=1;
+      if(i===0){ mx=lerp(mx,150,ease(fate)); my=lerp(my,272,ease(fate)); }
+      if(i===1){ opacity=1-fate; }
+      m.c.setAttribute('cx',mx); m.c.setAttribute('cy',my); m.c.setAttribute('r',rr);
+      m.g.setAttribute('opacity',opacity);
+      m.dots.forEach(function(d,k){
+        var ang=k*1.6+i, dr=rr*.45;
+        d.setAttribute('cx',mx+Math.cos(ang)*dr); d.setAttribute('cy',my+Math.sin(ang)*dr);
+        d.setAttribute('r',Math.max(0,rr*.16));
+      });
+      if(i===1){
+        relDots.forEach(function(d,k){
+          var ang=k*Math.PI/4, dist=8+fate*34;
+          d.setAttribute('cx',mx+Math.cos(ang)*dist); d.setAttribute('cy',my+Math.sin(ang)*dist);
+          d.setAttribute('opacity',fate>0? (1-fate*.6):0);
+        });
+      }
+    });
+    nb.setAttribute('opacity',seg(t,.78,.86));
+    anchorsG.setAttribute('opacity',1-seg(t,.7,.8)*.5);
+    for(var s=0;s<stages.length;s++){ if(t>=stages[s][0]&&t<stages[s][1]){ stageTxt.innerHTML=stages[s][2]; break; } }
+  }
+  var t=0, playing=false, last=0;
+  function frame(ts){
+    if(!playing)return;
+    if(!last)last=ts;
+    t+= (ts-last)/14000; last=ts;
+    if(t>=1){t=1;playing=false;playBtn.textContent='重新播放';}
+    slider.value=Math.round(t*1000); draw(t);
+    if(playing)requestAnimationFrame(frame);
+  }
+  playBtn.addEventListener('click',function(){
+    if(playing){playing=false;playBtn.textContent='播放';return;}
+    if(t>=1)t=0;
+    playing=true; last=0; playBtn.textContent='暂停'; requestAnimationFrame(frame);
+  });
+  slider.addEventListener('input',function(){ playing=false; playBtn.textContent='播放'; t=slider.value/1000; draw(t); });
+  draw(0);
+
+  /* ---------- scale chart ---------- */
+  var sv=document.getElementById('scaleSvg');
+  var X0=120, X1=700; // log10 from 1 nm (0) to 100 um (5) in nm units
+  function xs(nm){return X0+(Math.log10(nm)-0)/5*(X1-X0);}
+  [1,10,100,1000,10000,100000].forEach(function(v,i){
+    var x=xs(v);
+    el('line',{x1:x,y1:30,x2:x,y2:290,stroke:'var(--line)','stroke-width':1},sv);
+    var t=el('text',{x:x,y:312,'font-size':12,fill:'var(--ink-3)','text-anchor':'middle'},sv);
+    t.textContent=['1 纳米','10 纳米','100 纳米','1 微米','10 微米','100 微米'][i];
+  });
+  var items=[
+    ['DNA 双螺旋直径',2,2,'var(--ink-3)'],
+    ['常见病毒',20,300,'var(--ink-3)'],
+    ['外泌体',30,150,'var(--exo)'],
+    ['常见细菌',500,5000,'var(--ink-3)'],
+    ['迁移体',500,3000,'var(--migra)'],
+    ['人类红细胞',7000,8000,'var(--ink-3)'],
+    ['常见人体细胞',10000,30000,'var(--cell-edge)'],
+    ['头发丝直径',50000,100000,'var(--ink-3)']
+  ];
+  items.forEach(function(it,i){
+    var y=40+i*31;
+    var lab=el('text',{x:X0-8,y:y+5,'font-size':13,fill: it[0]==='迁移体'?'var(--migra)':'var(--ink-2)','text-anchor':'end','font-weight':it[0]==='迁移体'?700:400},sv);
+    lab.textContent=it[0];
+    var xa=xs(it[1]), xb=xs(it[2]);
+    if(xb-xa<6){ el('circle',{cx:xa,cy:y,r:5,fill:it[3]},sv); }
+    else el('rect',{x:xa,y:y-7,width:xb-xa,height:14,rx:7,fill:it[3],opacity:it[0]==='迁移体'?1:.75},sv);
+  });
+
+  /* ---------- mechanism steps ---------- */
+  var tubeTop=document.getElementById('tubeTop'), tubeBot=document.getElementById('tubeBot'),
+      tsG=document.getElementById('tspans'), chG=document.getElementById('chol'), mechTxt=document.getElementById('mechTxt');
+  var mechText=[
+    '<b>第 1 步　回缩丝被拉出。</b>细胞走开后，身后留下一根细长的膜管。管壁上零散分布着四跨膜蛋白（圆点）和胆固醇（三角）。',
+    '<b>第 2 步　成分聚到一处。</b>在回缩丝的某个位置，四跨膜蛋白和胆固醇聚集成较大的富集区。哪个位置会聚集，与细胞粘附的支撑物类型等因素有关。',
+    '<b>第 3 步　膜泡鼓起并稳定。</b>富集区让这块膜变得更硬、更容易保持弯曲的形状，局部鼓成一个泡，即迁移体。细胞里的物质被运进泡内。'
+  ];
+  function tube(bulge){
+    // bulge radius around x=400
+    function y(x,sign){var d=(x-400)/70;return 120+sign*(6+bulge*Math.exp(-d*d));}
+    var top='M40,'+y(40,-1), bot='M40,'+y(40,1);
+    for(var x=50;x<=680;x+=10){top+=' L'+x+','+y(x,-1).toFixed(1);bot+=' L'+x+','+y(x,1).toFixed(1);}
+    tubeTop.setAttribute('d',top); tubeBot.setAttribute('d',bot);
+    return y;
+  }
+  var spread=[70,130,190,250,310,360,450,520,580,640];
+  function drawMech(s){
+    var bulge=[0,6,62][s];
+    var y=tube(bulge);
+    while(tsG.firstChild)tsG.removeChild(tsG.firstChild);
+    while(chG.firstChild)chG.removeChild(chG.firstChild);
+    spread.forEach(function(x0,i){
+      var gather = s===0?0:(s===1?.75:.92);
+      var x=lerp(x0,400+(i-4.5)*(s===2?9:7),gather);
+      var sign=i%2?1:-1;
+      var yy=y(x,sign);
+      el('circle',{cx:x,cy:yy,r:5,fill:'var(--accent)'},tsG);
+      var xc=lerp(x0+30,400+(i-4.5)*(s===2?9:7)+4,gather);
+      var yc=y(xc,-sign);
+      el('path',{d:'M'+xc+','+(yc-5)+' l5,9 l-10,0 z',fill:'var(--warn)'},chG);
+    });
+    if(s===2){
+      for(var k=0;k<5;k++){el('circle',{cx:385+(k%3)*14,cy:105+Math.floor(k/3)*22+ (k%2)*4,r:5,fill:'var(--migra)',opacity:.8},chG);}
+      var lab=el('text',{x:400,y:38,'font-size':14,fill:'var(--migra)','text-anchor':'middle','font-weight':700},chG); lab.textContent='迁移体';
+    }
+    mechTxt.innerHTML=mechText[s];
+    document.querySelectorAll('.stepBtn').forEach(function(b){b.setAttribute('aria-pressed',String(+b.dataset.s===s));});
+  }
+  document.querySelectorAll('.stepBtn').forEach(function(b){b.addEventListener('click',function(){drawMech(+b.dataset.s);});});
+  drawMech(0);
+})();
+</script>
+</body>
+</html>

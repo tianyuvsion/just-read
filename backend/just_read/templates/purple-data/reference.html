@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>08-钙钛矿太阳能电池-紫黑底数据图解-run-72</title>
+<meta name="description" content="钙钛矿太阳能电池是什么、和硅电池有何不同、近年进展与主要团队、何时能用到身边。数据截至 2026 年 10 月。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="../共享素材/f7bb89752ad05cba.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0a0f; --bg2:#14121b; --card:#1b1824; --line:#2c2838; --ink:#f4efe6; --mute:#a7a0b4; --dim:#6f6880;
+  --pv:#ff8a1f;      /* 钙钛矿：卤化物的橙 */
+  --pv2:#ff3d6e;     /* 钙钛矿高能端：品红 */
+  --si:#4d8dff;      /* 硅：蓝 */
+  --tan:#c86bff;     /* 叠层：紫 */
+  --ok:#3ee0a1; --warn:#ffd23d;
+  --num:"Space Grotesk",ui-sans-serif,system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-snap-type:y proximity;scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--pv)}
+button{font:inherit;color:inherit}
+.screen{min-height:100vh;min-height:100svh;scroll-snap-align:start;position:relative;padding:72px max(48px,4vw) 48px max(16px,4vw);display:grid;align-items:center;overflow:hidden}
+.screen+.screen{border-top:1px solid var(--line)}
+.wrap{max-width:1180px;margin:0 auto;width:100%;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,4vw,56px);align-items:center}
+.kicker{font-family:var(--num);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--pv)}
+h1,h2{margin:.25em 0 .4em;line-height:1.18;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:clamp(26px,3.3vw,40px);word-break:keep-all;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.6vw,18px);color:var(--ink)}
+.note{font-size:13px;color:var(--mute)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;transition:.2s}
+.chip:hover{border-color:var(--mute)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.deep{margin-top:18px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--pv),var(--pv2));color:#160c06;border:0;border-radius:999px;padding:10px 18px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px -8px var(--pv)}
+.deep:hover{filter:brightness(1.08)}
+.stage{background:radial-gradient(120% 100% at 70% 0%,#221d2e 0%,var(--bg2) 60%);border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative;min-width:0}
+.stage svg,.stage canvas{display:block;width:100%;height:auto}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+input[type=range]{width:100%;accent-color:var(--pv)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mute)}
+.legend i{display:inline-block;width:12px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.tip{position:absolute;pointer-events:none;background:#000d;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;max-width:260px;opacity:0;transition:opacity .15s;z-index:5}
+.jrow{display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 10px;align-items:center;font-size:13px;margin:6px 0}
+.jrow span{color:var(--mute)}.jrow em{grid-column:2;font-style:normal;font-size:12.5px}
+.jbar{position:relative;height:22px}.jbar i{position:absolute;left:0;height:9px;border-radius:3px}
+.jbar .j0{top:0;width:100%;background:#ffffff26}.jbar .j1{top:12px;width:100%;transition:width 2.2s ease}
+.big{font-family:var(--num);font-weight:700;letter-spacing:-.02em}
+
+/* 顶栏与章节导航 */
+.top{position:fixed;inset:0 0 auto 0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 max(16px,3vw);z-index:40;background:linear-gradient(#0b0a0fee,#0b0a0f00)}
+.brand{font-family:var(--num);font-weight:700;letter-spacing:.04em;font-size:15px;text-decoration:none;color:var(--ink)}
+.brand b{color:var(--pv)}
+.progress{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--pv),var(--pv2),var(--tan));width:0;z-index:50}
+.dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40}
+.dots a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;color:var(--mute);font-size:12px}
+.dots a span{opacity:0;transform:translateX(6px);transition:.2s;white-space:nowrap;background:#000a;padding:2px 8px;border-radius:6px}
+.dots a:hover span{opacity:1;transform:none}
+.dots a i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--mute);transition:.2s}
+.dots a.on i{background:var(--pv);border-color:var(--pv);transform:scale(1.3)}
+.menu-btn{display:none;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;cursor:pointer}
+
+/* 第一屏 */
+#hero .wrap{grid-template-columns:minmax(0,6fr) minmax(0,5fr)}
+#hero h1{font-size:clamp(34px,5.2vw,68px)}
+#hero h1 .grad{background:linear-gradient(90deg,var(--pv) 0%,var(--pv2) 50%,var(--tan) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 6px}
+.num{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.num .big{font-size:clamp(26px,3.4vw,40px);line-height:1}
+.num p{margin:6px 0 0;font-size:12.5px;color:var(--mute);line-height:1.45}
+.qs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.q{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;transition:.2s;position:relative}
+.q:hover{border-color:var(--pv);transform:translateY(-2px)}
+.q b{display:block;font-size:15px;margin-bottom:4px}
+.q span{font-size:13px;color:var(--mute);line-height:1.5;display:block}
+.q em{font-style:normal;font-family:var(--num);color:var(--pv);font-size:12px;position:absolute;right:12px;top:10px}
+#lattice{aspect-ratio:1/1;cursor:grab;touch-action:none}
+.hero-cap{position:absolute;left:16px;bottom:12px;font-size:12px;color:var(--mute)}
+
+/* 第1屏：晶体 */
+.ions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.cellgrid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:14px;align-items:center}
+@media (max-width:560px){.cellgrid{grid-template-columns:minmax(0,1fr)}.cellgrid canvas{max-width:240px;margin:0 auto}}
+.ion{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 6px;cursor:pointer;text-align:center;min-width:0}
+.ion[aria-pressed="true"]{border-color:var(--pv);box-shadow:0 0 0 1px var(--pv) inset}
+.ion b{font-family:var(--num);font-size:22px}
+.ion small{display:block;color:var(--mute);font-size:11.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.film{height:46px;border-radius:10px;border:1px solid #fff2;transition:background .2s}
+.spec{height:22px;border-radius:6px;position:relative;background:linear-gradient(90deg,#7a00ff,#3d5bff 15%,#00c8ff 25%,#00e070 38%,#e6f000 50%,#ff9a00 62%,#ff2a00 78%,#5a0000 100%)}
+.spec .mask{position:absolute;inset:0 0 0 auto;background:repeating-linear-gradient(45deg,#0b0a0fdd 0 4px,#0b0a0f99 4px 8px);border-left:2px solid #fff;transition:width .15s}
+
+/* 第2屏：结构动画 */
+.layers text{font-size:13px;fill:var(--ink)}
+.toggle-row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* 对比表 */
+.cmp{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.cmp th,.cmp td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.cmp th{color:var(--mute);font-weight:500;font-size:12.5px}
+.cmp td.k{color:var(--mute);white-space:nowrap}
+.cmp .p{color:var(--pv)} .cmp .s{color:var(--si)}
+
+/* 团队卡 */
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:62vh;overflow:auto;padding-right:4px}
+.team{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;text-align:left;transition:.2s}
+.team:hover{border-color:var(--mute);transform:translateY(-2px)}
+.team .tag{font-size:11px;font-family:var(--num);letter-spacing:.08em;color:var(--bg);padding:2px 8px;border-radius:999px;display:inline-block;margin-bottom:6px}
+.team b{display:block;font-size:15px;line-height:1.35}
+.team small{display:block;color:var(--mute);font-size:12.5px;line-height:1.5;margin-top:4px}
+
+/* 时间线 */
+.tl{position:relative;height:auto}
+.ev{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);transition:opacity .25s}
+.ev .y{font-family:var(--num);font-weight:700;color:var(--mute)}
+.ev .t{font-size:14px;line-height:1.5}
+.badge{font-size:11px;border-radius:999px;padding:1px 8px;margin-right:6px;white-space:nowrap;display:inline-block}
+.b-done{background:#3ee0a122;color:var(--ok);border:1px solid #3ee0a155}
+.b-plan{background:#ffd23d18;color:var(--warn);border:1px solid #ffd23d55}
+.b-gov{background:#4d8dff22;color:#9dbcff;border:1px solid #4d8dff55}
+.b-view{background:#c86bff22;color:#e0b0ff;border:1px solid #c86bff66}
+.ev.future{opacity:.28}
+.tl-list{max-height:52vh;overflow:auto;padding-right:6px}
+
+/* 深读抽屉 */
+.drawer{position:fixed;inset:0 0 0 auto;width:min(560px,100vw);background:#100e16f7;backdrop-filter:blur(12px);border-left:1px solid var(--line);z-index:60;transform:translateX(102%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.drawer header b{font-size:14px;color:var(--pv);font-family:var(--num);letter-spacing:.12em}
+.drawer .x{background:none;border:1px solid var(--line);border-radius:999px;width:36px;height:36px;cursor:pointer;font-size:18px}
+.drawer .body{padding:6px 22px 40px;overflow:auto;font-size:15.5px}
+.drawer h3{font-size:22px;margin:16px 0 8px}
+.drawer h4{font-size:16px;margin:20px 0 6px;color:var(--pv)}
+.drawer p,.drawer li{color:#e6e0d6}
+.drawer ul{padding-left:1.2em}
+.drawer .src{font-size:13px;color:var(--mute)}
+.drawer .links a{display:block;padding:8px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.drawer .links a small{display:block;color:var(--mute)}
+.scrim{position:fixed;inset:0;background:#0008;z-index:55;opacity:0;pointer-events:none;transition:.3s}
+.scrim.open{opacity:1;pointer-events:auto}
+
+/* 来源屏 */
+.srcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.srcbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.srcbox h4{margin:0 0 6px;font-size:15px}
+.srcbox a{display:block;font-size:13.5px;padding:4px 0;text-decoration:none;line-height:1.45}
+footer{padding:28px 16px 60px;text-align:center;color:var(--dim);font-size:12.5px}
+
+@media (max-width:860px){
+  .wrap,#hero .wrap{grid-template-columns:minmax(0,1fr)}
+  .screen{padding:64px 16px 40px;min-height:auto}
+  html{scroll-snap-type:none}
+  .dots{display:none}
+  .menu-btn{display:inline-block}
+  .nums{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .num{padding:10px 8px}
+  .qs{grid-template-columns:minmax(0,1fr)}
+  .teams,.tl-list{max-height:none}
+  #hero .stage{order:-1;max-width:420px;margin:0 auto;width:100%}
+}
+.navsheet{position:fixed;inset:52px 12px auto 12px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:8px;z-index:45;display:none}
+.navsheet.open{display:block}
+.navsheet a{display:block;padding:10px 12px;text-decoration:none;color:var(--ink);border-radius:8px}
+.navsheet a:hover{background:var(--card)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="top">
+  <a class="brand" href="#hero">PEROVSKITE<b>/</b>PV</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false">章节 ☰</button>
+</div>
+<nav class="navsheet" id="navsheet"></nav>
+<nav class="dots" id="dots" aria-label="章节"></nav>
+
+<!-- ============ 0 第一屏 ============ -->
+<section class="screen" id="hero" data-title="总览">
+  <div class="wrap">
+    <div>
+      <div class="kicker">一份给好奇者的地图 · 数据截至 2026.10</div>
+      <h1><span class="grad" style="white-space:nowrap">钙钛矿</span><span style="white-space:nowrap">太阳能电池</span></h1>
+      <p class="lead">一种薄到不足 1 微米、可以像墨水一样涂出来的吸光材料。17 年里，它的电池效率从 3.8% 升到 28.0%；把它叠在硅电池上面，效率达到 35.2%，高于任何单层电池的纪录。</p>
+      <div class="nums">
+        <div class="num"><div class="big" style="color:var(--pv)" data-count="28.0">28.0%</div><p>钙钛矿单层电池纪录（0.05 cm²，2026）</p></div>
+        <div class="num"><div class="big" style="color:var(--tan)" data-count="35.2">35.2%</div><p>钙钛矿叠在硅上的纪录（1 cm²，2026）</p></div>
+        <div class="num"><div class="big" style="color:var(--si)" data-count="28.1">28.1%</div><p>硅电池纪录（140 cm²，2026）</p></div>
+      </div>
+      <div class="qs">
+        <a class="q" href="#what"><em>01</em><b>它是什么？</b><span>一类 ABX₃ 晶体结构的材料做吸光层。换一种卤素，就换一种颜色和吸收范围。</span></a>
+        <a class="q" href="#vs"><em>03</em><b>和屋顶上的硅电池有什么不同？</b><span>更薄、制造温度低、能调吸收范围；寿命和含铅是短板。最现实的用法是叠在硅上面。</span></a>
+        <a class="q" href="#race"><em>04</em><b>最近几年进展到哪了？谁在做？</b><span>小样品效率已追平硅；中、日、韩、欧多支团队和企业轮流刷新纪录。</span></a>
+        <a class="q" href="#when"><em>08</em><b>什么时候用到身边？</b><span>2024 年起已有小批量商用；能否大规模上屋顶，要看户外能稳定用多少年。</span></a>
+      </div>
+      <p class="note" style="margin-top:12px">每一屏右侧都可以操作；点 <b style="color:var(--pv)">深读</b> 看详细解释和原始来源。</p>
+    </div>
+    <div class="stage">
+      <canvas id="lattice" width="640" height="640" aria-label="可拖动旋转的钙钛矿晶格"></canvas>
+      <div class="hero-cap">拖动旋转 · 橙色八面体 = 铅和卤素围成的骨架，紫色小球 = 填在空隙里的阳离子</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1 是什么 ============ -->
+<section class="screen" id="what" data-title="它是什么">
+  <div class="wrap">
+    <div>
+      <div class="kicker">01 · 名字与结构</div>
+      <h2>“钙钛矿”是一种晶体排列方式，不是某一种矿</h2>
+      <p class="lead">名字来自 1839 年发现的矿物钛酸钙（CaTiO₃）。凡是原子按 ABX₃ 方式排列的材料，都叫钙钛矿结构。太阳能电池里用的是“有机-无机卤化铅”钙钛矿：A 是一个大阳离子，B 是铅，X 是碘或溴。</p>
+      <p class="note">右边拖动卤素比例：碘换成溴，薄膜从近黑变成橙色，能吸收的光范围也随之变窄。这就是“带隙可调”。</p>
+      <button class="deep" data-deep="d-what">深读：结构、带隙与命名 →</button>
+    </div>
+    <div class="stage">
+      <div class="cellgrid">
+        <canvas id="cell" width="420" height="420" aria-label="钙钛矿晶胞"></canvas>
+        <div>
+          <div class="note" style="margin-bottom:6px">点一个位置，看可以放什么离子：</div>
+          <div class="ions" id="ions">
+            <button class="ion" data-site="A" aria-pressed="true"><b style="color:#b98cff">A</b><small>大阳离子</small></button>
+            <button class="ion" data-site="B" aria-pressed="false"><b style="color:var(--pv)">B</b><small>金属</small></button>
+            <button class="ion" data-site="X" aria-pressed="false"><b style="color:#ffe08a">X</b><small>卤素</small></button>
+          </div>
+          <p id="ionInfo" style="font-size:14px;margin:10px 0 0;min-height:88px"></p>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mute)"><span>全是碘 I</span><span id="halLab">碘 100% · 溴 0%</span><span>全是溴 Br</span></div>
+        <input type="range" id="hal" min="0" max="100" value="0" aria-label="碘溴比例">
+        <div style="display:grid;grid-template-columns:90px minmax(0,1fr);gap:12px;align-items:center;margin-top:8px">
+          <div class="film" id="film" title="薄膜颜色（示意）"></div>
+          <div>
+            <div class="spec"><div class="mask" id="mask"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:2px"><span>400 nm</span><span>可见光</span><span>850 nm</span></div>
+            <div style="font-size:14px;margin-top:4px">带隙 <b class="big" id="eg" style="color:var(--pv)">1.55</b> eV · 吸收边约 <b class="big" id="edge">800</b> nm <span class="note">（斜线区 = 穿过去、浪费掉的光）</span></div>
+          </div>
+        </div>
+        <p class="note" style="margin:6px 0 0">端点值来自 MAPbI₃ 与 MAPbBr₃ 的带隙（约 1.55 与 2.3 eV）；中间按线性插值画，真实材料有偏差。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 怎么发电 ============ -->
+<section class="screen" id="how" data-title="怎么发电">
+  <div class="wrap">
+    <div>
+      <div class="kicker">02 · 工作原理</div>
+      <h2>一层不到 1 微米的薄膜，夹在两层“单向门”中间</h2>
+      <p class="lead">光子被钙钛矿层吸收，产生一个带负电的电子和一个带正电的空穴。上面一层只放电子通过，下面一层只放空穴通过，两种电荷被分到两边，接上电线就是电流。</p>
+      <p class="note">点“对比厚度”：钙钛矿吸光层一般不到 0.5 微米，硅片要厚到能自己立住，通常一百多微米，相差几百倍。</p>
+      <button class="deep" data-deep="d-how">深读：为什么这么薄也能吸光 →</button>
+    </div>
+    <div class="stage">
+      <svg id="dev" viewBox="0 0 640 400" aria-label="电池结构动画"></svg>
+      <div class="ctrl">
+        <button class="chip" id="lightBtn" aria-pressed="true">☀ 光照开</button>
+        <button class="chip" id="thickBtn" aria-pressed="false">↕ 对比厚度</button>
+        <span class="note" style="margin-left:auto">收集到的电荷：<b class="big" id="qcount" style="color:var(--ok)">0</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 与硅对比 / 叠层 ============ -->
+<section class="screen" id="vs" data-title="与硅电池比">
+  <div class="wrap">
+    <div>
+      <div class="kicker">03 · 和硅电池有什么不同</div>
+      <h2>单打独斗难超硅，叠在硅上面才是主场</h2>
+      <p class="lead">硅电池只能吃到能量较低的那部分光，高能的蓝绿光有一部分能量变成了热。钙钛矿的带隙可以调高，放在硅上面先吃掉高能光，剩下的红光和红外光透下去给硅。两层分工，理论上限从单层约 33.7% 提高到约 43%。</p>
+      <div class="ctrl" id="cmpTabs">
+        <button class="chip" data-t="spec" aria-pressed="true">叠层分光</button>
+        <button class="chip" data-t="table" aria-pressed="false">逐项对比</button>
+      </div>
+      <button class="deep" data-deep="d-vs">深读：上限、优缺点与叠层 →</button>
+    </div>
+    <div class="stage">
+      <div id="specPane">
+        <canvas id="tandem" width="720" height="360" aria-label="叠层电池分光示意"></canvas>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:6px"><span>顶层钙钛矿带隙</span><b class="big" id="tEg" style="color:var(--pv)">1.68 eV</b></div>
+        <input type="range" id="tSlider" min="140" max="210" value="168" aria-label="顶层带隙">
+        <div class="legend" style="margin-top:6px"><span><i style="background:var(--pv)"></i>钙钛矿吃掉的光子 <b id="sTop"></b></span><span><i style="background:var(--si)"></i>硅吃掉的光子 <b id="sBot"></b></span><span><i style="background:#555"></i>两层都吃不到</span></div>
+        <p class="note" style="margin:6px 0 0" id="matchMsg"></p>
+        <p class="note" style="margin:2px 0 0">示意图：用 5778 K 黑体近似太阳光谱；硅带隙取 1.12 eV。真实设计还要考虑反射与寄生吸收。</p>
+      </div>
+      <div id="tablePane" hidden>
+        <table class="cmp">
+          <thead><tr><th></th><th class="p">钙钛矿</th><th class="s">晶硅（今天屋顶上的主流）</th></tr></thead>
+          <tbody>
+            <tr><td class="k">吸光层厚度</td><td>通常 &lt;0.5 微米</td><td>硅片一百多微米</td></tr>
+            <tr><td class="k">怎么做出来</td><td>溶液涂布或蒸镀成膜，温度较低</td><td>先把硅提纯、拉成晶锭再切片，耗能高</td></tr>
+            <tr><td class="k">吸收范围</td><td>改配方即可调（约 1.5–2.3 eV）</td><td>固定（1.12 eV）</td></tr>
+            <tr><td class="k">小样品纪录</td><td>28.0%（0.05 cm²）</td><td>28.1%（140 cm²）</td></tr>
+            <tr><td class="k">整块组件纪录</td><td>19.3%（0.72 m²）；叠在硅上 29.4%（1.7 m²）</td><td>26.4%（1.9 m²）</td></tr>
+            <tr><td class="k">户外寿命</td><td>公开的户外实测多为 1 年左右，结果参差</td><td>几十年实绩，组件质保常见 25 年以上</td></tr>
+            <tr><td class="k">环境问题</td><td>含少量可溶性铅，需要封装和回收</td><td>基本无毒；制造耗能较高</td></tr>
+            <tr><td class="k">形态</td><td>可做柔性、轻薄、半透明</td><td>刚性、较重</td></tr>
+          </tbody>
+        </table>
+        <p class="note">纪录数据：Green 等《太阳电池效率表》第 68 版（2026 年 7 月）。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 效率赛跑 ============ -->
+<section class="screen" id="race" data-title="效率赛跑">
+  <div class="wrap">
+    <div>
+      <div class="kicker">04 · 最近几年的进展</div>
+      <h2>17 年，小样品效率追平了硅电池</h2>
+      <p class="lead">硅电池效率从 25% 到 28% 花了约 27 年。钙钛矿单层电池从 2013 年第一个认证值 14.1% 升到 2026 年的 28.0%。钙钛矿叠在硅上的电池 2016 年为 23.6%，2026 年达到 35.2%。</p>
+      <p class="note">每个点是一次经第三方实验室认证的新纪录（按测量日期）。2009 和 2012 年两个空心点是论文报告值，没有经过认证。注意：最新的钙钛矿纪录样品只有 0.05 cm²，硅纪录是 140 cm²。</p>
+      <button class="deep" data-deep="d-race">深读：纪录怎么认定，谁刷新了纪录 →</button>
+    </div>
+    <div class="stage">
+      <svg id="raceSvg" viewBox="0 0 720 440" aria-label="效率纪录随时间变化"></svg>
+      <div class="tip" id="raceTip"></div>
+      <div class="ctrl">
+        <button class="chip" id="playRace">▶ 重播</button>
+        <button class="chip" data-s="perovskite" aria-pressed="true"><i style="width:10px;height:10px;border-radius:50%;background:var(--pv)"></i>钙钛矿单层</button>
+        <button class="chip" data-s="perovskite_si" aria-pressed="true"><i style="width:10px;height:10px;border-radius:50%;background:var(--tan)"></i>钙钛矿/硅叠层</button>
+        <button class="chip" data-s="perovskite_perovskite" aria-pressed="true"><i style="width:10px;height:10px;border-radius:50%;background:var(--pv2)"></i>全钙钛矿叠层</button>
+        <button class="chip" data-s="crystalline_si" aria-pressed="true"><i style="width:10px;height:10px;border-radius:50%;background:var(--si)"></i>晶硅</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 面积 ============ -->
+<section class="screen" id="scale" data-title="从小片到大板">
+  <div class="wrap">
+    <div>
+      <div class="kicker">05 · 纪录背后的面积</div>
+      <h2>做大一万倍，效率掉几个百分点</h2>
+      <p class="lead">实验室纪录往往来自指甲盖甚至芝麻大小的样品。面积变大，薄膜更难做均匀，电流要走的路更长，效率就会下降。钙钛矿单层从 0.05 cm² 的 28.0% 降到 0.72 m² 整板的 19.3%；叠在硅上的隆基 1.7 m² 组件是 29.4%，比同表中最好的硅组件（26.4%）高。</p>
+      <p class="note">拖动滑块，看不同尺寸下各技术的最好成绩。</p>
+      <button class="deep" data-deep="d-scale">深读：为什么放大这么难 →</button>
+    </div>
+    <div class="stage">
+      <svg id="areaSvg" viewBox="0 0 720 420" aria-label="面积与效率"></svg>
+      <div class="tip" id="areaTip"></div>
+      <input type="range" id="areaSlider" min="-1.4" max="4.3" step="0.01" value="0" aria-label="面积">
+      <div id="areaRead" style="font-size:14px;margin-top:4px;min-height:48px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 寿命与铅 ============ -->
+<section class="screen" id="life" data-title="寿命与含铅">
+  <div class="wrap">
+    <div>
+      <div class="kicker">06 · 最大的门槛</div>
+      <h2>效率已经够高，现在比的是能撑多少年</h2>
+      <p class="lead">硅组件通常承诺 25 年以上。钙钛矿怕水汽、高温、紫外线，长时间光照下离子还会在晶体里移动。欧盟联合研究中心 2024–2025 年在意大利户外放了两块钙钛矿组件一年：一块效率从 15% 以上降到 12–13%，另一块降到 7% 以下。</p>
+      <p class="note">左右两组开关：先选环境压力，再选对策，看薄膜怎样变化（示意动画）。下方柱状图是真实户外数据。</p>
+      <button class="deep" data-deep="d-life">深读：失效机理、认证与铅的处理 →</button>
+    </div>
+    <div class="stage">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
+        <div><div class="note">环境压力</div><div class="toggle-row" id="stress">
+          <button class="chip" data-k="water" aria-pressed="true">💧 水汽</button>
+          <button class="chip" data-k="heat" aria-pressed="false">🔥 85℃</button>
+          <button class="chip" data-k="uv" aria-pressed="false">☀ 紫外</button>
+          <button class="chip" data-k="ion" aria-pressed="false">⇄ 离子迁移</button></div></div>
+        <div><div class="note">对策</div><div class="toggle-row" id="fix">
+          <button class="chip" data-k="seal" aria-pressed="false">🛡 玻璃封装</button>
+          <button class="chip" data-k="comp" aria-pressed="false">⚗ 改配方/钝化</button></div></div>
+      </div>
+      <canvas id="decay" width="720" height="210" style="margin-top:10px" aria-label="退化示意"></canvas>
+      <p id="decayMsg" style="font-size:14px;margin:6px 0 10px;min-height:44px"></p>
+      <div id="jrc" aria-label="户外一年实测">
+        <div style="font-size:13.5px;font-weight:700;margin-bottom:6px">真实数据：两块 0.72 m² 钙钛矿组件在意大利户外一年<span class="note" style="font-weight:400">（欧盟 JRC，2024.6–2025.6）</span></div>
+        <div class="jrow"><span>YZ517</span><div class="jbar"><i class="j0"></i><i class="j1" data-w="83" style="background:var(--ok)"></i></div><em>15%以上 → 12–13%</em></div>
+        <div class="jrow"><span>YZ518</span><div class="jbar"><i class="j0"></i><i class="j1" data-w="45" style="background:var(--pv2)"></i></div><em>15%以上 → 7%以下</em></div>
+        <div class="note" style="font-size:11.5px">浅色条 = 开始时（按 15% 画），彩色条 = 一年后（取报道区间）。详见深读。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 谁在做 ============ -->
+<section class="screen" id="who" data-title="谁在做">
+  <div class="wrap">
+    <div>
+      <div class="kicker">07 · 主要团队与公司</div>
+      <h2>日本起步，英韩瑞推高，中国在纪录和产线上领跑</h2>
+      <p class="lead">2009 年日本团队第一次用钙钛矿做出电池；2012 年英国、韩国、瑞士团队把它变成固态器件，效率跳过 10%。近五年的纪录和吉瓦级产线，大多出自中国的高校和企业；欧洲、韩国、日本、美国的企业也在推进叠层和柔性产品。</p>
+      <div class="ctrl" id="teamFilter">
+        <button class="chip" data-f="all" aria-pressed="true">全部</button>
+        <button class="chip" data-f="pioneer" aria-pressed="false">开创者</button>
+        <button class="chip" data-f="record" aria-pressed="false">纪录团队</button>
+        <button class="chip" data-f="industry" aria-pressed="false">产业化</button>
+      </div>
+      <p class="note">点任意卡片，看它做了什么、证据在哪。</p>
+    </div>
+    <div class="stage"><div class="teams" id="teams"></div></div>
+  </div>
+</section>
+
+<!-- ============ 8 何时到身边 ============ -->
+<section class="screen" id="when" data-title="何时到身边">
+  <div class="wrap">
+    <div>
+      <div class="kicker">08 · 什么时候用到身边</div>
+      <h2>已经开卖，但离“家家屋顶”还差一份寿命成绩单</h2>
+      <p class="lead">2024 年 9 月，牛津光伏卖出第一批钙钛矿/硅叠层组件；2025 年，中国已有吉瓦级钙钛矿产线投产；2026 年 3 月，华能招标 1.2 MW 叠层组件建示范电站。要像硅板一样普及，还需要大面积组件在户外长期稳定的公开数据。</p>
+      <p class="note">拖动年份，看到那一年为止发生了什么。标签区分：<span class="badge b-done">已发生</span><span class="badge b-plan">企业计划</span><span class="badge b-gov">政府目标</span><span class="badge b-view">本报告判断</span></p>
+      <button class="deep" data-deep="d-when">深读：三种“到身边”的方式 →</button>
+    </div>
+    <div class="stage">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="note">看到这一年：</span><b class="big" id="yrLab" style="font-size:34px;color:var(--pv)">2026</b></div>
+      <input type="range" id="yr" min="2009" max="2040" value="2026" aria-label="年份">
+      <div class="tl-list" id="tl"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9 来源 ============ -->
+<section class="screen" id="sources" data-title="深读与来源">
+  <div style="max-width:1180px;margin:0 auto;width:100%">
+    <div class="kicker">09 · 继续探索</div>
+    <h2>从这里往下挖</h2>
+    <p class="lead" style="max-width:760px">按你关心的方向选一条路。所有数字都能在这些来源中找到；企业公告和新闻报道单独标出，读的时候请区分。</p>
+    <div class="srcgrid" id="srcgrid"></div>
+    <p class="note" style="margin-top:16px">本报告附带的数据文件：<a href="data/record_progress.json">效率纪录曲线 JSON</a> · <a href="data/area_vs_efficiency.csv">面积-效率 CSV</a> · <a href="data/efficiency_records_perovskite_and_si.csv">筛选后的纪录表 CSV</a> · <a href="sources.md">来源清单</a></p>
+  </div>
+</section>
+<footer>钙钛矿太阳能电池 · 公众科普网页 · 资料检索截至 2026 年 10 月 12 日 · 效率数据以 NLR（原 NREL）效率图表与 Green 等《太阳电池效率表》第 68 版为准</footer>
+
+<!-- 深读抽屉 -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <header><b>深读</b><button class="x" id="closeDrawer" aria-label="关闭">×</button></header>
+  <div class="body" id="drawerBody"></div>
+</aside>
+
+<template id="d-what">
+  <h3>钙钛矿是什么</h3>
+  <h4>名字从哪来</h4>
+  <p>1839 年，德国矿物学家古斯塔夫·罗泽在俄罗斯乌拉尔山脉发现了钛酸钙（CaTiO₃）矿物，以俄国矿物学家列夫·佩罗夫斯基的名字命名为 perovskite，中文译作“钙钛矿”。后来，人们把所有原子排列方式和它相同的晶体都叫“钙钛矿结构”。</p>
+  <h4>ABX₃ 是什么意思</h4>
+  <p>把晶体想成一排排共用顶点的八面体：每个八面体中心是一个 B 位金属离子（电池里通常是铅 Pb），六个顶点是 X 位卤素离子（碘 I、溴 Br，或少量氯 Cl）。八面体之间留下的空隙里，坐着一个较大的 A 位阳离子，常见的是甲脒（FA）、甲胺（MA）这类小有机分子，或无机的铯（Cs）。</p>
+  <p>研究者可以分别替换 A、B、X 三个位置的离子，这让钙钛矿成了一个“配方可调”的材料家族。例如把一部分碘换成溴，带隙变大，薄膜颜色从近黑变成橙色；把一部分铅换成锡，带隙变小，可以吸收更多红外光，用在全钙钛矿叠层的底层电池中。</p>
+  <h4>带隙是什么，为什么要调</h4>
+  <p>带隙是材料吸收光所需的最小能量。光子能量低于带隙就会穿过去；高于带隙时，多出来的能量大部分会变成热。所以一种材料只能高效利用一段光谱。单层电池的最佳带隙约 1.3–1.4 eV；做叠层时，上层需要更大的带隙（约 1.65–1.7 eV），这正是钙钛矿“可调”的价值所在。</p>
+  <p class="src">端点数据：甲胺铅卤化物的光学带隙约 1.55–2.3 eV，随卤素组成变化（Wikipedia “Perovskite solar cell” 条目汇总的文献值）。</p>
+  <div class="links">
+    <a href="https://en.wikipedia.org/wiki/Perovskite_(structure)" target="_blank" rel="noopener">Perovskite (structure) · Wikipedia<small>晶体结构与命名历史的入门读物</small></a>
+    <a href="https://en.wikipedia.org/wiki/Perovskite_solar_cell" target="_blank" rel="noopener">Perovskite solar cell · Wikipedia<small>综述性条目，含带隙、稳定性、毒性的文献索引</small></a>
+  </div>
+</template>
+
+<template id="d-how">
+  <h3>它怎么发电</h3>
+  <p>一块典型的钙钛矿电池从上到下是：玻璃和透明导电层、电子传输层、钙钛矿吸光层、空穴传输层、金属或透明背电极。具体顺序有“正式”和“反式”两种，原理相同。</p>
+  <h4>为什么这么薄也能吸光</h4>
+  <p>钙钛矿对可见光的吸收很强，几百纳米厚的薄膜就能吸收大部分可见光。晶硅对光的吸收弱得多，需要厚得多的材料加上表面绒面陷光。日本科学技术振兴机构介绍宫坂力团队成果时写道，钙钛矿膜厚通常小于 0.5 微米，可用旋涂、狭缝涂布等溶液方法制备。</p>
+  <h4>薄带来的好处与代价</h4>
+  <ul>
+    <li><b>好处：</b>用料少；可以涂在玻璃、金属箔、塑料膜上，做成轻薄、可弯曲的组件。</li>
+    <li><b>好处：</b>不需要把硅加热熔化、拉晶、切片这样的高耗能步骤。</li>
+    <li><b>代价：</b>薄膜里的缺陷和界面对性能影响很大；溶液成膜在大面积上容易出现针孔和厚度不均（见第 05 屏）。</li>
+  </ul>
+  <h4>它从哪里来</h4>
+  <p>钙钛矿电池脱胎于“染料敏化电池”：2009 年，宫坂力团队把钙钛矿当作染料用在液态电解质电池里，得到 3.8% 的效率，但器件几分钟就会溶解失效。2012 年，牛津大学 Snaith 团队与成均馆大学朴南圭、洛桑联邦理工 Grätzel 团队分别做出固态器件，效率接近或超过 10%，这一领域随后快速发展。</p>
+  <div class="links">
+    <a href="https://www.jst.go.jp/EN/achievements/research/pdf/tsutomu_miyasaka2017.pdf" target="_blank" rel="noopener">JST：宫坂力团队成果介绍（PDF）<small>膜厚 &lt;0.5 μm、溶液法制备的出处</small></a>
+    <a href="https://doi.org/10.1021/ja809598r" target="_blank" rel="noopener">Kojima et al., JACS 2009<small>第一篇钙钛矿光伏论文，3.8%</small></a>
+    <a href="https://doi.org/10.1126/science.1228604" target="_blank" rel="noopener">Lee et al., Science 2012<small>Snaith 团队，介观超结构固态器件，10.9%</small></a>
+    <a href="https://doi.org/10.1038/srep00591" target="_blank" rel="noopener">Kim et al., Scientific Reports 2012<small>朴南圭、Grätzel 等，固态器件 9.7%</small></a>
+  </div>
+</template>
+
+<template id="d-vs">
+  <h3>和硅电池比，强在哪、弱在哪</h3>
+  <h4>三条“上限”</h4>
+  <ul>
+    <li><b>约 29.4%：</b>晶硅单层电池的理论极限（硅本身的物理性质决定）。今天最好的硅电池已经做到 28.1%，离天花板很近。</li>
+    <li><b>约 33.7%：</b>任何单层电池在标准太阳光下的理论上限（肖克利-奎伊瑟极限）。</li>
+    <li><b>约 43%：</b>钙钛矿/晶硅两层叠层的理论上限（隆基公告引用值）。</li>
+  </ul>
+  <p>2025 年隆基 34.85% 的叠层电池经美国国家可再生能源实验室认证，pv magazine 称这是首次有双结叠层电池的认证效率超过 33.7% 的单结极限。2026 年 2 月，隆基又以 35.2% 刷新纪录（欧盟 ESTI 测试）。</p>
+  <h4>为什么叠层是主场</h4>
+  <p>硅电池产业已经非常成熟、便宜，效率却接近上限。钙钛矿单独做电池，纪录虽然追平了硅，但大面积和寿命还落后。把钙钛矿做成“上层”，叠在现有硅电池上，可以沿用硅的产业链，同时突破单层上限。所以目前最接近量产的产品，多数是钙钛矿/硅叠层组件。</p>
+  <p>另一条路是“全钙钛矿叠层”：上层用宽带隙铅基钙钛矿，下层用窄带隙锡铅钙钛矿，全部可以用薄膜方法做，适合轻薄柔性产品。南京大学/仁烁光能保持该类纪录（30.1%，0.05 cm²）。</p>
+  <h4>分光图怎么读</h4>
+  <p>这一屏右侧的图是示意：横轴是光的波长，色块高度是每个波长的光子数量。顶层带隙越高，它吸收的光子越少，留给硅的越多。两层串联时，电流由分到光子较少的一层决定，所以要让两层分到的光子数接近。在这个用黑体近似太阳光、并假设顶层把带隙以上的光全部吸收的简化模型里，平衡点约在 1.75 eV。真实的顶层电池会让一部分高能光透下去，所以实际叠层常用的顶层带隙略低，多在 1.65–1.7 eV 附近。</p>
+  <div class="links">
+    <a href="https://www.longi.com/us/news/longi-world-record-crystalline-silicon-perovskite/" target="_blank" rel="noopener">隆基：34.85% 叠层纪录公告（2025-04）<small>企业公告；含 43% 理论上限与 33.7% SQ 极限说明</small></a>
+    <a href="https://www.pv-magazine-australia.com/?p=10757" target="_blank" rel="noopener">pv magazine：34.85% 双端叠层电池<small>新闻报道</small></a>
+    <a href="https://doi.org/10.1016/j.joule.2026.102494" target="_blank" rel="noopener">Green et al.《太阳电池效率表》第 68 版，Joule 2026<small>权威纪录表，开放获取</small></a>
+  </div>
+</template>
+
+<template id="d-race">
+  <h3>效率纪录是怎么认定的</h3>
+  <p>论文里报告的效率由作者自己测量，误差和测量方法差别很大。“认证纪录”要求样品送到独立的认可实验室测量，例如美国 NLR（原 NREL）、德国弗劳恩霍夫 ISE 和 ISFH、欧盟 ESTI、日本 JET、中国国家光伏产业计量测试中心（NPVM）。</p>
+  <p>两个最常引用的汇总：</p>
+  <ul>
+    <li><b>NLR“最佳研究电池效率图”</b>：收录各类电池的历史最高认证值，本页的效率赛跑图就取自它公开的数据表（2026 年 7 月 17 日修订版）。</li>
+    <li><b>Green 等《太阳电池效率表》</b>：每半年一期，按面积等规则分为“正式纪录”与“值得关注的例外”。第 68 版（2026 年 7 月，Joule）写道，海南大学 0.05 cm² 钙钛矿电池的 28.0% 是单结钙钛矿电池首次追平表中最高的硅电池效率，但面积小了 3000 多倍；政府研究计划的效率目标一般按 1 cm² 以上的面积来定。</li>
+  </ul>
+  <h4>谁刷新了这些纪录（来自 NLR 数据表）</h4>
+  <ul>
+    <li><b>钙钛矿单层：</b>EPFL（2013，14.1%）→ 韩国化学研究院 KRICT/UNIST（2013–2017，最高 22.7%）→ 中科院半导体所（2018，23.7%）→ KRICT/MIT（2019，25.2%）→ UNIST（2020–2022，25.8%）→ 中国科学技术大学（2023–2024，26.7%）→ 苏州大学/UNSW/白马湖实验室（2025，27.3%）→ 海南大学（2026，28.0%）。</li>
+    <li><b>钙钛矿/硅叠层：</b>斯坦福/亚利桑那州立大学（2016，23.6%）→ 牛津光伏（2018，28.0%）→ 德国亥姆霍兹柏林中心 HZB（2020–2022，最高 32.5%）→ 沙特 KAUST（2023，33.7%）→ 隆基（2023–2026，33.9% → 35.2%）。</li>
+    <li><b>全钙钛矿叠层：</b>南京大学及其孵化企业仁烁光能（2019–2024，24.2% → 30.1%）。</li>
+  </ul>
+  <p class="src">还有一些企业宣布了更高的数字但未进入上述汇总，例如：深圳光因科技 2026 年 1 月称单层 27.87%（NPVM 认证，0.076 cm²）；华柔光伏称单层 27.98%、全钙钛矿叠层 31.73%（NPVM 认证）。这些属于企业公告，本页图表不收录。</p>
+  <div class="links">
+    <a href="https://www.nlr.gov/pv/cell-efficiency" target="_blank" rel="noopener">NLR 最佳研究电池效率图<small>可下载 PDF 图表与 Excel 数据表</small></a>
+    <a href="https://doi.org/10.1016/j.joule.2026.102494" target="_blank" rel="noopener">Solar cell efficiency tables: Version 68（Joule 2026）</a>
+    <a href="https://doi.org/10.1002/pip.70068" target="_blank" rel="noopener">Solar Cell Efficiency Tables (Version 67)（Prog. Photovolt. 2026）</a>
+    <a href="https://www.pv-magazine.com/2026/01/28/chinese-startup-claims-record-breaking-27-87-efficiency-for-single-junction-perovskite-solar-cell/" target="_blank" rel="noopener">pv magazine：光因科技 27.87%<small>企业公告报道</small></a>
+  </div>
+</template>
+
+<template id="d-scale">
+  <h3>为什么放大这么难</h3>
+  <p>纪录样品常常只有几平方毫米。做成一块 1–2 平方米的组件，会遇到几类新问题：</p>
+  <ul>
+    <li><b>薄膜均匀性：</b>几百纳米厚的膜，要在整块玻璃上做到厚度一致、没有针孔。小样品可以旋涂，大面积要换成狭缝涂布、刮涂或蒸镀，结晶过程更难控制。</li>
+    <li><b>电阻损失：</b>透明电极导电性有限，面积越大，电流走的路越长，损耗越多。所以组件要切成许多细长的子电池再串联，划线区本身不发电。</li>
+    <li><b>计量口径：</b>纪录有“指定照明面积”“孔径面积”“总面积”之分，口径越严格，数值越低。</li>
+  </ul>
+  <p>第 68 版效率表中，隆基的钙钛矿/硅叠层从 1 cm²（35.2%）到 261 cm²（34.3%）只掉了约 1 个百分点；天合光能 221 cm² 的叠层电池总面积效率 32.15%。作者认为这说明小面积与商业尺寸叠层电池之间的差距正在缩小。</p>
+  <table class="cmp">
+    <thead><tr><th>器件</th><th>面积</th><th>效率</th><th>制造方 · 测试机构</th></tr></thead>
+    <tbody id="areaTable"></tbody>
+  </table>
+  <div class="links">
+    <a href="https://doi.org/10.1016/j.joule.2026.102494" target="_blank" rel="noopener">Solar cell efficiency tables: Version 68<small>上表全部数据的出处</small></a>
+  </div>
+</template>
+
+<template id="d-life">
+  <h3>寿命与含铅：钙钛矿还要过的两关</h3>
+  <h4>它为什么会“老”</h4>
+  <ul>
+    <li><b>水汽和氧气：</b>有机阳离子会与水反应，晶体分解成碘化铅等物质，薄膜由黑变黄。</li>
+    <li><b>高温：</b>有机成分在 85℃ 左右的老化测试中可能挥发，晶相也可能转变成不吸光的相。</li>
+    <li><b>紫外线和长时间光照：</b>界面材料会被光化学破坏；碘离子等在电场和光照下迁移，造成效率可逆或不可逆的下降。</li>
+  </ul>
+  <p>常用对策有：用玻璃-玻璃和边缘密封隔绝水汽；减少或去掉甲胺等易挥发成分，加入铯；在晶界和界面加钝化层；选用更耐热、耐紫外的传输层。</p>
+  <h4>目前的证据</h4>
+  <ul>
+    <li><b>户外一年：</b>欧盟联合研究中心（JRC）2024 年 6 月—2025 年 6 月在意大利伊斯普拉测试了两块 0.72 m² 单结钙钛矿组件：YZ517 从 15% 以上降到 12–13%，并有季节性起伏；YZ518 降到 7% 以下。研究者认为需要更长期、更独立的户外研究。</li>
+    <li><b>小组件户外一年：</b>imec 与塞浦路斯大学报告，4 cm² 小组件在塞浦路斯户外一年后保留了 78% 的初始效率。</li>
+    <li><b>认证测试：</b>Qcells 的叠层组件 2025 年通过 IEC 61215 等标准规定的应力测试，2026 年 7 月获得 TÜV 莱茵 IEC 61215 和 UL 61215 认证；协鑫光电称其组件通过 IEC 61215 / 61730，并完成超过 1 万小时的湿热、紫外和热循环测试。认证测试是进入市场的门槛，但它是加速老化，不能直接换算成 25 年户外寿命。</li>
+  </ul>
+  <h4>铅怎么办</h4>
+  <p>主流钙钛矿含铅，分解产物碘化铅能溶于水。研究者提出的办法包括：在封装材料中加入能吸附铅的树脂或涂层，在模拟冰雹砸碎等测试中大幅减少铅泄漏；以及回收。2025 年《自然》发表的林雪平大学等团队研究，用含醋酸钠等添加剂的水溶液拆解旧电池，回收再利用钙钛矿材料，报道的回收率约 99%，用回收材料做出的电池平均效率 21.9%。替代铅的锡基钙钛矿效率和稳定性目前更低。</p>
+  <div class="links">
+    <a href="https://www.pv-magazine.com/2026/02/18/one-year-perovskite-solar-module-testing-shows-promising-outdoor-stability/" target="_blank" rel="noopener">pv magazine：JRC 户外一年测试<small>论文发表于 Progress in Photovoltaics</small></a>
+    <a href="https://www.rdworldonline.com/imec-has-made-progress-in-developing-perovskite-solar-modules/" target="_blank" rel="noopener">R&amp;D World：imec 小组件户外一年</a>
+    <a href="https://pubs.rsc.org/en/content/articlelanding/2026/cs/d5cs01085c" target="_blank" rel="noopener">Chem. Soc. Rev. 2026 综述：户外稳定性的漫长道路</a>
+    <a href="https://www.pv-magazine.com/2026/07/16/qcells-secures-tuv-rheinland-certification-for-perovskite-silicon-tandem-solar-tech/" target="_blank" rel="noopener">pv magazine：Qcells 获 IEC/UL 61215 认证（2026-07）</a>
+    <a href="https://physicsworld.com/a/perovskite-solar-cells-can-be-completely-recycled/" target="_blank" rel="noopener">Physics World：钙钛矿电池的水基回收</a>
+    <a href="https://pv-magazine-usa.com/2025/02/19/water-based-recycling-of-perovskite-solar-cells/" target="_blank" rel="noopener">pv magazine：水基回收方法</a>
+  </div>
+</template>
+
+<template id="d-when">
+  <h3>钙钛矿会以哪三种方式来到身边</h3>
+  <h4>① 叠在硅上，进电站和屋顶</h4>
+  <p>这是离普通人最近的一条路，因为它可以接到现有硅组件的生产线和安装体系上。牛津光伏 2024 年 9 月向美国一家公司交付首批商用叠层组件（72 片电池，电池效率 24.5%，德国勃兰登堡 100 MW 工厂生产）。中国华能 2026 年 3 月招标 1.2 MW 叠层组件，要求量产效率不低于 25%、通过 IEC 61215 / 61730、25 年性能质保，协鑫光电中标，2026 年内交付，用于户外示范电站。Qcells 有 28.6% 的 M10 全尺寸叠层电池，并已获 IEC/UL 61215 认证；韩国媒体报道的商用时间从 2027 年到 2029 年说法不一。</p>
+  <h4>② 轻薄柔性膜，贴在硅板装不了的地方</h4>
+  <p>日本政府把钙钛矿列为重点：目标到 2040 年装机约 20 GW，主要用于承重能力不足的屋顶和建筑外墙。积水化学计划投资约 900 亿日元，建设初始 100 MW 的柔性钙钛矿生产线，由新公司“积水太阳能薄膜”运营，报道称 2027 年起运营。能源经济与金融分析研究所（IEEFA）2025 年 11 月指出，日本主要厂商预测的度电成本明显高于政府目标。</p>
+  <h4>③ 单结钙钛矿组件的规模化生产</h4>
+  <p>协鑫光电昆山基地 2025 年 6 月投产，首期 1 GW；极电光能（UtmoLight）无锡吉瓦级产线 2025 年投产，首批 2.8 m² 组件全面积效率 16.1%。这些产能的实际出货量和户外表现，是接下来几年最值得看的数据。</p>
+  <h4>本报告的判断（不是任何机构的预测）</h4>
+  <p>依据上面的事实：2026–2028 年，钙钛矿/硅叠层组件会主要出现在示范电站、商业项目和少量高端屋顶；你家屋顶是否用得上，取决于两件事——大面积组件有没有多年的公开户外数据，以及在同样的 25 年质保下，每度电成本能否低于已经很便宜的硅组件。如果这两点在未来几年得到证明，较大规模的普及更可能出现在 2030 年前后。这一判断会随新的户外数据而改变。</p>
+  <div class="links">
+    <a href="https://www.pv-tech.org/oxford-pv-ships-first-commercial-perovskite-tandem-modules/" target="_blank" rel="noopener">PV Tech：牛津光伏首批商用发货（2024-09）</a>
+    <a href="https://www.pv-magazine.com/2026/03/24/gcl-optoelectronics-wins-chinas-first-commercial-perovskite-silicon-tandem-pv-module-order/" target="_blank" rel="noopener">pv magazine：协鑫光电中标华能 1.2 MW（2026-03）</a>
+    <a href="https://www.perovskite-info.com/gcl-launches-gw-scale-perovskite-tandem-module-manufacturing-facility" target="_blank" rel="noopener">Perovskite-Info：协鑫昆山吉瓦级基地投产</a>
+    <a href="https://taiyangnews.info/technology/utmolight-1-gw-perovskite-solar-module-production-line-online" target="_blank" rel="noopener">TaiyangNews：极电光能吉瓦级产线</a>
+    <a href="https://pv-magazine-usa.com/2024/12/19/perovskite-silicon-solar-cell-achieves-28-6-efficiency-ready-for-mass-production/" target="_blank" rel="noopener">pv magazine：Qcells 28.6% 全尺寸叠层</a>
+    <a href="https://www.kedglobal.com/energy/newsView/ked202505220008" target="_blank" rel="noopener">KED Global：Qcells 叠层量产时间表</a>
+    <a href="https://www.pv-magazine.com/2024/11/28/japan-aims-to-deploy-20-gw-of-perovskite-solar-by-2040/" target="_blank" rel="noopener">pv magazine：日本 2040 年 20 GW 目标</a>
+    <a href="https://www.pv-magazine.com/?p=39477" target="_blank" rel="noopener">pv magazine：积水化学 100 MW 产线</a>
+    <a href="https://ieefa.org/resources/japan-needs-more-nuanced-perovskite-strategy" target="_blank" rel="noopener">IEEFA：日本的钙钛矿战略需要更细致（2025-11）</a>
+    <a href="https://pv-magazine-usa.com/2026/04/20/tandem-pv-launches-commercial-perovskite-silicon-manufacturing-in-california/" target="_blank" rel="noopener">pv magazine USA：Tandem PV 加州 40 MW 示范工厂</a>
+  </div>
+</template>
+
+<script>
+const DATA={"progress":{"source":"NLR (formerly NREL) Best Research-Cell Efficiency data table, chart Rev. 07-17-2026","series":{"perovskite":[{"t":2013.375,"year":2013,"month":5,"eff":14.1,"group":"EPFL","area_cm2":0.209,"center":"Newport"},{"t":2013.958,"year":2013,"month":12,"eff":17.9,"group":"KRICT","area_cm2":0.0938,"center":"Newport"},{"t":2014.875,"year":2014,"month":11,"eff":20.1,"group":"KRICT","area_cm2":0.0955,"center":"Newport"},{"t":2016.208,"year":2016,"month":3,"eff":22.1,"group":"KRICT/UNIST","area_cm2":0.0946,"center":"Newport"},{"t":2017.542,"year":2017,"month":7,"eff":22.7,"group":"KRICT","area_cm2":0.0935,"center":"Newport"},{"t":2018.375,"year":2018,"month":5,"eff":23.3,"group":"ISCAS, Beijing","area_cm2":0.074,"center":"Newport"},{"t":2018.708,"year":2018,"month":9,"eff":23.7,"group":"ISCAS, Beijing","area_cm2":0.0739,"center":"Newport"},{"t":2019.042,"year":2019,"month":1,"eff":24.2,"group":"KRICT/MIT","area_cm2":0.0955,"center":"Newport"},{"t":2019.542,"year":2019,"month":7,"eff":25.2,"group":"KRICT/MIT (tied w/ Korea U)","area_cm2":0.0937,"center":"Newport"},{"t":2020.542,"year":2020,"month":7,"eff":25.5,"group":"UNIST","area_cm2":0.095,"center":"Newport"},{"t":2021.958,"year":2021,"month":12,"eff":25.7,"group":"UNIST","area_cm2":0.096,"center":"Newport"},{"t":2022.875,"year":2022,"month":11,"eff":25.8,"group":"UNIST","area_cm2":0.0959,"center":"Newport"},{"t":2023.208,"year":2023,"month":3,"eff":26.0,"group":"ISCAS","area_cm2":0.0746,"center":"JET"},{"t":2023.375,"year":2023,"month":5,"eff":26.1,"group":"U. of Science and Technology of China","area_cm2":0.05127,"center":"NPVM"},{"t":2024.292,"year":2024,"month":4,"eff":26.7,"group":"University of Science and Technology of China","area_cm2":0.0519,"center":"NPVM"},{"t":2025.042,"year":2025,"month":1,"eff":26.95,"group":"Soochow University / UNSW","area_cm2":0.0583,"center":"NPVM"},{"t":2025.042,"year":2025,"month":1,"eff":27.3,"group":"Soochow University / UNSW / Baima Lake","area_cm2":0.1065,"center":"NPVM"},{"t":2026.125,"year":2026,"month":2,"eff":28.0,"group":"Hainan U","area_cm2":0.051,"center":"NPVM"}],"perovskite_si":[{"t":2016.625,"year":2016,"month":8,"eff":23.6,"group":"Stanford/ASU","area_cm2":0.99,"center":"NREL"},{"t":2018.125,"year":2018,"month":2,"eff":25.2,"group":"EPFL","area_cm2":1.419,"center":"FhG-ISE"},{"t":2018.458,"year":2018,"month":6,"eff":27.3,"group":"Oxford PV","area_cm2":1.09,"center":"FhG-ISE"},{"t":2018.958,"year":2018,"month":12,"eff":28.0,"group":"Oxford PV","area_cm2":1.03,"center":"NREL"},{"t":2020.042,"year":2020,"month":1,"eff":29.15,"group":"HZB","area_cm2":1.06,"center":"FhG-ISE"},{"t":2020.958,"year":2020,"month":12,"eff":29.5,"group":"Oxford PV","area_cm2":1.121,"center":"NREL"},{"t":2021.875,"year":2021,"month":11,"eff":29.8,"group":"HZB","area_cm2":1.016,"center":"FhG-ISE"},{"t":2022.458,"year":2022,"month":6,"eff":31.3,"group":"EPFL/CSEM","area_cm2":1.1677,"center":"NREL"},{"t":2022.875,"year":2022,"month":11,"eff":32.5,"group":"HZB","area_cm2":1.014,"center":"JRC-ESTI"},{"t":2023.208,"year":2023,"month":3,"eff":33.2,"group":"KAUST","area_cm2":0.9977,"center":"JRC-ESTI"},{"t":2023.375,"year":2023,"month":5,"eff":33.7,"group":"KAUST","area_cm2":1.0035,"center":"JRC-ESTI"},{"t":2023.708,"year":2023,"month":9,"eff":33.9,"group":"Longi","area_cm2":1.0,"center":"NREL"},{"t":2024.292,"year":2024,"month":4,"eff":34.6,"group":"LONGi","area_cm2":1.004,"center":"JRC-ESTI"},{"t":2024.375,"year":2024,"month":5,"eff":34.85,"group":"LONGi","area_cm2":1.005,"center":"NREL"},{"t":2025.542,"year":2025,"month":7,"eff":35.0,"group":"LONGi","area_cm2":1.0028,"center":"JRC-ESTI"},{"t":2026.125,"year":2026,"month":2,"eff":35.2,"group":"LONGi","area_cm2":0.9994,"center":"JRC-ESTI"}],"perovskite_perovskite":[{"t":2019.958,"year":2019,"month":12,"eff":24.2,"group":"Nanjing Univ","area_cm2":1.041,"center":"JET"},{"t":2020.625,"year":2020,"month":8,"eff":24.4,"group":"Nanjing Univ","area_cm2":0.049,"center":"NREL"},{"t":2021.125,"year":2021,"month":2,"eff":26.4,"group":"Nanjing Univ","area_cm2":0.0494,"center":"JET"},{"t":2021.958,"year":2021,"month":12,"eff":28.0,"group":"Nanjing Univ","area_cm2":0.0495,"center":"JET"},{"t":2022.958,"year":2022,"month":12,"eff":28.2,"group":"Nanjing Univ","area_cm2":1.038,"center":"JET"},{"t":2022.958,"year":2022,"month":12,"eff":29.1,"group":"Nanjing Univ","area_cm2":0.0489,"center":"JET"},{"t":2024.458,"year":2024,"month":6,"eff":30.1,"group":"Nanjing Univ / Renshine","area_cm2":0.04934,"center":"JET"}],"crystalline_si":[{"t":1999.208,"year":1999,"month":3,"eff":25.0,"group":"UNSW","area_cm2":4.0,"center":"Sandia"},{"t":2006.625,"year":2006,"month":8,"eff":25.3,"group":"Fraunhofer ISE","area_cm2":4.014,"center":"FhG-ISE"},{"t":2014.125,"year":2014,"month":2,"eff":25.6,"group":"Panasonic","area_cm2":143.7,"center":"AIST"},{"t":2016.542,"year":2016,"month":7,"eff":26.3,"group":"Kaneka","area_cm2":180.43,"center":"FhG-ISE"},{"t":2016.875,"year":2016,"month":11,"eff":26.6,"group":"Kaneka","area_cm2":179.74,"center":"FhG-ISE"},{"t":2017.208,"year":2017,"month":3,"eff":26.7,"group":"Kaneka","area_cm2":79.0,"center":"AIST"},{"t":2022.792,"year":2022,"month":10,"eff":26.81,"group":"LONGi","area_cm2":274.4,"center":"ISFH"},{"t":2023.875,"year":2023,"month":11,"eff":27.1,"group":"LONGi","area_cm2":243.04,"center":"ISFH"},{"t":2023.958,"year":2023,"month":12,"eff":27.3,"group":"LONGi","area_cm2":243.1,"center":"ISFH"},{"t":2025.042,"year":2025,"month":1,"eff":27.8,"group":"LONGi","area_cm2":133.63,"center":"ISFH"},{"t":2025.792,"year":2025,"month":10,"eff":27.9,"group":"LONGi","area_cm2":158.66,"center":"ISFH"},{"t":2026.208,"year":2026,"month":3,"eff":28.1,"group":"LONGi","area_cm2":139.7,"center":"ISFH"}],"perovskite_literature":[{"t":2009.3,"year":2009,"eff":3.8,"group":"桐荫横滨大学 宫坂力组（Kojima et al., JACS 2009）","certified":false},{"t":2012.8,"year":2012,"eff":10.9,"group":"牛津大学 Snaith 组（Lee et al., Science 2012）","certified":false}]}},"area":[["钙钛矿单结",0.051,28.0,"海南大学","NPVM 2026/2"],["钙钛矿单结",1.017,26.9,"苏州大学/UNSW/白马湖实验室","NPVM 2025/3"],["钙钛矿单结",19.48,23.9,"纤纳光电 Microquanta","NPVM 2025/3"],["钙钛矿单结",756.0,22.9,"Mellow/暨南大学","NPVM 2025/9"],["钙钛矿单结",813.8,22.1,"仁烁光能/南京大学","JET 2025/11"],["钙钛矿单结",7200.0,19.3,"仁烁光能","FhG-ISE 2025/12"],["钙钛矿/硅叠层",0.9994,35.2,"隆基 LONGi","ESTI 2026/2"],["钙钛矿/硅叠层",261.0,34.3,"隆基 LONGi","FhG-ISE 2025/11"],["钙钛矿/硅叠层",274.0,32.2,"隆基 LONGi","FhG-ISE 2025/7"],["钙钛矿/硅叠层",1650.4,31.4,"隆基 LONGi","FhG-ISE 2025/11"],["钙钛矿/硅叠层",16766.0,29.4,"隆基 LONGi","FhG-ISE 2025/11"],["全钙钛矿叠层",0.0493,30.1,"南京大学/仁烁光能","JET 2023/10"],["全钙钛矿叠层",1.038,28.2,"南京大学/仁烁光能","JET 2022/12"],["全钙钛矿叠层",64.84,26.2,"仁烁光能/南京大学","JET 2024/9"],["全钙钛矿叠层",809.7,22.8,"仁烁光能","FhG-ISE 2025/4"],["晶硅",139.7,28.1,"隆基 LONGi","ISFH 2026/3"],["晶硅",175.37,27.8,"隆基 LONGi","ISFH 2025/12"],["晶硅",19132.0,26.4,"隆基 LONGi","NLR 2026/1"]]};
+</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={pv:css('--pv'),pv2:css('--pv2'),si:css('--si'),tan:css('--tan'),mute:css('--mute'),line:css('--line'),ink:css('--ink'),ok:css('--ok')};
+const SVGNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function onVisible(node,cb){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){cb();io.disconnect();}}),{threshold:.35});io.observe(node);}
+
+/* ---------- 导航 ---------- */
+const secs=$$('.screen');
+const dots=$('#dots'), sheet=$('#navsheet');
+secs.forEach((s,i)=>{
+  const a=document.createElement('a');a.href='#'+s.id;a.innerHTML=`<span>${String(i).padStart(2,'0')} ${s.dataset.title}</span><i></i>`;dots.appendChild(a);
+  const b=document.createElement('a');b.href='#'+s.id;b.textContent=`${String(i).padStart(2,'0')} · ${s.dataset.title}`;sheet.appendChild(b);
+});
+$('#menuBtn').onclick=()=>{const o=sheet.classList.toggle('open');$('#menuBtn').setAttribute('aria-expanded',o)};
+sheet.onclick=()=>sheet.classList.remove('open');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);[...dots.children].forEach((d,j)=>d.classList.toggle('on',i===j));}}),{threshold:.5});
+secs.forEach(s=>io.observe(s));
+addEventListener('scroll',()=>{const h=document.documentElement;$('#progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
+
+/* ---------- 深读抽屉 ---------- */
+const drawer=$('#drawer'),scrim=$('#scrim'),body=$('#drawerBody');
+function openDeep(id,extra){
+  body.innerHTML='';
+  if(id){body.appendChild($('#'+id).content.cloneNode(true));}
+  if(extra){body.innerHTML=extra;}
+  if(id==='d-scale') fillAreaTable();
+  drawer.classList.add('open');scrim.classList.add('open');drawer.setAttribute('aria-hidden','false');body.scrollTop=0;
+  $('#closeDrawer').focus();
+}
+function closeDeep(){drawer.classList.remove('open');scrim.classList.remove('open');drawer.setAttribute('aria-hidden','true');}
+$$('[data-deep]').forEach(b=>b.onclick=()=>openDeep(b.dataset.deep));
+$('#closeDrawer').onclick=closeDeep;scrim.onclick=closeDeep;
+addEventListener('keydown',e=>{if(e.key==='Escape')closeDeep();});
+
+/* ---------- 数字滚动 ---------- */
+onVisible($('#hero'),()=>$$('[data-count]').forEach(n=>{
+  const to=+n.dataset.count,t0=performance.now(),d=reduce?0:1400;
+  (function f(t){const p=d?Math.min(1,(t-t0)/d):1;n.textContent=(to*(1-Math.pow(1-p,3))).toFixed(1)+'%';if(p<1)requestAnimationFrame(f);})(t0);
+  setTimeout(()=>n.textContent=to.toFixed(1)+'%',d+300);
+}));
+
+/* ---------- 3D 晶格渲染器（简单透视 + 画家算法） ---------- */
+function Lattice(canvas,opts){
+  const ctx=canvas.getContext('2d');let W=canvas.width,H=canvas.height;
+  let ry=opts.ry||.6,rx=opts.rx||-.45,drag=null,auto=true;
+  const n=opts.n, hi=()=>opts.highlight||'';
+  function proj(p){
+    let [x,y,z]=p;const cy=Math.cos(ry),sy=Math.sin(ry),cx=Math.cos(rx),sx=Math.sin(rx);
+    let x1=x*cy+z*sy,z1=-x*sy+z*cy;let y1=y*cx-z1*sx,z2=y*sx+z1*cx;
+    const f=opts.fov/(opts.fov+z2);return [W/2+x1*f*opts.scale,H/2+y1*f*opts.scale,z2,f];
+  }
+  const items=[];const half=(n-1)/2;
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++){
+    const c=[i-half,j-half,k-half];
+    const v=[[.5,0,0],[-.5,0,0],[0,.5,0],[0,-.5,0],[0,0,.5],[0,0,-.5]].map(d=>[c[0]+d[0],c[1]+d[1],c[2]+d[2]]);
+    const faces=[];for(const a of[0,1])for(const b of[2,3])for(const cc of[4,5])faces.push([a,b,cc]);
+    items.push({type:'oct',c,v,faces});
+  }
+  for(let i=0;i<n-1;i++)for(let j=0;j<n-1;j++)for(let k=0;k<n-1;k++)items.push({type:'A',c:[i-half+.5,j-half+.5,k-half+.5]});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const list=[];
+    for(const it of items){
+      if(it.type==='oct'){
+        const P=it.v.map(proj);
+        for(const f of it.faces){const z=(P[f[0]][2]+P[f[1]][2]+P[f[2]][2])/3;list.push({z,f:'face',P:[P[f[0]],P[f[1]],P[f[2]]]});}
+        if(opts.showX)P.forEach(p=>list.push({z:p[2]-.01,f:'X',p}));
+        const pc=proj(it.c);list.push({z:pc[2]+.02,f:'B',p:pc});
+      }else{const p=proj(it.c);list.push({z:p[2],f:'A',p});}
+    }
+    list.sort((a,b)=>b.z-a.z);
+    const h=hi();
+    for(const o of list){
+      if(o.f==='face'){
+        const shade=.35+.65*Math.max(0,Math.min(1,(1-o.z/3)/1.6));
+        ctx.beginPath();ctx.moveTo(o.P[0][0],o.P[0][1]);ctx.lineTo(o.P[1][0],o.P[1][1]);ctx.lineTo(o.P[2][0],o.P[2][1]);ctx.closePath();
+        const a=h&&h!=='B'?.10:.28;
+        ctx.fillStyle=`rgba(255,${Math.round(110+60*shade)},31,${a*shade})`;ctx.fill();
+        ctx.strokeStyle=`rgba(255,170,90,${(h&&h!=='B'?.25:.55)*shade})`;ctx.lineWidth=1;ctx.stroke();
+      }else{
+        const [x,y,,f]=o.p;let r,col,on;
+        if(o.f==='A'){r=opts.rA*f;col='#b98cff';on=h==='A';}
+        else if(o.f==='B'){r=opts.rB*f;col=C.pv;on=h==='B';}
+        else{r=opts.rX*f;col='#ffe08a';on=h==='X';}
+        const dim=h&&!on?.35:1;
+        const g=ctx.createRadialGradient(x-r*.35,y-r*.35,r*.1,x,y,r);g.addColorStop(0,'#fff');g.addColorStop(.35,col);g.addColorStop(1,'#00000088');
+        ctx.globalAlpha=dim;ctx.beginPath();ctx.arc(x,y,r*(on?1.25:1),0,7);ctx.fillStyle=g;ctx.fill();ctx.globalAlpha=1;
+        if(on){ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();}
+      }
+    }
+  }
+  function loop(){if(auto&&!reduce)ry+=.0035;draw();requestAnimationFrame(loop);}
+  canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY,ry,rx];auto=false;canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing'});
+  canvas.addEventListener('pointermove',e=>{if(!drag)return;ry=drag[2]+(e.clientX-drag[0])*.01;rx=Math.max(-1.4,Math.min(1.4,drag[3]+(e.clientY-drag[1])*.01));});
+  canvas.addEventListener('pointerup',()=>{drag=null;canvas.style.cursor='grab';setTimeout(()=>auto=true,2500)});
+  loop();
+  return opts;
+}
+Lattice($('#lattice'),{n:3,fov:7,scale:150,rA:9,rB:7,rX:0,showX:false});
+const cellOpts=Lattice($('#cell'),{n:2,fov:6,scale:150,rA:20,rB:13,rX:8,showX:true,highlight:'A',ry:.7,rx:-.5});
+
+/* ---------- 01 离子与卤素滑块 ---------- */
+const ionText={
+  A:'<b style="color:#b98cff">A 位：大阳离子</b><br>坐在八面体之间的空隙里。常见：甲脒 FA⁺、甲胺 MA⁺（小有机分子）、铯 Cs⁺。混合使用可以让晶体更稳定。',
+  B:'<b style="color:var(--pv)">B 位：金属离子</b><br>八面体的中心。几乎所有高效电池用铅 Pb²⁺；部分换成锡 Sn²⁺ 可以吸收更多红外光，但锡容易被氧化。',
+  X:'<b style="color:#ffe08a">X 位：卤素离子</b><br>八面体的六个顶点。碘 I⁻ 让薄膜吸收到近红外；换成溴 Br⁻ 或氯 Cl⁻，吸收范围向蓝光方向收窄。'
+};
+function setIon(s){$$('#ions .ion').forEach(b=>b.setAttribute('aria-pressed',b.dataset.site===s));cellOpts.highlight=s;$('#ionInfo').innerHTML=ionText[s];}
+$$('#ions .ion').forEach(b=>b.onclick=()=>setIon(b.dataset.site));setIon('A');
+function mix(a,b,t){return a.map((v,i)=>Math.round(v+(b[i]-v)*t));}
+function setHal(){
+  const t=$('#hal').value/100,eg=1.55+(2.3-1.55)*t,edge=1240/eg;
+  $('#eg').textContent=eg.toFixed(2);$('#edge').textContent=Math.round(edge);
+  $('#halLab').textContent=`碘 ${Math.round(100-t*100)}% · 溴 ${Math.round(t*100)}%`;
+  const c=t<.6?mix([28,16,14],[150,50,20],t/.6):mix([150,50,20],[240,130,30],(t-.6)/.4);
+  $('#film').style.background=`linear-gradient(135deg,rgb(${c}) 0%,rgb(${mix(c,[255,255,255],.12)}) 100%)`;
+  const frac=Math.max(0,Math.min(1,(850-edge)/(850-400)));$('#mask').style.width=(frac*100)+'%';
+}
+$('#hal').oninput=setHal;setHal();
+
+/* ---------- 02 器件动画 ---------- */
+(function(){
+  const svg=$('#dev');const L=[
+    {n:'玻璃 + 透明电极',h:46,c:'#2a3550'},
+    {n:'电子传输层（只放电子过）',h:30,c:'#1f6f8b'},
+    {n:'钙钛矿吸光层',h:96,c:'#3a1d14',pv:true},
+    {n:'空穴传输层（只放空穴过）',h:30,c:'#6b2d6e'},
+    {n:'背电极',h:34,c:'#7d7d86'}];
+  let y=70;const X0=20,X1=620;const box={};
+  L.forEach(l=>{l.y=y;const r=el('rect',{x:X0,y,width:X1-X0,height:l.h,fill:l.c,rx:3},svg);if(l.pv){r.setAttribute('fill','url(#pvg)');box.pv=l;}
+    el('text',{x:X0+10,y:y+l.h/2+5,'font-size':13,fill:'#ffffffcc'},svg).textContent=l.n;y+=l.h+2;});
+  const defs=el('defs',{},svg);const g=el('linearGradient',{id:'pvg',x1:0,y1:0,x2:1,y2:1},defs);
+  el('stop',{offset:0,'stop-color':'#4a2416'},g);el('stop',{offset:1,'stop-color':'#1e0f0b'},g);
+  svg.insertBefore(defs,svg.firstChild);
+  el('text',{x:X0,y:40,fill:C.mute,'font-size':13},svg).textContent='↓ 阳光';
+  const plusT=el('text',{x:X1-8,y:L[1].y+20,fill:'#9be7ff','font-size':12,'text-anchor':'end'},svg);plusT.textContent='e⁻ → 外电路';
+  const minusT=el('text',{x:X1-8,y:L[3].y+20,fill:'#ffb3f0','font-size':12,'text-anchor':'end'},svg);minusT.textContent='h⁺ → 外电路';
+  // 厚度对比层
+  const thick=el('g',{opacity:0,style:'transition:opacity .4s;pointer-events:none'});
+  el('rect',{x:10,y:14,width:620,height:376,rx:12,fill:'#0b0a0f',opacity:.985},thick);
+  el('text',{x:40,y:56,fill:C.ink,'font-size':16,'font-weight':700},thick).textContent='同一比例尺下的厚度';
+  const sc=2.0; // 1 μm = 2px
+  el('rect',{x:80,y:90,width:120,height:Math.max(1.2,0.5*sc),fill:C.pv},thick);
+  el('text',{x:80,y:84,fill:C.pv,'font-size':13},thick).textContent='钙钛矿 ≈0.5 μm（一条线）';
+  el('rect',{x:390,y:90,width:120,height:150*sc,fill:C.si,opacity:.85},thick);
+  el('text',{x:390,y:84,fill:C.si,'font-size':13},thick).textContent='硅片 ≈150 μm';
+  el('text',{x:520,y:250,fill:C.mute,'font-size':12.5},thick).textContent='约 300 倍';
+  el('text',{x:80,y:150,fill:C.mute,'font-size':12.5},thick).textContent='头发丝直径约 70 μm';
+  el('rect',{x:80,y:160,width:120,height:70*sc,fill:'none',stroke:C.mute,'stroke-dasharray':'4 3'},thick);
+  const layer=el('g',{},svg);svg.appendChild(thick);
+  let on=true,count=0;const parts=[];
+  function spawn(){
+    const x=X0+20+Math.random()*(X1-X0-40);const hue=[C.pv2,C.pv,'#ffe14d','#6cf','#a56bff'][Math.floor(Math.random()*5)];
+    const p=el('circle',{cx:x,cy:30,r:4,fill:hue},layer);parts.push({e:p,x,y:30,vy:3.2,kind:'ph',ty:box.pv.y+12+Math.random()*(box.pv.h-24)});
+  }
+  function step(){
+    if(on&&Math.random()<.22)spawn();
+    for(let i=parts.length-1;i>=0;i--){const q=parts[i];
+      if(q.kind==='ph'){q.y+=q.vy;q.e.setAttribute('cy',q.y);
+        if(q.y>=q.ty){q.e.remove();parts.splice(i,1);
+          const e=el('circle',{cx:q.x,cy:q.y,r:4,fill:'#9be7ff'},layer),h=el('circle',{cx:q.x,cy:q.y,r:4,fill:'none',stroke:'#ffb3f0','stroke-width':2},layer);
+          parts.push({e,x:q.x,y:q.y,vy:-1.6,kind:'e',ty:L[1].y+L[1].h/2});parts.push({e:h,x:q.x,y:q.y,vy:1.6,kind:'h',ty:L[3].y+L[3].h/2});}
+      }else{q.y+=q.vy;q.e.setAttribute('cy',q.y);
+        if((q.vy<0&&q.y<=q.ty)||(q.vy>0&&q.y>=q.ty)){q.e.remove();parts.splice(i,1);count+=.5;$('#qcount').textContent=Math.floor(count);}}
+    }
+    requestAnimationFrame(step);
+  }
+  onVisible(svg,()=>step());
+  $('#lightBtn').onclick=e=>{on=!on;e.currentTarget.setAttribute('aria-pressed',on);e.currentTarget.textContent=on?'☀ 光照开':'☾ 光照关';};
+  $('#thickBtn').onclick=e=>{const v=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',v);thick.setAttribute('opacity',v?1:0);};
+})();
+
+/* ---------- 03 叠层分光 ---------- */
+(function(){
+  const cv=$('#tandem'),ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  const lam=[];for(let l=300;l<=1300;l+=2)lam.push(l);
+  const T=5778,hc=1.4388e7; // nm·K
+  const flux=lam.map(l=>{const v=1/(Math.pow(l,4)*(Math.exp(hc/(l*T))-1));return v;}); // 光子通量 ∝ λ^-4/(e^x-1)
+  const mx=Math.max(...flux);
+  const sx=l=>50+(l-300)/(1000)*(W-70), sy=v=>H-40-(v/mx)*(H-80);
+  const silEdge=1240/1.12;
+  function draw(){
+    const eg=$('#tSlider').value/100,edge=1240/eg;$('#tEg').textContent=eg.toFixed(2)+' eV';
+    ctx.clearRect(0,0,W,H);
+    let top=0,bot=0,tot=0;
+    for(let i=0;i<lam.length-1;i++){const l=lam[i],f=flux[i];tot+=f;
+      let col='#3a3a44';if(l<=edge){col=C.pv;top+=f;}else if(l<=silEdge){col=C.si;bot+=f;}
+      ctx.fillStyle=col;ctx.globalAlpha=l<=edge?.9:(l<=silEdge?.85:.6);
+      ctx.fillRect(sx(l),sy(f),sx(lam[i+1])-sx(l)+.5,H-40-sy(f));}
+    ctx.globalAlpha=1;
+    ctx.strokeStyle='#fff';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(sx(edge),20);ctx.lineTo(sx(edge),H-40);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx(silEdge),20);ctx.lineTo(sx(silEdge),H-40);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=C.ink;ctx.font='13px sans-serif';
+    ctx.fillText('钙钛矿吸收边 '+Math.round(edge)+' nm',Math.min(sx(edge)+6,W-170),34);
+    ctx.fillText('硅吸收边 '+Math.round(silEdge)+' nm',Math.min(sx(silEdge)+6,W-130),58);
+    ctx.fillStyle=C.mute;for(let l=400;l<=1300;l+=200){ctx.fillText(l+'',sx(l)-12,H-20);}
+    ctx.fillText('波长 nm',W-70,H-4);ctx.save();ctx.translate(14,H/2+40);ctx.rotate(-Math.PI/2);ctx.fillText('光子数（相对）',0,0);ctx.restore();
+    const a=top/(top+bot),b=bot/(top+bot);
+    $('#sTop').textContent=(a*100).toFixed(0)+'%';$('#sBot').textContent=(b*100).toFixed(0)+'%';
+    const d=Math.abs(a-b);
+    $('#matchMsg').innerHTML=d<.04?'<b style="color:var(--ok)">两层分到的光子接近相等</b>：串联电流不被某一层拖后腿。':(a>b?'顶层吃得多、底层吃得少：总电流被硅这一层限制。把顶层带隙调高试试。':'顶层吃得少：总电流被钙钛矿这一层限制。把顶层带隙调低试试。');
+  }
+  $('#tSlider').oninput=draw;draw();
+  $$('#cmpTabs .chip').forEach(b=>b.onclick=()=>{$$('#cmpTabs .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#specPane').hidden=b.dataset.t!=='spec';$('#tablePane').hidden=b.dataset.t!=='table';});
+})();
+
+/* ---------- 04 效率赛跑 ---------- */
+(function(){
+  const S=DATA.progress.series, svg=$('#raceSvg'), tip=$('#raceTip');
+  const W=720,H=440,m={l:48,r:20,t:20,b:36};
+  const x=t=>m.l+(t-2009)/(2026.9-2009)*(W-m.l-m.r), y=v=>H-m.b-(v/40)*(H-m.t-m.b);
+  for(let v=0;v<=40;v+=10){el('line',{x1:m.l,x2:W-m.r,y1:y(v),y2:y(v),stroke:C.line},svg);el('text',{x:m.l-8,y:y(v)+4,'text-anchor':'end',fill:C.mute,'font-size':12},svg).textContent=v+'%';}
+  for(let t=2010;t<=2026;t+=2)el('text',{x:x(t),y:H-12,'text-anchor':'middle',fill:C.mute,'font-size':12},svg).textContent=t;
+  [[33.7,'单层电池理论上限 ≈33.7%'],[29.4,'晶硅理论极限 ≈29.4%']].forEach(([v,s])=>{el('line',{x1:m.l,x2:W-m.r,y1:y(v),y2:y(v),stroke:'#ffffff55','stroke-dasharray':'5 5'},svg);el('text',{x:m.l+6,y:y(v)-5,fill:'#ffffff99','font-size':11.5},svg).textContent=s;});
+  const col={perovskite:C.pv,perovskite_si:C.tan,perovskite_perovskite:C.pv2,crystalline_si:C.si};
+  const name={perovskite:'钙钛矿单层',perovskite_si:'钙钛矿/硅叠层',perovskite_perovskite:'全钙钛矿叠层',crystalline_si:'晶硅'};
+  const groups={};const clip=el('clipPath',{id:'raceClip'},el('defs',{},svg));const cr=el('rect',{x:0,y:0,width:W,height:H},clip);
+  function stepPath(pts,endT){let d='';pts.forEach((p,i)=>{const X=x(Math.max(p.t,2009)),Y=y(p.eff);d+=i?`H${X}V${Y}`:`M${X} ${Y}`;});return d+`H${x(endT)}`;}
+  Object.keys(col).forEach(k=>{
+    const g=el('g',{'clip-path':'url(#raceClip)'},svg);groups[k]=g;
+    const pre=S[k].filter(p=>p.t<2009),pts=(pre.length?[pre[pre.length-1]]:[]).concat(S[k].filter(p=>p.t>=2009));
+    el('path',{d:stepPath(pts,2026.85),fill:'none',stroke:col[k],'stroke-width':2.6,'stroke-linejoin':'round'},g);
+    pts.forEach(p=>{const c=el('circle',{cx:x(Math.max(p.t,2009)),cy:y(p.eff),r:4.5,fill:col[k],stroke:'#0b0a0f','stroke-width':1.5,style:'cursor:pointer'},g);
+      c.addEventListener('pointerenter',ev=>showTip(ev,`<b style="color:${col[k]}">${name[k]} ${p.eff}%</b><br>${p.year} 年 ${p.month||''} 月 · ${p.group}<br><span style="color:#aaa">面积 ${p.area_cm2?(+p.area_cm2).toPrecision(3)+' cm²':'—'} · 测试：${p.center||'—'}</span>`));
+      c.addEventListener('pointerleave',()=>tip.style.opacity=0);});
+    const last=pts[pts.length-1];el('text',{x:x(k==='perovskite'?2025.2:2026.85)-4,y:y(last.eff)+(k==='crystalline_si'?18:-8),'text-anchor':'end',fill:col[k],'font-size':13,'font-weight':700},g).textContent=last.eff+'%';
+  });
+  const lg=el('g',{'clip-path':'url(#raceClip)'},svg);groups.perovskite_lit=lg;
+  S.perovskite_literature.forEach(p=>{const c=el('circle',{cx:x(p.t),cy:y(p.eff),r:5,fill:'none',stroke:C.pv,'stroke-width':2,style:'cursor:pointer'},lg);
+    c.addEventListener('pointerenter',ev=>showTip(ev,`<b style="color:${C.pv}">${p.eff}%（论文报告值，未认证）</b><br>${p.year} 年 · ${p.group}`));c.addEventListener('pointerleave',()=>tip.style.opacity=0);});
+  el('path',{d:`M${x(2009.3)} ${y(3.8)}L${x(2012.8)} ${y(10.9)}L${x(S.perovskite[0].t)} ${y(S.perovskite[0].eff)}`,fill:'none',stroke:C.pv,'stroke-dasharray':'3 4','stroke-width':1.5},lg);
+  function showTip(ev,html){const r=svg.getBoundingClientRect(),st=svg.parentNode.getBoundingClientRect();tip.innerHTML=html;tip.style.opacity=1;
+    let lx=ev.clientX-st.left+12,ly=ev.clientY-st.top-10;if(lx>st.width-270)lx-=290;tip.style.left=lx+'px';tip.style.top=ly+'px';}
+  function play(){if(reduce){cr.setAttribute('width',W);return;}const t0=performance.now(),d=3200;(function f(t){const p=Math.min(1,(t-t0)/d);cr.setAttribute('width',m.l+p*(W-m.l));if(p<1)requestAnimationFrame(f);})(t0);}
+  cr.setAttribute('width',m.l);onVisible(svg,play);$('#playRace').onclick=play;
+  $$('#race [data-s]').forEach(b=>b.onclick=()=>{const v=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',v);groups[b.dataset.s].style.display=v?'':'none';if(b.dataset.s==='perovskite')groups.perovskite_lit.style.display=v?'':'none';});
+})();
+
+/* ---------- 05 面积 ---------- */
+const AREA=DATA.area;
+function fillAreaTable(){const tb=$('#areaTable');if(!tb)return;tb.innerHTML=AREA.map(r=>`<tr><td>${r[0]}</td><td>${r[1]>=1000?(r[1]/1e4).toFixed(2)+' m²':r[1]+' cm²'}</td><td><b>${r[2]}%</b></td><td>${r[3]} · ${r[4]}</td></tr>`).join('');}
+(function(){
+  const svg=$('#areaSvg'),tip=$('#areaTip'),W=720,H=420,m={l:48,r:20,t:24,b:52};
+  const lx=a=>m.l+(Math.log10(a)+1.5)/(4.5+1.5)*(W-m.l-m.r), y=v=>H-m.b-((v-15)/22)*(H-m.t-m.b);
+  for(let v=15;v<=37;v+=5){el('line',{x1:m.l,x2:W-m.r,y1:y(v),y2:y(v),stroke:C.line},svg);el('text',{x:m.l-8,y:y(v)+4,'text-anchor':'end',fill:C.mute,'font-size':12},svg).textContent=v+'%';}
+  const ticks=[[0.01,'0.01'],[0.1,'0.1'],[1,'1'],[10,'10'],[100,'100'],[1000,'1000'],[10000,'1万 cm²']];
+  ticks.forEach(([a,s])=>el('text',{x:lx(a),y:H-m.b+18,'text-anchor':'middle',fill:C.mute,'font-size':12},svg).textContent=s);
+  const objs=[[0.06,'芝麻粒'],[1,'指甲盖'],[330,'一片硅片'],[17000,'一块屋顶组件']];
+  objs.forEach(([a,s])=>{el('line',{x1:lx(a),x2:lx(a),y1:m.t,y2:H-m.b,stroke:'#ffffff14'},svg);el('text',{x:lx(a),y:H-8,'text-anchor':'middle',fill:'#ffffff70','font-size':11.5},svg).textContent=s;});
+  const col={'钙钛矿单结':C.pv,'钙钛矿/硅叠层':C.tan,'全钙钛矿叠层':C.pv2,'晶硅':C.si};
+  Object.keys(col).forEach(k=>{const pts=AREA.filter(r=>r[0]===k).sort((a,b)=>a[1]-b[1]);
+    el('path',{d:pts.map((r,i)=>(i?'L':'M')+lx(r[1])+' '+y(r[2])).join(''),fill:'none',stroke:col[k],'stroke-width':1.6,opacity:.6},svg);
+    pts.forEach(r=>{const c=el('circle',{cx:lx(r[1]),cy:y(r[2]),r:6,fill:col[k],stroke:'#0b0a0f','stroke-width':1.5,style:'cursor:pointer'},svg);
+      c.addEventListener('pointerenter',ev=>{const st=svg.parentNode.getBoundingClientRect();tip.innerHTML=`<b style="color:${col[k]}">${k} ${r[2]}%</b><br>${r[1]>=1000?(r[1]/1e4).toFixed(2)+' m²':r[1]+' cm²'} · ${r[3]}<br><span style="color:#aaa">${r[4]}</span>`;tip.style.opacity=1;let X=ev.clientX-st.left+12;if(X>st.width-270)X-=290;tip.style.left=X+'px';tip.style.top=(ev.clientY-st.top-10)+'px';});
+      c.addEventListener('pointerleave',()=>tip.style.opacity=0);});});
+  const lgd=el('g',{},svg);let lxp=m.l+6;Object.keys(col).forEach(k=>{el('circle',{cx:lxp,cy:12,r:5,fill:col[k]},lgd);el('text',{x:lxp+9,y:16,fill:C.mute,'font-size':12},lgd).textContent=k;lxp+=k.length*13+34;});
+  const cursor=el('line',{y1:m.t,y2:H-m.b,stroke:'#fff','stroke-width':1.5,'stroke-dasharray':'2 3'},svg);
+  function upd(){const la=+$('#areaSlider').value,a=Math.pow(10,la);cursor.setAttribute('x1',lx(a));cursor.setAttribute('x2',lx(a));
+    const best=Object.keys(col).map(k=>{const c=AREA.filter(r=>r[0]===k&&r[1]>=a*0.999).sort((p,q)=>q[2]-p[2])[0];return c?`<span style="color:${col[k]}">${k} <b>${c[2]}%</b></span>`:`<span style="color:var(--dim)">${k}：此尺寸以上暂无纪录</span>`;});
+    const s=a>=1e4?(a/1e4).toFixed(2)+' m²':a>=1?a.toFixed(a<10?1:0)+' cm²':a.toFixed(2)+' cm²';
+    $('#areaRead').innerHTML=`面积 ≥ <b>${s}</b> 时的最好成绩：<br>`+best.join(' · ');}
+  $('#areaSlider').oninput=upd;upd();
+})();
+
+/* ---------- 06 退化示意 ---------- */
+(function(){
+  const cv=$('#decay'),ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  const st={water:true,heat:false,uv:false,ion:false},fx={seal:false,comp:false};
+  const msg={water:'水汽钻进去，有机阳离子分解，晶体变成黄色的碘化铅。',heat:'85℃ 下有机成分挥发、晶相改变，吸光能力下降。',uv:'紫外线破坏界面和传输层，电荷“出不去”。',ion:'光照和电场让碘离子在晶体里移动，堆在界面上阻碍电流。'};
+  const fixmsg={seal:'玻璃-玻璃封装和边缘密封挡住水汽和氧气。',comp:'加入铯、去掉甲胺、在晶界和界面做钝化，提高材料本身的耐热和耐光性。'};
+  let t=0,health=1;const N=26,cells=[];for(let i=0;i<N*8;i++)cells.push({r:Math.random(),y:Math.random()});
+  function rate(){let r=0;if(st.water)r+=fx.seal?.05:1;if(st.heat)r+=fx.comp?.25:.8;if(st.uv)r+=(fx.comp?.4:.7)*(fx.seal?.8:1);if(st.ion)r+=fx.comp?.3:.6;return r;}
+  function draw(){
+    const r=rate();health=Math.max(.05,health-r*.0016);if(r===0)health=Math.min(1,health+.004);
+    t++;ctx.clearRect(0,0,W,H);
+    const cw=(W-40)/N,ch=18;
+    for(let i=0;i<N;i++)for(let j=0;j<8;j++){const c=cells[i*8+j];const d=Math.max(0,Math.min(1,(1-health)*1.6-(c.r*.6)));
+      const col=mix([40,20,16],[230,200,60],d);ctx.fillStyle=`rgb(${col})`;ctx.fillRect(20+i*cw,20+j*ch,cw-2,ch-2);}
+    ctx.fillStyle=C.ink;ctx.font='13px sans-serif';ctx.fillText('相对效率',20,H-26);
+    ctx.fillStyle='#2c2838';ctx.fillRect(90,H-38,W-110,14);ctx.fillStyle=health>.7?C.ok:health>.4?'#ffd23d':C.pv2;ctx.fillRect(90,H-38,(W-110)*health,14);
+    ctx.fillStyle=C.ink;ctx.fillText(Math.round(health*100)+'%',W-60,H-8);
+    requestAnimationFrame(draw);
+  }
+  function upd(){const a=Object.keys(st).filter(k=>st[k]).map(k=>msg[k]);const b=Object.keys(fx).filter(k=>fx[k]).map(k=>fixmsg[k]);
+    $('#decayMsg').innerHTML=(a.length?a.join(' '):'没有环境压力时，薄膜保持黑色。')+(b.length?'<br><span style="color:var(--ok)">对策：'+b.join(' ')+'</span>':'');}
+  $$('#stress .chip').forEach(b=>b.onclick=()=>{st[b.dataset.k]=!st[b.dataset.k];b.setAttribute('aria-pressed',st[b.dataset.k]);health=1;upd();});
+  $$('#fix .chip').forEach(b=>b.onclick=()=>{fx[b.dataset.k]=!fx[b.dataset.k];b.setAttribute('aria-pressed',fx[b.dataset.k]);health=1;upd();});
+  upd();onVisible(cv,draw);
+  // JRC 户外一年
+  onVisible($('#jrc'),()=>setTimeout(()=>$$('#jrc .j1').forEach(i=>i.style.width=i.dataset.w+'%'),200));
+})();
+
+/* ---------- 07 团队 ---------- */
+const TEAMS=[
+ {f:'pioneer',r:'日本',n:'宫坂力 Tsutomu Miyasaka',o:'桐荫横滨大学',s:'2009 年首次把钙钛矿用于太阳能电池，效率 3.8%。',d:'宫坂力团队在 2009 年《美国化学会志》论文中，把甲胺铅碘/溴钙钛矿当作敏化剂用在液态电解质电池里，效率 3.8%。器件很不稳定，但它开启了这个领域。',l:[['Kojima et al., JACS 2009','https://doi.org/10.1021/ja809598r'],['JST 成果介绍（PDF）','https://www.jst.go.jp/EN/achievements/research/pdf/tsutomu_miyasaka2017.pdf']]},
+ {f:'pioneer',r:'英国',n:'Henry Snaith',o:'牛津大学；牛津光伏联合创始人',s:'2012 年做出 10.9% 固态器件，后推动叠层产业化。',d:'2012 年，Snaith 团队在《科学》发表“介观超结构”固态钙钛矿电池，效率 10.9%，证明钙钛矿本身就能高效传输电荷。他参与创立的牛津光伏（Oxford PV）在 2018 年创下 28.0% 叠层纪录，并于 2024 年交付首批商用叠层组件。',l:[['Lee et al., Science 2012','https://doi.org/10.1126/science.1228604'],['PV Tech：牛津光伏首批商用','https://www.pv-tech.org/oxford-pv-ships-first-commercial-perovskite-tandem-modules/']]},
+ {f:'pioneer',r:'韩国 / 瑞士',n:'朴南圭 Nam-Gyu Park · Michael Grätzel',o:'成均馆大学 · 洛桑联邦理工（EPFL）',s:'2012 年固态钙钛矿电池 9.7%；2013 年首个认证纪录 14.1% 来自 EPFL。',d:'朴南圭与 Grätzel（染料敏化电池发明者）等人在 2012 年发表 9.7% 的固态钙钛矿电池，器件在空气中保存 500 小时性能稳定。NLR 数据表中，钙钛矿电池的第一个认证纪录是 EPFL 在 2013 年 5 月测得的 14.1%。',l:[['Kim et al., Sci. Rep. 2012','https://doi.org/10.1038/srep00591'],['NLR 效率图','https://www.nlr.gov/pv/cell-efficiency']]},
+ {f:'pioneer',r:'韩国',n:'韩国化学研究院 KRICT / UNIST',o:'石相日（Sang Il Seok）等团队',s:'2013–2022 年多次刷新单层纪录，从 17.9% 到 25.8%。',d:'NLR 数据表显示，KRICT（及其与 UNIST、MIT 的合作）在 2013–2019 年多次刷新钙钛矿单层纪录（17.9%、20.1%、22.1%、22.7%、25.2%），UNIST 在 2020–2022 年把纪录推到 25.5%、25.7%、25.8%。',l:[['NLR 效率数据表','https://www.nlr.gov/pv/cell-efficiency']]},
+ {f:'record',r:'中国',n:'中国科学技术大学',o:'高校',s:'2023–2024 年单层纪录 26.1% → 26.7%（NPVM 认证）。',d:'NLR 数据表收录中国科大 2023 年 5 月的 26.1% 和 2024 年 4 月的 26.7%，均由中国国家光伏产业计量测试中心（NPVM）测试，面积约 0.05 cm²。',l:[['NLR 效率数据表','https://www.nlr.gov/pv/cell-efficiency']]},
+ {f:'record',r:'中国 / 澳大利亚',n:'苏州大学 · 新南威尔士大学 · 白马湖实验室',o:'中澳合作',s:'2025 年单层 26.95%、27.3%；1 cm² 级纪录 26.9%。',d:'NLR 数据表收录 2025 年 26.95%（0.058 cm²）与 27.3%（0.107 cm²）。第 68 版效率表“正式纪录”栏中，约 1 cm² 钙钛矿电池的最高值 26.9% 也来自这一合作。',l:[['效率表第 68 版','https://doi.org/10.1016/j.joule.2026.102494']]},
+ {f:'record',r:'中国',n:'海南大学',o:'高校',s:'2026 年 2 月单层 28.0%（0.05 cm²），首次追平最好的硅电池。',d:'第 68 版效率表把这一结果列入“值得关注的例外”：面积只有 0.05 cm²，太小，不能算正式纪录；但这是单结钙钛矿电池第一次追平表中最高的硅电池效率。',l:[['效率表第 68 版','https://doi.org/10.1016/j.joule.2026.102494']]},
+ {f:'record',r:'中国',n:'南京大学 谭海仁团队 · 仁烁光能',o:'高校 + 孵化企业',s:'全钙钛矿叠层纪录 24.2% → 30.1%；0.72 m² 单层组件 19.3%。',d:'NLR 数据表中，全钙钛矿叠层（宽带隙铅基 + 窄带隙锡铅）纪录在 2019–2024 年都来自南京大学及仁烁光能，最高 30.1%（0.049 cm²，JET 测试）。第 68 版效率表还收录仁烁光能 0.72 m² 单结钙钛矿组件 19.3%（Fraunhofer ISE 测试）。',l:[['效率表第 68 版','https://doi.org/10.1016/j.joule.2026.102494'],['pv magazine：仁烁柔性全钙钛矿 27.5%','https://www.pv-magazine.com/2025/09/01/renshine-solar-achieves-27-5-efficiency-for-flexible-all-perovskite-solar-cell/']]},
+ {f:'record',r:'德国',n:'亥姆霍兹柏林中心 HZB',o:'国立研究机构',s:'2020–2022 年叠层纪录 29.15% → 32.5%；钙钛矿/CIGS 叠层 25.5%。',d:'HZB 在 2020 年 1 月、2021 年 11 月、2022 年 11 月三次刷新钙钛矿/硅叠层纪录（29.15%、29.8%、32.5%），也是钙钛矿/铜铟镓硒（CIGS）叠层的主要纪录保持者。',l:[['NLR 效率数据表','https://www.nlr.gov/pv/cell-efficiency']]},
+ {f:'record',r:'沙特 / 瑞士',n:'KAUST · EPFL/CSEM',o:'高校与研究中心',s:'EPFL/CSEM 2022 年 31.3%；KAUST 2023 年 33.2%、33.7%。',d:'2022 年 EPFL/CSEM 叠层电池 31.3%（NLR 测试）；2023 年阿卜杜拉国王科技大学（KAUST）两次刷新到 33.2% 和 33.7%（ESTI 测试）。',l:[['NLR 效率数据表','https://www.nlr.gov/pv/cell-efficiency']]},
+ {f:'industry',r:'中国',n:'隆基绿能 LONGi',o:'光伏企业',s:'叠层纪录 33.9% → 35.2%；1.7 m² 叠层组件 29.4%。',d:'隆基从 2023 年起保持钙钛矿/硅叠层纪录：33.9%（2023）、34.6%（2024）、34.85%（NREL 认证，2025 年公布）、35.0%、35.2%（2026 年 2 月，ESTI）。第 68 版效率表还收录其 261 cm² 叠层电池 34.3%、0.17 m² 组件 31.4%、1.7 m² 组件 29.4%。截至检索时未见其叠层组件商用发货的公开报道。',l:[['隆基 34.85% 公告','https://www.longi.com/us/news/longi-world-record-crystalline-silicon-perovskite/'],['隆基：第 68 版效率表','https://www.longi.com/en/news/martin-green-68th-edition-solar-cell-efficiency/']]},
+ {f:'industry',r:'英国 / 德国',n:'牛津光伏 Oxford PV',o:'牛津大学衍生企业',s:'2024 年 9 月完成全球首笔钙钛矿/硅叠层组件商业销售。',d:'组件由 72 片叠层电池组成，电池效率 24.5%，在德国勃兰登堡 100 MW 工厂生产，交付美国一家公司用于公用事业规模项目。公司称比标准硅组件多发电最多 20%。',l:[['PV Tech 报道','https://www.pv-tech.org/oxford-pv-ships-first-commercial-perovskite-tandem-modules/']]},
+ {f:'industry',r:'中国',n:'协鑫光电 GCL Optoelectronic',o:'协鑫集团',s:'昆山吉瓦级基地 2025 年 6 月投产；中标华能 1.2 MW 叠层组件。',d:'昆山基地总投资 50 亿元、规划 2 GW，首期 1 GW 于 2025 年 6 月投产，生产 2.76 m² 大尺寸组件。2026 年 3 月中标华能清洁能源研究院 1.2 MW 钙钛矿/硅叠层组件招标，要求量产效率 ≥25%、IEC 61215/61730 认证、25 年质保。',l:[['pv magazine：华能招标','https://www.pv-magazine.com/2026/03/24/gcl-optoelectronics-wins-chinas-first-commercial-perovskite-silicon-tandem-pv-module-order/'],['Perovskite-Info：昆山基地','https://www.perovskite-info.com/gcl-launches-gw-scale-perovskite-tandem-module-manufacturing-facility']]},
+ {f:'industry',r:'中国',n:'极电光能 UtmoLight · 纤纳光电 Microquanta',o:'钙钛矿组件企业',s:'极电光能无锡吉瓦级产线 2025 年投产；纤纳 19.5 cm² 小组件 23.9%。',d:'极电光能首批 2.8 m² 组件功率 450 W、全面积效率 16.1%。纤纳光电的 19.48 cm² 钙钛矿小组件 23.9% 被列入第 68 版效率表正式纪录。',l:[['TaiyangNews：极电光能','https://taiyangnews.info/technology/utmolight-1-gw-perovskite-solar-module-production-line-online'],['效率表第 68 版','https://doi.org/10.1016/j.joule.2026.102494']]},
+ {f:'industry',r:'韩国 / 德国',n:'韩华 Qcells',o:'光伏企业',s:'M10 全尺寸叠层电池 28.6%；2026 年获 IEC/UL 61215 认证。',d:'2024 年 12 月，Fraunhofer ISE CalLab 认证其全尺寸 M10 叠层电池 28.6%，公司称只用可量产工艺。2026 年 7 月，在德国比特费尔德-沃尔芬试验线生产的叠层技术获 TÜV 莱茵 IEC 61215 与 UL 61215 认证。商用时间有 2027 年和 2029 年两种报道。',l:[['pv magazine：28.6%','https://pv-magazine-usa.com/2024/12/19/perovskite-silicon-solar-cell-achieves-28-6-efficiency-ready-for-mass-production/'],['pv magazine：认证','https://www.pv-magazine.com/2026/07/16/qcells-secures-tuv-rheinland-certification-for-perovskite-silicon-tandem-solar-tech/']]},
+ {f:'industry',r:'日本',n:'积水化学 Sekisui Chemical',o:'化工企业',s:'柔性钙钛矿薄膜，100 MW 产线计划 2027 年运营。',d:'积水化学计划投资约 900 亿日元，收购夏普堺市工厂建设 100 MW 产线，由新公司积水太阳能薄膜运营；获日本经产省 GX 补贴约 1572.5 亿日元。目标是 2030 年达到吉瓦级。',l:[['pv magazine：100 MW 产线','https://www.pv-magazine.com/?p=39477'],['pv magazine：日本 20 GW 目标','https://www.pv-magazine.com/2024/11/28/japan-aims-to-deploy-20-gw-of-perovskite-solar-by-2040/']]},
+];
+(function(){
+  const box=$('#teams');const tc={pioneer:'#b98cff',record:C.pv,industry:C.si};const tn={pioneer:'开创者',record:'纪录团队',industry:'产业化'};
+  TEAMS.forEach((t,i)=>{const b=document.createElement('button');b.className='team';b.dataset.f=t.f;
+    b.innerHTML=`<span class="tag" style="background:${tc[t.f]}">${tn[t.f]} · ${t.r}</span><b>${t.n}</b><small>${t.s}</small>`;
+    b.onclick=()=>openDeep(null,`<h3>${t.n}</h3><p class="src">${t.o} · ${t.r}</p><p>${t.d}</p><div class="links">${t.l.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]}</a>`).join('')}</div>`);
+    box.appendChild(b);});
+  $$('#teamFilter .chip').forEach(c=>c.onclick=()=>{$$('#teamFilter .chip').forEach(x=>x.setAttribute('aria-pressed',x===c));
+    $$('#teams .team').forEach(t=>t.style.display=(c.dataset.f==='all'||t.dataset.f===c.dataset.f)?'':'none');});
+})();
+
+/* ---------- 08 时间线 ---------- */
+const EVENTS=[
+ [2009,'done','宫坂力团队首次报道钙钛矿电池，效率 3.8%'],
+ [2012,'done','牛津大学、成均馆大学/EPFL 做出固态器件，效率约 10%'],
+ [2013,'done','第一个经认证的钙钛矿电池纪录：14.1%（EPFL）'],
+ [2016,'done','钙钛矿/硅叠层进入纪录表：23.6%（斯坦福/亚利桑那州立大学）'],
+ [2018,'done','牛津光伏叠层电池 28.0%，超过当时最好的晶硅电池'],
+ [2023,'done','隆基叠层电池 33.9%；钙钛矿单层电池超过 26%'],
+ [2024,'done','9 月：牛津光伏交付首批商用叠层组件（美国客户）'],
+ [2024,'gov','日本提出 2040 年钙钛矿装机约 20 GW 的目标'],
+ [2025,'done','6 月：协鑫光电昆山 1 GW 钙钛矿基地投产；极电光能无锡吉瓦级产线投产'],
+ [2025,'done','5 月：Qcells 叠层组件通过 IEC/UL 规定的应力测试'],
+ [2026,'done','2 月：海南大学单层 28.0%、隆基叠层 35.2%（认证）'],
+ [2026,'done','3 月：华能招标 1.2 MW 叠层组件建示范电站，协鑫光电中标，年内交付'],
+ [2026,'done','4 月：Tandem PV 在美国加州启动 40 MW 叠层示范工厂'],
+ [2026,'done','7 月：Qcells 叠层技术获 TÜV 莱茵 IEC 61215 与 UL 61215 认证'],
+ [2027,'plan','积水太阳能薄膜（积水化学）100 MW 柔性钙钛矿产线计划运营'],
+ [2027,'plan','Qcells 叠层组件商用（2025 年报道口径；另有报道称 2029 年）'],
+ [2028,'view','叠层组件主要出现在示范电站、商业项目和少量高端屋顶'],
+ [2028,'plan','Tandem PV 目标进入大规模量产'],
+ [2030,'gov','日本目标：国内钙钛矿产能达到吉瓦级'],
+ [2030,'view','若多年户外数据和度电成本得到证明，较大规模普及更可能在此前后'],
+ [2040,'gov','日本目标：钙钛矿装机约 20 GW，组件价格约 10 日元/瓦'],
+];
+(function(){
+  const bn={done:['b-done','已发生'],plan:['b-plan','企业计划'],gov:['b-gov','政府目标'],view:['b-view','本报告判断']};
+  const box=$('#tl');EVENTS.forEach(e=>{const d=document.createElement('div');d.className='ev';d.dataset.y=e[0];
+    d.innerHTML=`<div class="y">${e[0]}</div><div class="t"><span class="badge ${bn[e[1]][0]}">${bn[e[1]][1]}</span>${e[2]}</div>`;box.appendChild(d);});
+  function upd(){const y=+$('#yr').value;$('#yrLab').textContent=y;let last=null;
+    $$('#tl .ev').forEach(d=>{const f=+d.dataset.y>y;d.classList.toggle('future',f);if(!f)last=d;});
+    if(last){const L=$('#tl');L.scrollTop=Math.max(0,last.offsetTop-L.offsetTop-L.clientHeight+last.clientHeight+20);}}
+  $('#yr').oninput=upd;upd();onVisible($('#tl'),upd);addEventListener('load',upd);
+})();
+
+/* ---------- 窄屏放大图表文字 ---------- */
+function boost(){['#raceSvg','#areaSvg','#dev'].forEach(id=>{const s=$(id);if(!s)return;const w=s.getBoundingClientRect().width;if(!w)return;
+  const k=Math.min(1.8,Math.max(1,560/w));s.querySelectorAll('text').forEach(t=>{if(!t.dataset.fs)t.dataset.fs=t.getAttribute('font-size')||13;t.setAttribute('font-size',(+t.dataset.fs*k).toFixed(1));});});}
+boost();addEventListener('resize',boost);
+
+/* ---------- 09 来源 ---------- */
+const SRC=[
+ ['权威效率纪录',[['NLR（原 NREL）最佳研究电池效率图与数据表','https://www.nlr.gov/pv/cell-efficiency'],['Green 等：Solar cell efficiency tables v68, Joule 2026','https://doi.org/10.1016/j.joule.2026.102494'],['Green 等：Solar Cell Efficiency Tables v67, PiP 2026','https://doi.org/10.1002/pip.70068']]],
+ ['开山论文',[['Kojima et al., JACS 2009（3.8%）','https://doi.org/10.1021/ja809598r'],['Lee et al., Science 2012（10.9%）','https://doi.org/10.1126/science.1228604'],['Kim et al., Sci. Rep. 2012（9.7%）','https://doi.org/10.1038/srep00591']]],
+ ['结构与原理入门',[['Wikipedia：Perovskite (structure)','https://en.wikipedia.org/wiki/Perovskite_(structure)'],['Wikipedia：Perovskite solar cell','https://en.wikipedia.org/wiki/Perovskite_solar_cell'],['JST：宫坂力团队成果介绍（PDF）','https://www.jst.go.jp/EN/achievements/research/pdf/tsutomu_miyasaka2017.pdf']]],
+ ['寿命、铅与回收',[['JRC 户外一年测试（pv magazine 报道）','https://www.pv-magazine.com/2026/02/18/one-year-perovskite-solar-module-testing-shows-promising-outdoor-stability/'],['Chem. Soc. Rev. 2026 户外稳定性综述','https://pubs.rsc.org/en/content/articlelanding/2026/cs/d5cs01085c'],['Physics World：水基回收','https://physicsworld.com/a/perovskite-solar-cells-can-be-completely-recycled/']]],
+ ['企业公告（请注意是自述）',[['隆基 34.85% 叠层公告','https://www.longi.com/us/news/longi-world-record-crystalline-silicon-perovskite/'],['隆基：入选第 68 版效率表','https://www.longi.com/en/news/martin-green-68th-edition-solar-cell-efficiency/']]],
+ ['产业新闻',[['PV Tech：牛津光伏首批商用','https://www.pv-tech.org/oxford-pv-ships-first-commercial-perovskite-tandem-modules/'],['pv magazine：协鑫中标华能 1.2 MW','https://www.pv-magazine.com/2026/03/24/gcl-optoelectronics-wins-chinas-first-commercial-perovskite-silicon-tandem-pv-module-order/'],['pv magazine：Qcells 获 IEC/UL 61215','https://www.pv-magazine.com/2026/07/16/qcells-secures-tuv-rheinland-certification-for-perovskite-silicon-tandem-solar-tech/'],['pv magazine USA：Tandem PV 加州工厂','https://pv-magazine-usa.com/2026/04/20/tandem-pv-launches-commercial-perovskite-silicon-manufacturing-in-california/']]],
+ ['政策与分析',[['pv magazine：日本 2040 年 20 GW','https://www.pv-magazine.com/2024/11/28/japan-aims-to-deploy-20-gw-of-perovskite-solar-by-2040/'],['IEEFA：日本钙钛矿战略（2025-11）','https://ieefa.org/resources/japan-needs-more-nuanced-perovskite-strategy']]],
+];
+$('#srcgrid').innerHTML=SRC.map(([h,ls])=>`<div class="srcbox"><h4>${h}</h4>${ls.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]} ↗</a>`).join('')}</div>`).join('');
+})();
+</script>
+</body>
+</html>
+<script>window.addEventListener("load",()=>{document.title="08-钙钛矿太阳能电池-紫黑底数据图解-run-72";});</script>

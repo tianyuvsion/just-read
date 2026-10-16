@@ -18,9 +18,11 @@ import {
   User,
 } from 'lucide-vue-next'
 import { useChatStore, type DisplayMessage } from '../stores/chat'
+import ChatTemplatePicker from '../components/ChatTemplatePicker.vue'
+import HtmlArtifact from '../components/HtmlArtifact.vue'
 
 const chat = useChatStore()
-const { messages, isStreaming, errorMessage, ready, storageWarning, sortedSessions, activeSessionId, activeSession } = storeToRefs(chat)
+const { messages, isStreaming, errorMessage, ready, storageWarning, sortedSessions, activeSessionId, activeSession, generationStatus } = storeToRefs(chat)
 const { stopGenerating, regenerate } = chat
 void chat.initialize()
 const input = ref('')
@@ -55,7 +57,7 @@ const canSend = computed(() => ready.value && input.value.trim().length > 0 && !
 function scrollToBottom(smooth = true) {
   if (!messagesContainer.value) return
   messagesContainer.value.scrollTo({
-    top: messagesContainer.value.scrollHeight,
+    top: messages.value.length ? messagesContainer.value.scrollHeight : 0,
     behavior: smooth ? 'smooth' : 'auto',
   })
 }
@@ -107,6 +109,7 @@ watch(activeSessionId, () => {
 })
 
 function handleKeydown(e: KeyboardEvent) {
+  if (e.isComposing) return
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     void send()
@@ -183,16 +186,17 @@ onBeforeUnmount(() => {
       class="chat-scroll-area"
       @scroll="handleScroll"
     >
+      <ChatTemplatePicker v-if="ready" />
       <!-- 空状态欢迎页 -->
       <div v-if="!ready" class="chat-welcome" role="status">正在加载历史对话…</div>
       <div v-else-if="!messages.length" class="chat-welcome">
         <div class="welcome-icon">
           <Sparkles :size="32" />
         </div>
-        <h2>今天想聊点什么？</h2>
-        <p>开始一个新话题，或从左侧打开历史对话继续交流。</p>
+        <h2>{{ activeSession?.templateId ? '把报告内容交给 Kimi' : '今天想聊点什么？' }}</h2>
+        <p>{{ activeSession?.templateId ? '在下方粘贴正文、提纲或研究材料，生成所选风格的交互网页。' : '选择上方模板制作报告，或直接开始普通对话。' }}</p>
 
-        <div class="quick-prompts-grid">
+        <div v-if="!activeSession?.templateId" class="quick-prompts-grid">
           <button
             v-for="card in promptCards"
             :key="card.title"
@@ -241,8 +245,9 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- 正文与光标 -->
-            <div class="message-text">
-              <span class="text-content">{{ msg.content }}</span>
+            <HtmlArtifact v-if="msg.role === 'assistant' && /<!doctype\s+html|<html\b/i.test(msg.content)" :content="msg.content" :streaming="msg.isStreaming" />
+            <div v-else class="message-text">
+                <span class="text-content">{{ msg.content || (msg.role === 'assistant' && !msg.isStreaming ? '本次未生成正文，请重新生成。' : '') }}</span>
               <span
                 v-if="msg.isStreaming"
                 class="typewriter-cursor"
@@ -277,12 +282,14 @@ onBeforeUnmount(() => {
 
     <!-- 底部输入框 -->
     <footer class="chat-composer-footer">
+      <p v-if="generationStatus" class="generation-status" role="status">{{ generationStatus }}</p>
       <div class="composer-container">
         <textarea
           v-model="input"
           class="chat-textarea"
-          rows="1"
-          placeholder="给 Kimi K3 发送消息... (Enter 发送，Shift + Enter 换行)"
+          :rows="activeSession?.templateId ? 4 : 1"
+          :placeholder="activeSession?.templateId ? '粘贴报告正文、提纲或材料，生成这个风格的网页…' : '给 Kimi K3 发送消息... (Enter 发送，Shift + Enter 换行)'"
+          maxlength="60000"
           :disabled="!ready || isStreaming"
           aria-label="对话消息"
           @keydown="handleKeydown"
@@ -321,6 +328,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.generation-status { font-size: 12px; color: #6b8456; margin: 0 0 8px; }
 .chat-layout {
   display: flex;
   height: calc(100dvh - 65px);
