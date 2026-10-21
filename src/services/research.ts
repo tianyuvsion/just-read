@@ -1,4 +1,5 @@
 import type { Report, ResearchRequest, ResearchTask, SourceMaterial, TaskRun, ReportVersion, Workflow } from '../types'
+import { authenticatedFetch } from './auth'
 
 export const generationSteps = ['A · 目标与材料', 'B · 研究与计算', 'C · 阅读与图解', 'D · 审查与交付']
 
@@ -9,7 +10,7 @@ export class ApiError extends Error {
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
   let response: Response
   try {
-    response = await fetch(`/api/v1${path}`, {
+    response = await authenticatedFetch(`/api/v1${path}`, {
       ...options, credentials: 'same-origin', signal: options.signal ?? AbortSignal.timeout(15000),
       headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers },
     })
@@ -34,6 +35,7 @@ export const saveBookmarks = (id: string, bookmarks: string[]) => api<Report>(`/
 export const importReport = (report: Report) => api<Report>('/reports/import', { method: 'POST', body: JSON.stringify(report) })
 export const listSources = () => api<{ sources: SourceMaterial[] }>('/sources')
 export const getSource = (id: string) => api<SourceMaterial>(`/sources/${encodeURIComponent(id)}`)
+export const downloadSource = (id: string, name: string) => downloadFile(`/sources/${encodeURIComponent(id)}/download`, name)
 export const addSource = (body: { name: string; media_type: string; content_base64: string }) => api<SourceMaterial>('/sources', { method: 'POST', body: JSON.stringify(body), signal: AbortSignal.timeout(240000) })
 export const taskRuns = (id: string) => api<{ runs: TaskRun[] }>(`/research-tasks/${encodeURIComponent(id)}/runs`)
 export const taskAction = (id: string, action: 'pause' | 'resume' | 'retry', from_stage?: string) => api<ResearchTask>(`/research-tasks/${encodeURIComponent(id)}/actions`, { method: 'POST', body: JSON.stringify({ action, ...(from_stage ? { from_stage } : {}) }) })
@@ -44,14 +46,18 @@ export const saveVersion = (id: string, base_version: number, report: Report) =>
 export const reportAction = (id: string, action: string, fields: Record<string, unknown> = {}) => api<Record<string, unknown>>(`/reports/${encodeURIComponent(id)}/actions`, { method: 'POST', body: JSON.stringify({ action, ...fields }), signal: AbortSignal.timeout(240000) })
 export const getSharedReport = (token: string) => api<Report>(`/shared/${encodeURIComponent(token)}`)
 export async function downloadVersion(id: string, version: number, format: 'html' | 'zip') {
-  const response = await fetch(`/api/v1/reports/${encodeURIComponent(id)}/export?version=${version}&format=${format}`, { credentials: 'same-origin' })
+  return downloadFile(`/reports/${encodeURIComponent(id)}/export?version=${version}&format=${format}`, `justread-${id}-v${version}.${format}`)
+}
+
+async function downloadFile(path: string, name: string) {
+  const response = await authenticatedFetch(`/api/v1${path}`)
   if (!response.ok) {
     const value = await response.json().catch(() => null)
-    throw new ApiError(response.status, value?.error?.code ?? 'EXPORT_FAILED', value?.error?.message ?? '固定版本导出失败。')
+    throw new ApiError(response.status, value?.error?.code ?? 'DOWNLOAD_FAILED', value?.error?.message ?? '文件下载失败，请重试。')
   }
   const url = URL.createObjectURL(await response.blob())
   const anchor = document.createElement('a')
-  anchor.href = url; anchor.download = `justread-${id}-v${version}.${format}`; anchor.click()
+  anchor.href = url; anchor.download = name.replace(/[\\/:*?"<>|\x00-\x1F]/g, '_'); anchor.click()
   setTimeout(() => URL.revokeObjectURL(url), 10000)
 }
 

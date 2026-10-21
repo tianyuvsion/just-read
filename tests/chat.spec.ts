@@ -6,6 +6,7 @@ async function mockApi(page: Page) {
   const requests: ContextMessage[][] = []
   await page.route('**/api/v1/**', async route => {
     const path = new URL(route.request().url()).pathname
+    if (path.endsWith('/auth/me')) return route.fulfill({ json: { user: { id: 'chat-test', username: 'tester' } } })
     if (path.endsWith('/chat/stream')) {
       const messages = route.request().postDataJSON().messages as ContextMessage[]
       requests.push(messages)
@@ -140,7 +141,7 @@ test('流式生成期间刷新可恢复已经定期保存的内容', async ({ pa
   await page.getByRole('button', { name: '发送消息', exact: true }).click()
   await expect.poll(() => page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open('just-read-chat', 1)
+      const request = indexedDB.open('just-read-chat:chat-test', 1)
       request.onsuccess = () => resolve(request.result)
       request.onerror = () => reject(request.error)
     })
@@ -175,6 +176,7 @@ test('选择模板、编辑提示词、预览下载和会话恢复', async ({ pa
   const html = '<!doctype html><html><head><title>知识库报告</title></head><body><h1>企业知识库</h1><button onclick="this.textContent=\'已展开\'">展开</button><script>try{parent.document.body.dataset.escaped="yes"}catch{}</script></body></html>'
   await page.route('**/api/v1/**', async route => {
     const path = new URL(route.request().url()).pathname
+    if (path.endsWith('/auth/me')) return route.fulfill({ json: { user: { id: 'chat-test', username: 'tester' } } })
     if (path.endsWith('/chat/templates')) await route.fulfill({ json: { templates: catalog } })
     else if (path.endsWith('/chat/stream')) {
       requests.push(route.request().postDataJSON())

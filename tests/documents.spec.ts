@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures/authenticated'
 import { Document, Packer, Paragraph } from 'docx'
 import { jsPDF } from 'jspdf'
 import { readFile } from 'node:fs/promises'

@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Chat persistence uses real browser IndexedDB and mocked SSE; no model key or Python service required.
+// Login and chat use real browser storage with mocked auth/SSE; no model key or Python service required.
 export default defineConfig({
-  testDir: './tests', testMatch: 'chat.spec.ts', fullyParallel: true, timeout: 30000,
+  testDir: './tests', testMatch: ['chat.spec.ts', 'auth.spec.ts'], fullyParallel: true, timeout: 30000,
   use: {
     baseURL: 'http://127.0.0.1:5188', trace: 'retain-on-failure',
     launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH },

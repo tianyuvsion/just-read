@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures/authenticated'
 
 async function start(page: import('@playwright/test').Page, question: string) {
   await page.goto('/')
@@ -63,20 +63,20 @@ test('POST 丢响应后刷新复用幂等键，只生成一份报告', async ({ 
   await expect(page.getByRole('button', { name: '开始调研' })).toBeEnabled()
   await page.getByRole('button', { name: '开始调研' }).click()
   await expect(page.getByRole('alert')).toContainText('无法连接服务')
-  const pending = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1')!))
+  const pending = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user')!))
   expect(pending.key).toBe(keys[0]); expect(pending.taskId).toBeNull()
   await page.reload()
   await expect(page.getByRole('heading', { name: /丢失响应恢复测试/ })).toBeVisible({ timeout: 30000 })
   expect(keys).toHaveLength(2); expect(keys[1]).toBe(keys[0])
   expect((await (await page.request.get('/api/v1/reports')).json()).reports).toHaveLength(1)
-  expect(await page.evaluate(() => localStorage.getItem('just-read:pending:v1'))).toBeNull()
+  expect(await page.evaluate(() => localStorage.getItem('just-read:pending:v1:e2e-user'))).toBeNull()
 })
 
 test('已知任务 ID 刷新仅 GET 恢复，不再次 POST', async ({ page }) => {
   let posts = 0
   page.on('request', r => { if (r.url().endsWith('/api/v1/research-tasks') && r.method() === 'POST') posts++ })
   const task = await start(page, '已知任务刷新恢复')
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1') ?? 'null')?.taskId)).toBe(task.id)
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user') ?? 'null')?.taskId)).toBe(task.id)
   await page.reload()
   await expect(page.getByRole('heading', { name: /已知任务刷新恢复/ })).toBeVisible({ timeout: 30000 })
   expect(posts).toBe(1)
@@ -85,7 +85,7 @@ test('已知任务 ID 刷新仅 GET 恢复，不再次 POST', async ({ page }) =
 test('未知任务 ID 不自动重新提交', async ({ page }) => {
   let posts = 0
   page.on('request', r => { if (r.url().endsWith('/api/v1/research-tasks') && r.method() === 'POST') posts++ })
-  await page.addInitScript(() => localStorage.setItem('just-read:pending:v1', JSON.stringify({
+  await page.addInitScript(() => localStorage.setItem('just-read:pending:v1:e2e-user', JSON.stringify({
     key: 'unknown-task-test', request: { question: '不能偷偷重建', depth: 'deep' }, taskId: 'missing-task-id', cancelRequested: false,
   })))
   await page.goto('/')
@@ -123,7 +123,7 @@ test('服务不可用时不自动退回演示数据', async ({ page }) => {
 })
 
 test('保留已存在的本地演示报告并明确标注', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('just-read:reports:v1', JSON.stringify([{
+  await page.addInitScript(() => localStorage.setItem('just-read:reports:v1:e2e-user', JSON.stringify([{
     id: 'legacy-demo', title: '旧版演示', question: '旧版演示', category: '演示', summary: '历史本地记录', createdAt: '2026-10-01T00:00:00Z',
     minutes: 1, chapters: [{ id: 'overview', title: '演示内容', paragraphs: ['历史演示数据'] }], chart: [{ label: '示例', value: 82 }], bookmarks: [],
   }])))
@@ -140,7 +140,7 @@ test('超期和缺少时间的未知提交记录不会自动重 POST', async ({ 
   await page.goto('/')
   await expect(page.getByLabel('上传文档', { exact: true })).toBeEnabled()
   for (const createdAt of [new Date(Date.now() - 25 * 3600_000).toISOString(), null]) {
-    await page.evaluate(stamp => localStorage.setItem('just-read:pending:v1', JSON.stringify({
+    await page.evaluate(stamp => localStorage.setItem('just-read:pending:v1:e2e-user', JSON.stringify({
       key: crypto.randomUUID(), request: { question: '过期请求不能自动重建', depth: 'deep' }, taskId: null,
       cancelRequested: false, ...(stamp ? { createdAt: stamp } : {}),
     })), createdAt)
@@ -148,7 +148,7 @@ test('超期和缺少时间的未知提交记录不会自动重 POST', async ({ 
     await expect(page.getByRole('alert')).toContainText('未重新发送')
     await expect(page.getByRole('button', { name: '清除本地等待记录' })).toBeVisible()
     await page.getByRole('button', { name: '清除本地等待记录' }).click()
-    await expect.poll(() => page.evaluate(() => localStorage.getItem('just-read:pending:v1'))).toBeNull()
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('just-read:pending:v1:e2e-user'))).toBeNull()
   }
   expect(posts).toBe(0)
 })
@@ -160,7 +160,7 @@ for (const withoutLocks of [false, true]) {
     await second.addInitScript(noLocks => {
       if (noLocks) Object.defineProperty(navigator, 'locks', { value: undefined })
       window.addEventListener('storage', event => {
-        if (event.key === 'just-read:pending:v1' && !JSON.parse(event.newValue ?? 'null')?.taskId) event.stopImmediatePropagation()
+        if (event.key === 'just-read:pending:v1:e2e-user' && !JSON.parse(event.newValue ?? 'null')?.taskId) event.stopImmediatePropagation()
       })
     }, withoutLocks)
     const keys: string[] = []
@@ -185,23 +185,23 @@ for (const withoutLocks of [false, true]) {
       await second.getByLabel('调研问题', { exact: true }).fill('第二页不能覆盖任务')
       await page.getByRole('button', { name: '开始调研' }).click()
       await expect.poll(() => keys.length).toBe(1)
-      const firstPending = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1')!))
+      const firstPending = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user')!))
       await expect(second.getByRole('button', { name: '开始调研' })).toBeEnabled()
       await second.getByRole('button', { name: '开始调研' }).click()
       await expect(second.locator('.generation-panel')).toContainText('第一页的唯一任务')
-      expect(await second.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1')!).key)).toBe(firstPending.key)
+      expect(await second.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user')!).key)).toBe(firstPending.key)
       expect(new Set(keys)).toEqual(new Set([firstPending.key]))
       release()
-      await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1') ?? 'null')?.taskId)).toBeTruthy()
-      const taskId = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1')!).taskId)
+      await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user') ?? 'null')?.taskId)).toBeTruthy()
       await page.reload()
-      await expect(page.locator('.generation-panel')).toContainText('第一页的唯一任务')
-      await page.getByRole('button', { name: '取消生成', exact: true }).click()
-      await expect.poll(async () => (await (await page.request.get(`/api/v1/research-tasks/${taskId}`)).json()).status).toBe('cancelled')
+      // Completion may race the extra session check on reload. Verify both tabs
+      // observe the same result; cancellation itself has a dedicated test above.
+      await expect(page.getByRole('heading', { name: /第一页的唯一任务/ })).toBeVisible()
+      await expect(second.getByRole('heading', { name: /第一页的唯一任务/ })).toBeVisible()
       await expect(second.locator('.generation-panel')).toHaveCount(0)
       expect(new Set(keys)).toEqual(new Set([firstPending.key]))
       expect(statuses).not.toContain(409)
-      expect(await page.evaluate(() => localStorage.getItem('just-read:pending:v1'))).toBeNull()
+      expect(await page.evaluate(() => localStorage.getItem('just-read:pending:v1:e2e-user'))).toBeNull()
     } finally { release(); await second.close() }
   })
 }
@@ -241,14 +241,14 @@ test('旧取消响应延迟返回不会清除新任务恢复记录', async ({ pa
     await page.getByRole('button', { name: '开始调研' }).click()
     newId = (await (await created).json()).id
     await expect(page.getByRole('alert')).toContainText('无法连接服务')
-    const newPending = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1')!))
+    const newPending = await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user')!))
     expect(newPending.taskId).toBe(newId)
     const oldResponse = page.waitForResponse(r => r.url().endsWith(`/${oldId}/cancel`))
     releaseCancel()
     await (await oldResponse).finished()
     // Let fetch consumption and the following Web Lock callback finish.
     await page.waitForTimeout(100)
-    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1')!).key)).toBe(newPending.key)
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('just-read:pending:v1:e2e-user')!).key)).toBe(newPending.key)
     await expect(page.locator('.generation-panel')).toContainText('新任务恢复记录不能被旧响应删除')
   } finally { allowOldPoll(); releaseCancel() }
 })

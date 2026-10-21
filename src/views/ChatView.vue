@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.generation-status { font-size: 12px; color: #6b8456; margin: 0 0 8px; }
+.generation-status { font-size: 12px; color: var(--primary); margin: 0 0 8px; }
 .chat-layout {
   display: flex;
   height: calc(100dvh - 65px);
@@ -348,10 +348,10 @@ onBeforeUnmount(() => {
 .session-heading { display: flex; justify-content: space-between; color: #334155; padding: 0 8px 14px; }
 .session-heading span, .storage-note { font-size: 12px; color: #64748b; }
 .storage-note { margin: 12px 8px; }
-.new-chat-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border: 1px solid #bae6fd; border-radius: 8px; background: #f0f9ff; color: #0369a1; cursor: pointer; }
+.new-chat-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border: 1px solid #91caff; border-radius: 8px; background: var(--primary-light); color: #0958d9; cursor: pointer; }
 .session-list { overflow-y: auto; min-height: 0; }
 .session-item { border-radius: 8px; margin-bottom: 6px; border: 1px solid transparent; }
-.session-item.active { background: #f0f9ff; border-color: #bae6fd; }
+.session-item.active { background: var(--primary-light); border-color: #91caff; }
 .session-select { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 8px 5px; background: transparent; border: 0; cursor: pointer; text-align: left; color: #334155; }
 .session-select > svg { flex-shrink: 0; }
 .session-select > span { min-width: 0; }
@@ -394,8 +394,8 @@ onBeforeUnmount(() => {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  background: var(--primary);
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
 }
 
 .provider-tag {
@@ -462,12 +462,12 @@ onBeforeUnmount(() => {
   width: 58px;
   height: 58px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #e0f2fe, #dbeafe);
-  color: #0284c7;
+  background: linear-gradient(135deg, #e6f4ff, #bae0ff);
+  color: var(--primary);
   display: grid;
   place-items: center;
   margin: 0 auto 16px;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+  box-shadow: 0 4px 12px rgba(22, 119, 255, 0.12);
 }
 
 .chat-welcome h2 {
@@ -503,8 +503,8 @@ onBeforeUnmount(() => {
 }
 
 .prompt-card:hover {
-  border-color: #38bdf8;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
+  border-color: #69b1ff;
+  box-shadow: 0 4px 14px rgba(22, 119, 255, 0.08);
   transform: translateY(-2px);
 }
 
@@ -553,7 +553,7 @@ onBeforeUnmount(() => {
 }
 
 .avatar-bubble.user {
-  background: #0284c7;
+  background: var(--primary);
   color: #ffffff;
 }
 
@@ -612,7 +612,7 @@ onBeforeUnmount(() => {
 }
 
 .text-success {
-  color: #10b981;
+  color: var(--primary);
 }
 
 .message-text {
@@ -625,7 +625,7 @@ onBeforeUnmount(() => {
 }
 
 .message-row.user .message-text {
-  background: #0284c7;
+  background: var(--primary);
   color: #ffffff;
   border-bottom-right-radius: 3px;
 }
@@ -643,7 +643,7 @@ onBeforeUnmount(() => {
   display: inline-block;
   width: 2px;
   height: 1.15em;
-  background-color: #0284c7;
+  background-color: var(--primary);
   margin-left: 3px;
   vertical-align: -2px;
   animation: cursor-blink 0.8s infinite;
@@ -676,8 +676,8 @@ onBeforeUnmount(() => {
 
 .regen-btn:hover {
   background: #f8fafc;
-  border-color: #0284c7;
-  color: #0284c7;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 /* 浮动吸底按钮 */
@@ -701,8 +701,8 @@ onBeforeUnmount(() => {
 
 .scroll-bottom-fab:hover {
   background: #f1f5f9;
-  color: #0284c7;
-  border-color: #0284c7;
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 /* 底部输入框 */
@@ -727,9 +727,9 @@ onBeforeUnmount(() => {
 }
 
 .composer-container:focus-within {
-  border-color: #0284c7;
+  border-color: var(--primary);
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.1);
 }
 
 .chat-textarea {
@@ -753,7 +753,7 @@ onBeforeUnmount(() => {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: #0284c7;
+  background: var(--primary);
   color: #ffffff;
   border: none;
   display: grid;
@@ -768,7 +768,7 @@ onBeforeUnmount(() => {
 }
 
 .send-btn:not(:disabled):hover {
-  background: #0369a1;
+  background: #0958d9;
 }
 
 .stop-btn {

@@ -2,14 +2,15 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { Report, ResearchRequest, ResearchTask } from '../types'
 import { ApiError, establishSession, listReports, getReport, createTask, getTask, cancelTask, saveBookmarks, importReport, requireReport, validReport, taskAction } from '../services/research'
+import { accountStorageKey } from '../services/auth'
 
-const STORAGE_KEY = 'just-read:reports:v1'
-const PENDING_KEY = 'just-read:pending:v1'
-const RECENT_TASK_KEY = 'just-read:recent-task:v1'
 interface PendingTask { key: string; request: ResearchRequest; taskId: string | null; cancelRequested: boolean; createdAt?: string; replayBlocked?: boolean }
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const useResearchStore = defineStore('research', () => {
+  const STORAGE_KEY = accountStorageKey('just-read:reports:v1')
+  const PENDING_KEY = accountStorageKey('just-read:pending:v1')
+  const RECENT_TASK_KEY = accountStorageKey('just-read:recent-task:v1')
   const storageWarning = ref('')
   const error = ref('')
   const ready = ref(false)

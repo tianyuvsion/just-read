@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from './fixtures/authenticated'
 import { readFile } from 'node:fs/promises'
 import type { Report, ResearchTask, VisualSpec } from '../src/types'
 
@@ -119,6 +119,10 @@ test('模拟完整工作区经真实报告 API 完成证据、五类图解、三
   let guestPrivateSourceCalls = 0
   guestPage.on('request', request => { if (new URL(request.url()).pathname.startsWith('/api/v1/sources/')) guestPrivateSourceCalls++ })
   await guestPage.goto(url)
+  await expect(guestPage.getByRole('dialog')).toContainText('登录后，继续探索')
+  // Shared reports now require a signed-in reader too, while private sources stay hidden.
+  await guest.route('**/api/v1/auth/me', route => route.fulfill({ json: { user: { id: 'shared-reader', username: 'reader' } } }))
+  await guestPage.reload()
   await expect(guestPage.getByRole('heading', { name: '模拟 A–D 工作区报告', exact: true })).toBeVisible()
   await expect(guestPage.locator('.bookmark-button')).toHaveCount(0)
   await guestPage.locator('.report-workspace > summary').click()
@@ -145,6 +149,7 @@ test('明确模拟任务 API：暂停后刷新继续，仅轮询已有任务；�
   function task(): ResearchTask { return { id: currentId, status: state, step: 1, message: `模拟状态 ${state}`, report: state === 'succeeded' ? result : null, error: state === 'failed' ? { code: 'SIMULATED', message: '模拟可重试错误' } : null, expiresAt: null } }
   await page.route('**/api/v1/**', async route => {
     const path = new URL(route.request().url()).pathname, method = route.request().method()
+    if (path.endsWith('/auth/me')) return route.fallback()
     let value: unknown
     if (path.endsWith('/health')) value = { ready: true, mode: 'test' }
     else if (path.endsWith('/sources')) value = { sources: [] }
@@ -175,7 +180,7 @@ test('明确模拟任务 API：暂停后刷新继续，仅轮询已有任务；�
   await page.getByRole('button', { name: '重试任务', exact: true }).click()
   await expect(page.getByRole('heading', { name: result.title, exact: true })).toBeVisible()
   expect(posts).toBe(1); expect(resumeCount).toBe(1)
-  expect(await page.evaluate(() => localStorage.getItem('just-read:pending:v1'))).toBeNull()
+  expect(await page.evaluate(() => localStorage.getItem('just-read:pending:v1:e2e-user'))).toBeNull()
 })
 
 test('模拟数据经真实核算 API 按选择顺序复算并生成新版本，旧 AI 审查不冒充当前审查', async ({ page }) => {

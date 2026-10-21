@@ -1,4 +1,5 @@
 import type { ChatMessage } from './chat'
+import { accountStorageKey } from './auth'
 
 export interface ChatSession {
   id: string
@@ -16,7 +17,7 @@ let database: Promise<IDBDatabase> | undefined
 function openDatabase(): Promise<IDBDatabase> {
   if (database) return database
   database = new Promise((resolve, reject) => {
-    const request = indexedDB.open('just-read-chat', 1)
+    const request = indexedDB.open(accountStorageKey('just-read-chat'), 1)
     request.onupgradeneeded = () => {
       request.result.createObjectStore('sessions', { keyPath: 'id' })
       request.result.createObjectStore('settings')

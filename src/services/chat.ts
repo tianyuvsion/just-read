@@ -1,3 +1,5 @@
+import { authenticatedFetch } from './auth'
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant' | 'system'
@@ -29,9 +31,9 @@ export interface TemplateOptions {
 }
 
 export async function loadChatTemplates(): Promise<ChatTemplate[]> {
-  const health = await fetch('/api/v1/health', { credentials: 'same-origin' })
+  const health = await authenticatedFetch('/api/v1/health', { credentials: 'same-origin' })
   if (!health.ok) throw new Error('无法连接对话服务')
-  const response = await fetch('/api/v1/chat/templates', { credentials: 'same-origin' })
+  const response = await authenticatedFetch('/api/v1/chat/templates', { credentials: 'same-origin' })
   if (!response.ok) throw new Error('模板加载失败')
   const data = await response.json()
   return Array.isArray(data.templates) ? data.templates : []
@@ -45,7 +47,7 @@ export async function sendChatStream(
 ): Promise<void> {
   let response: Response
   try {
-    response = await fetch('/api/v1/chat/stream', {
+    response = await authenticatedFetch('/api/v1/chat/stream', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

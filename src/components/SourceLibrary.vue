@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { addSource, getSource, listSources } from '../services/research'
+import { addSource, downloadSource, getSource, listSources } from '../services/research'
 import type { SourceMaterial } from '../types'
 import { useResearchStore } from '../stores/research'
 const store = useResearchStore()
@@ -10,6 +10,14 @@ const sources = ref<SourceMaterial[]>([])
 const selected = ref<SourceMaterial>()
 const busy = ref(false)
 const error = ref('')
+const downloading = ref(false)
+async function download() {
+  if (!selected.value || downloading.value) return
+  downloading.value = true; error.value = ''
+  try { await downloadSource(selected.value.id, selected.value.name) }
+  catch (e) { error.value = e instanceof Error ? e.message : '文件下载失败' }
+  finally { downloading.value = false }
+}
 function toggle(id: string, checked: boolean) { emit('update:modelValue', checked ? [...new Set([...props.modelValue, id])] : props.modelValue.filter(item => item !== id)) }
 async function refresh() { try { sources.value = (await listSources()).sources } catch (e) { error.value = e instanceof Error ? e.message : '材料加载失败' } }
 async function inspect(id: string) { try { selected.value = await getSource(id) } catch (e) { error.value = String(e) } }
@@ -41,6 +49,6 @@ watch(() => store.ready, value => { if (value) void refresh() }, { immediate: tr
     <p v-if="busy" role="status">正在解析材料…</p><p v-if="error" class="upload-error" role="alert">{{ error }}</p>
     <div class="source-list"><div v-for="item in sources" :key="item.id" class="source-row"><label><input type="checkbox" :checked="modelValue.includes(item.id)" :disabled="disabled" :aria-label="`使用材料：${item.name}`" @change="toggle(item.id, ($event.target as HTMLInputElement).checked)" />{{ item.name }}</label><button type="button" class="text-button" @click="inspect(item.id)">查看定位</button></div></div>
     <p v-if="!sources.length && !busy" class="muted">尚未添加研究材料，也可以仅根据问题开始研究。</p>
-    <details v-if="selected" class="source-preview" open><summary>{{ selected.name }} · 解析结果</summary><p v-for="warning in selected.warnings" :key="warning" class="muted">{{ warning }}</p><a class="text-link" :href="`/api/v1/sources/${encodeURIComponent(selected.id)}/download`" download>下载原文件</a><div v-for="chunk in selected.chunks?.slice(0, 12)" :key="chunk.id" class="evidence-card"><small>{{ chunk.page ? `第 ${chunk.page} 页` : chunk.paragraph ? `第 ${chunk.paragraph} 段` : chunk.id }}</small><p>{{ chunk.text }}</p></div><p class="muted">原件完整保留；研究按问题选取片段，当前预览最多 12 项。</p></details>
+    <details v-if="selected" class="source-preview" open><summary>{{ selected.name }} · 解析结果</summary><p v-for="warning in selected.warnings" :key="warning" class="muted">{{ warning }}</p><button type="button" class="text-button" :disabled="downloading" @click="download">{{ downloading ? '正在下载…' : '下载原文件' }}</button><div v-for="chunk in selected.chunks?.slice(0, 12)" :key="chunk.id" class="evidence-card"><small>{{ chunk.page ? `第 ${chunk.page} 页` : chunk.paragraph ? `第 ${chunk.paragraph} 段` : chunk.id }}</small><p>{{ chunk.text }}</p></div><p class="muted">原件完整保留；研究按问题选取片段，当前预览最多 12 项。</p></details>
   </details>
 </template>

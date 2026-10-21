@@ -2,8 +2,8 @@ import { defineConfig, devices } from '@playwright/test'
 import { resolve } from 'node:path'
 import { existsSync } from 'node:fs'
 
-const python = resolve(process.env.JUSTREAD_PYTHON ?? (existsSync(resolve('.venv/bin/python')) ? '.venv/bin/python' : 'backend/.venv/bin/python'))
-const quotedPython = "'" + python.replace(/'/g, "'\\''") + "'"
+const python = resolve(process.env.JUSTREAD_PYTHON ?? (existsSync(resolve('.venv/Scripts/python.exe')) ? '.venv/Scripts/python.exe' : existsSync(resolve('.venv/bin/python')) ? '.venv/bin/python' : 'backend/.venv/bin/python'))
+const quotedPython = process.platform === 'win32' ? '"' + python + '"' : "'" + python.replace(/'/g, "'\\''") + "'"
 const apiPort = Number(process.env.JUSTREAD_E2E_API_PORT ?? '8001')
 const frontendPort = Number(process.env.JUSTREAD_E2E_FRONTEND_PORT ?? '5187')
 const apiOrigin = `http://127.0.0.1:${apiPort}`
